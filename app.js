@@ -1018,22 +1018,22 @@ function getPrintCSS() {
     .pd-yn-table td{padding:3.5px 4px;vertical-align:middle;}
     .pd-yn-q{width:68%;font-weight:600;}
     .pd-yn-a{width:32%;text-align:right;white-space:nowrap;}
-    .print-box{display:inline-block;width:12px;height:12px;border:1.5px solid #E46589;border-radius:2px;vertical-align:middle;margin-right:2px;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
-    .print-box.checked{background:#E46589;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    .print-box{display:inline-block;width:12px;height:12px;border:1.5px solid #E46589;border-radius:2px;vertical-align:middle;margin-right:2px;}
+    .print-box.checked{background:#E46589;}
     .print-box-label{font-size:8.5pt;color:#333;margin-right:6px;vertical-align:middle;}
     .pd-sign-row{display:flex;justify-content:space-between;gap:14mm;margin-top:12mm;}
     .pd-sign-block{flex:1;text-align:center;}
     .pd-sign-line{border-top:1px solid #888;min-height:18px;padding-top:3px;font-size:9pt;font-weight:bold;margin-bottom:3px;}
     .pd-sign-desc{font-size:8pt;color:#666;}
     .pd-consent-text p{font-size:8.5pt;line-height:1.55;margin-bottom:2.5mm;text-align:justify;}
-    .pd-fototipo-box{border:1.5px solid #E46589;padding:3px 8px;border-radius:3px;font-size:8.5pt;font-weight:bold;display:inline-block;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
-    .pd-fototipo-box.sel{background:#E46589;color:white;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    .pd-fototipo-box{border:1.5px solid #E46589;padding:3px 8px;border-radius:3px;font-size:8.5pt;font-weight:bold;display:inline-block;}
+    .pd-fototipo-box.sel{background:#E46589;color:white;}
     .pd-sessions-table{width:100%;border-collapse:collapse;font-size:7.5pt;}
     .pd-sessions-table th{background:#E46589;color:white;padding:5px 4px;text-align:center;font-size:7pt;}
     .pd-sessions-table td{border:1px solid #ddd;padding:5px 4px;text-align:center;}
     .pd-sessions-table tr:nth-child(even) td{background:#fff5f9;}
     .pd-sig-img{max-width:180px;max-height:65px;display:block;margin:2px auto 0;object-fit:contain;}
-    @media print{@page{size:A4 portrait;margin:0;}body{margin:0;-webkit-print-color-adjust:exact;print-color-adjust:exact;}.pd-page{margin:0;width:100%;min-height:100vh;}}
+    @media print{@page{size:A4 portrait;margin:0;}body{margin:0;}.pd-page{margin:0;width:100%;min-height:100vh;}}
   `;
 }
 
@@ -1605,6 +1605,271 @@ document.addEventListener('click', e => {
       w.querySelector('.nac-dropdown').style.display = 'none';
     });
   }
+});
+
+
+/* ══════════════════════════════════════════════════════════════════════════
+   IMPORT / EXPORT CLIENTES — CSV + XLSX
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* Column aliases: maps any reasonable header name → internal field */
+const COL_MAP = {
+  nome:         ['nome','name','cliente','full name','nome completo'],
+  nasc:         ['nasc','nascimento','data nascimento','data de nascimento','birth','birthday','dob','data nasc'],
+  sexo:         ['sexo','sex','género','gender'],
+  tel:          ['tel','telefone','telemovel','telemóvel','phone','mobile','celular','contacto'],
+  morada:       ['morada','endereço','endereco','address','rua','localidade'],
+  email:        ['email','e-mail','mail','correio'],
+  doc:          ['doc','nif','bi','passaporte','documento','id','document'],
+  nac:          ['nac','nacionalidade','nationality','país','pais','country'],
+  obs:          ['obs','observacoes','observações','observações','notas','notes','remarks'],
+};
+
+let _importRows = [];   // parsed rows waiting for confirmation
+
+/* ── Show/hide modal ── */
+function showImportClientes() {
+  const m = document.getElementById('import-modal');
+  if (m) {
+    m.style.display = 'flex';
+    _importRows = [];
+    document.getElementById('import-preview').innerHTML = '';
+    document.getElementById('import-err').textContent = '';
+    document.getElementById('import-confirm-btn').style.display = 'none';
+    document.getElementById('import-preview-btn').style.display = '';
+    const fi = document.getElementById('import-file');
+    if (fi) fi.value = '';
+  }
+}
+function closeImportModal() {
+  const m = document.getElementById('import-modal');
+  if (m) m.style.display = 'none';
+}
+
+/* ── Parse CSV text → array of row objects ── */
+function parseCSV(text) {
+  const lines = text.split(/\r?\n/).filter(l => l.trim());
+  if (lines.length < 2) throw new Error('Ficheiro CSV vazio ou sem dados.');
+
+  // Detect separator: comma or semicolon
+  const sep = (lines[0].split(';').length > lines[0].split(',').length) ? ';' : ',';
+
+  const headers = lines[0].split(sep).map(h => h.trim().replace(/^["']|["']$/g,'').toLowerCase());
+  const fieldMap = {};
+
+  // Map CSV headers → internal fields
+  for (const [field, aliases] of Object.entries(COL_MAP)) {
+    const idx = headers.findIndex(h => aliases.some(a => h.includes(a)));
+    if (idx >= 0) fieldMap[field] = idx;
+  }
+
+  if (!('nome' in fieldMap)) throw new Error('Coluna "Nome" não encontrada. Verifique os cabeçalhos do ficheiro.');
+
+  const rows = [];
+  for (let i = 1; i < lines.length; i++) {
+    const cells = lines[i].split(sep).map(c => c.trim().replace(/^["']|["']$/g,''));
+    if (cells.every(c => !c)) continue;
+    const obj = {};
+    for (const [field, idx] of Object.entries(fieldMap)) obj[field] = cells[idx] || '';
+    if (obj.nome) rows.push(obj);
+  }
+  return rows;
+}
+
+/* ── Load SheetJS from CDN if needed, then parse XLSX ── */
+function loadSheetJS() {
+  return new Promise((resolve, reject) => {
+    if (window.XLSX) { resolve(window.XLSX); return; }
+    const s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+    s.onload  = () => resolve(window.XLSX);
+    s.onerror = () => reject(new Error('Não foi possível carregar a biblioteca XLSX. Verifique a ligação à internet.'));
+    document.head.appendChild(s);
+  });
+}
+
+async function parseXLSX(file) {
+  const XLSX = await loadSheetJS();
+  const buf  = await file.arrayBuffer();
+  const wb   = XLSX.read(buf, { type: 'array' });
+  const ws   = wb.Sheets[wb.SheetNames[0]];
+  const raw  = XLSX.utils.sheet_to_json(ws, { header: 1, defval: '' });
+  if (raw.length < 2) throw new Error('Ficheiro XLSX vazio ou sem dados.');
+
+  const headers = raw[0].map(h => String(h).trim().toLowerCase());
+  const fieldMap = {};
+  for (const [field, aliases] of Object.entries(COL_MAP)) {
+    const idx = headers.findIndex(h => aliases.some(a => h.includes(a)));
+    if (idx >= 0) fieldMap[field] = idx;
+  }
+  if (!('nome' in fieldMap)) throw new Error('Coluna "Nome" não encontrada. Verifique os cabeçalhos do ficheiro.');
+
+  const rows = [];
+  for (let i = 1; i < raw.length; i++) {
+    const cells = raw[i];
+    if (!cells.length || cells.every(c => !String(c).trim())) continue;
+    const obj = {};
+    for (const [field, idx] of Object.entries(fieldMap)) obj[field] = String(cells[idx] || '').trim();
+    if (obj.nome) rows.push(obj);
+  }
+  return rows;
+}
+
+/* ── Preview parsed rows ── */
+async function previewImport() {
+  const file = document.getElementById('import-file')?.files[0];
+  const err  = document.getElementById('import-err');
+  err.textContent = '';
+
+  if (!file) { err.textContent = 'Selecione um ficheiro primeiro.'; return; }
+
+  const btn = document.getElementById('import-preview-btn');
+  btn.textContent = '⏳ A processar…'; btn.disabled = true;
+
+  try {
+    const ext = file.name.split('.').pop().toLowerCase();
+    _importRows = ext === 'csv'
+      ? parseCSV(await file.text())
+      : await parseXLSX(file);
+
+    if (!_importRows.length) throw new Error('Nenhuma linha válida encontrada no ficheiro.');
+
+    // Build preview table
+    const preview = document.getElementById('import-preview');
+    preview.innerHTML = `
+      <div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:8px;">
+        📋 ${_importRows.length} cliente(s) encontrado(s) — pré-visualização:
+      </div>
+      <div style="max-height:180px;overflow-y:auto;border:1px solid var(--border);border-radius:8px;">
+        <table style="width:100%;border-collapse:collapse;font-size:12px;">
+          <thead><tr style="background:var(--pink-light);">
+            <th style="padding:6px 8px;text-align:left;">Nome</th>
+            <th style="padding:6px 8px;text-align:left;">Telefone</th>
+            <th style="padding:6px 8px;text-align:left;">E-mail</th>
+            <th style="padding:6px 8px;text-align:left;">Nasc.</th>
+          </tr></thead>
+          <tbody>
+            ${_importRows.slice(0,15).map(r => `
+              <tr style="border-top:1px solid var(--border);">
+                <td style="padding:5px 8px;font-weight:600;">${r.nome||''}</td>
+                <td style="padding:5px 8px;">${r.tel||''}</td>
+                <td style="padding:5px 8px;">${r.email||''}</td>
+                <td style="padding:5px 8px;">${r.nasc||''}</td>
+              </tr>`).join('')}
+            ${_importRows.length > 15 ? `<tr><td colspan="4" style="padding:6px 8px;color:var(--gray);font-style:italic;">… e mais ${_importRows.length-15} cliente(s)</td></tr>` : ''}
+          </tbody>
+        </table>
+      </div>`;
+
+    document.getElementById('import-confirm-btn').style.display = '';
+    btn.textContent = '🔍 Pré-visualizar';
+    btn.disabled = false;
+  } catch(e) {
+    err.textContent = '❌ ' + e.message;
+    btn.textContent = '🔍 Pré-visualizar';
+    btn.disabled = false;
+    _importRows = [];
+  }
+}
+
+/* ── Confirm and import ── */
+async function confirmImport() {
+  if (!_importRows.length) return;
+  const mode = document.querySelector('input[name="import-mode"]:checked')?.value || 'merge';
+  const err  = document.getElementById('import-err');
+  const btn  = document.getElementById('import-confirm-btn');
+  btn.textContent = '⏳ A importar…'; btn.disabled = true;
+
+  try {
+    if (mode === 'replace') {
+      const d = await openDB();
+      await new Promise((res, rej) => {
+        const tx = d.transaction(STORE_CLI, 'readwrite');
+        tx.objectStore(STORE_CLI).clear();
+        tx.oncomplete = res; tx.onerror = e => rej(e.target.error);
+      });
+    }
+
+    let count = 0;
+    for (const row of _importRows) {
+      await dbSaveCliente({
+        nome:   row.nome   || '',
+        nasc:   row.nasc   || '',
+        sexo:   row.sexo   || '',
+        tel:    row.tel    || '',
+        morada: row.morada || '',
+        email:  row.email  || '',
+        doc:    row.doc    || '',
+        nac:    row.nac    || '',
+        obs:    row.obs    || '',
+      });
+      count++;
+    }
+
+    closeImportModal();
+    allClientes = [];   // force cache refresh
+    await renderClientesList('');
+    showToast(`✅ ${count} cliente(s) importado(s) com sucesso!`);
+  } catch(e) {
+    err.textContent = '❌ Erro ao importar: ' + e.message;
+    btn.textContent = '✅ Importar'; btn.disabled = false;
+  }
+}
+
+/* ── Export CSV ── */
+async function exportClientesCSV() {
+  const clientes = await dbGetAllClientes();
+  if (!clientes.length) { showToast('⚠️ Nenhuma cliente para exportar.'); return; }
+
+  const headers = ['Nome','Nascimento','Sexo','Telefone','Morada','Email','Doc. Identificação','Nacionalidade','Observações'];
+  const rows    = clientes.map(c => [
+    c.nome||'', c.nasc||'', c.sexo||'', c.tel||'', c.morada||'',
+    c.email||'', c.doc||'', c.nac||'', c.obs||''
+  ]);
+
+  const csv = [headers, ...rows]
+    .map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(','))
+    .join('\r\n');
+
+  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+  const a = Object.assign(document.createElement('a'), {
+    href: URL.createObjectURL(blob),
+    download: `clientes-beleza-rara-${new Date().toISOString().slice(0,10)}.csv`
+  });
+  a.click(); URL.revokeObjectURL(a.href);
+  showToast(`✅ ${clientes.length} cliente(s) exportado(s) em CSV!`);
+}
+
+/* ── Export XLSX ── */
+async function exportClientesXLSX() {
+  const clientes = await dbGetAllClientes();
+  if (!clientes.length) { showToast('⚠️ Nenhuma cliente para exportar.'); return; }
+
+  try {
+    const XLSX = await loadSheetJS();
+    const headers = ['Nome','Nascimento','Sexo','Telefone','Morada','Email','Doc. Identificação','Nacionalidade','Observações'];
+    const rows = clientes.map(c => [
+      c.nome||'', c.nasc||'', c.sexo||'', c.tel||'', c.morada||'',
+      c.email||'', c.doc||'', c.nac||'', c.obs||''
+    ]);
+
+    const ws = XLSX.utils.aoa_to_sheet([headers, ...rows]);
+    // Column widths
+    ws['!cols'] = [28,14,10,16,32,28,20,18,30].map(w => ({ wch: w }));
+    // Style header row (basic)
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Clientes');
+    XLSX.writeFile(wb, `clientes-beleza-rara-${new Date().toISOString().slice(0,10)}.xlsx`);
+    showToast(`✅ ${clientes.length} cliente(s) exportado(s) em XLSX!`);
+  } catch(e) {
+    showToast('❌ Erro ao exportar XLSX: ' + e.message);
+  }
+}
+
+/* Close modal on backdrop click */
+document.addEventListener('click', e => {
+  const modal = document.getElementById('import-modal');
+  if (modal && e.target === modal) closeImportModal();
 });
 
 /* ══════════════════════════════════════════════════════════════════════════
