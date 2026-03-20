@@ -14,6 +14,151 @@
 </head>
 <body>
 
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     ECRÃ – DEFINIÇÕES (admin)
+     ═══════════════════════════════════════════════════════════ -->
+<div id="screen-definicoes" class="screen" style="display:none;">
+  <div class="fichas-topbar">
+    <button class="btn-back" onclick="backFromDefinicoes()">← Voltar</button>
+    <span class="fichas-title">⚙️ Definições</span>
+    <div></div>
+  </div>
+  <div class="fichas-body" style="max-width:680px;">
+
+    <!-- Backup -->
+    <div class="form-card">
+      <h2 class="card-title">💾 Backup — Exportar dados</h2>
+      <p style="font-size:13px;color:var(--gray);margin-bottom:14px;">
+        Exporta todas as fichas e clientes para um ficheiro cifrado (<code>.brb</code>).
+        Guarde-o num local seguro (Google Drive, Dropbox, pen USB).
+      </p>
+      <div class="form-grid">
+        <div class="field-group">
+          <label>Senha do backup</label>
+          <div class="pass-wrap">
+            <input type="password" id="backup-pass" placeholder="Senha para cifrar o ficheiro">
+            <button type="button" class="btn-eye" onclick="togglePass('backup-pass',this)">👁</button>
+          </div>
+        </div>
+        <div class="field-group">
+          <label>Confirmar senha</label>
+          <div class="pass-wrap">
+            <input type="password" id="backup-conf" placeholder="Repetir senha">
+            <button type="button" class="btn-eye" onclick="togglePass('backup-conf',this)">👁</button>
+          </div>
+        </div>
+      </div>
+      <p id="backup-err" class="auth-err" style="margin:8px 0;"></p>
+      <button class="btn-print-main" style="margin-top:4px;" onclick="exportBackup()">⬇️ Exportar Backup</button>
+    </div>
+
+    <!-- Restore -->
+    <div class="form-card">
+      <h2 class="card-title">📂 Restaurar dados</h2>
+      <p style="font-size:13px;color:var(--gray);margin-bottom:14px;">
+        Importa um ficheiro de backup <code>.brb</code> anteriormente exportado.
+      </p>
+      <div class="form-grid">
+        <div class="field-group full">
+          <label>Ficheiro de backup (.brb)</label>
+          <input type="file" id="restore-file" accept=".brb,.json" style="padding:8px;">
+        </div>
+        <div class="field-group">
+          <label>Senha do backup</label>
+          <div class="pass-wrap">
+            <input type="password" id="restore-pass" placeholder="Senha do ficheiro">
+            <button type="button" class="btn-eye" onclick="togglePass('restore-pass',this)">👁</button>
+          </div>
+        </div>
+        <div class="field-group">
+          <label>Modo de importação</label>
+          <div style="display:flex;gap:10px;margin-top:4px;flex-wrap:wrap;">
+            <label class="yn-lbl"><input type="radio" name="restore-mode" value="merge" checked> Adicionar aos existentes</label>
+            <label class="yn-lbl"><input type="radio" name="restore-mode" value="replace"> Substituir tudo</label>
+          </div>
+        </div>
+      </div>
+      <p id="restore-err" class="auth-err" style="margin:8px 0;"></p>
+      <button class="btn-print-main" style="margin-top:4px;background:#059669;" onclick="importBackup()">⬆️ Restaurar Backup</button>
+    </div>
+
+    <!-- RGPD -->
+    <div class="form-card">
+      <h2 class="card-title">📋 Relatório RGPD</h2>
+      <p style="font-size:13px;color:var(--gray);margin-bottom:14px;">
+        Gera um relatório com todos os dados pessoais armazenados, em formato JSON e HTML legível.
+        Útil para auditorias e cumprimento do Regulamento Geral de Proteção de Dados.
+      </p>
+      <button class="btn-print-main" style="background:#7c3aed;" onclick="exportRGPD()">📋 Exportar Relatório RGPD</button>
+    </div>
+
+    <!-- Utilizadores -->
+    <div class="form-card">
+      <h2 class="card-title">👥 Gestão de Utilizadores</h2>
+      <div id="users-list" style="margin-bottom:16px;"></div>
+      <div style="border-top:2px solid var(--pink-light);padding-top:16px;">
+        <h3 style="font-size:14px;font-weight:700;color:var(--pink);margin-bottom:12px;">+ Novo utilizador</h3>
+        <div class="form-grid">
+          <div class="field-group">
+            <label>Nome de utilizador</label>
+            <input type="text" id="new-user-name" placeholder="Ex: assistente1">
+          </div>
+          <div class="field-group">
+            <label>Senha</label>
+            <div class="pass-wrap">
+              <input type="password" id="new-user-pass" placeholder="Mínimo 8 caracteres">
+              <button type="button" class="btn-eye" onclick="togglePass('new-user-pass',this)">👁</button>
+            </div>
+          </div>
+          <div class="field-group">
+            <label>Função</label>
+            <select id="new-user-role">
+              <option value="user">👁️ Utilizador</option>
+              <option value="admin">⭐ Admin</option>
+            </select>
+          </div>
+        </div>
+        <p id="add-user-err" class="auth-err" style="margin:8px 0;"></p>
+        <button class="btn-print-main" style="margin-top:4px;" onclick="addUser()">+ Criar utilizador</button>
+      </div>
+    </div>
+
+    <!-- Alterar senha própria -->
+    <div class="form-card">
+      <h2 class="card-title">🔑 Alterar a minha senha</h2>
+      <div class="form-grid">
+        <div class="field-group full">
+          <label>Senha actual</label>
+          <div class="pass-wrap">
+            <input type="password" id="chg-old-pass" placeholder="Senha actual">
+            <button type="button" class="btn-eye" onclick="togglePass('chg-old-pass',this)">👁</button>
+          </div>
+        </div>
+        <div class="field-group">
+          <label>Nova senha</label>
+          <div class="pass-wrap">
+            <input type="password" id="chg-new-pass" placeholder="Nova senha (≥8 caracteres)">
+            <button type="button" class="btn-eye" onclick="togglePass('chg-new-pass',this)">👁</button>
+          </div>
+        </div>
+        <div class="field-group">
+          <label>Confirmar nova senha</label>
+          <div class="pass-wrap">
+            <input type="password" id="chg-conf-pass" placeholder="Repetir nova senha">
+            <button type="button" class="btn-eye" onclick="togglePass('chg-conf-pass',this)">👁</button>
+          </div>
+        </div>
+      </div>
+      <p id="chg-pass-err" class="auth-err" style="margin:8px 0;"></p>
+      <button class="btn-print-main" style="margin-top:4px;" onclick="doChangeOwnPassword()">🔑 Alterar senha</button>
+    </div>
+
+  </div>
+</div>
+
+
 <!-- ═══════════════════════════════════════════════════════════
      ECRÃ – LOGIN
      ═══════════════════════════════════════════════════════════ -->
@@ -113,148 +258,6 @@
       <p id="setup-err" class="auth-err"></p>
       <button class="btn-auth-primary" onclick="doSetup()">✅ Configurar sistema</button>
     </div>
-  </div>
-</div>
-
-<!-- ═══════════════════════════════════════════════════════════
-     ECRÃ – DEFINIÇÕES (admin)
-     ═══════════════════════════════════════════════════════════ -->
-<div id="screen-definicoes" class="screen" style="display:none;">
-  <div class="fichas-topbar">
-    <button class="btn-back" onclick="backFromDefinicoes()">← Voltar</button>
-    <span class="fichas-title">⚙️ Definições</span>
-    <div></div>
-  </div>
-  <div class="fichas-body" style="max-width:680px;">
-
-    <!-- Backup -->
-    <div class="form-card">
-      <h2 class="card-title">💾 Backup — Exportar dados</h2>
-      <p style="font-size:13px;color:var(--gray);margin-bottom:14px;">
-        Exporta todas as fichas e clientes para um ficheiro cifrado (<code>.brb</code>).
-        Guarde-o num local seguro (Google Drive, Dropbox, pen USB).
-      </p>
-      <div class="form-grid">
-        <div class="field-group">
-          <label>Senha do backup</label>
-          <div class="pass-wrap">
-            <input type="password" id="backup-pass" placeholder="Senha para cifrar o ficheiro">
-            <button type="button" class="btn-eye" onclick="togglePass('backup-pass',this)">👁</button>
-          </div>
-        </div>
-        <div class="field-group">
-          <label>Confirmar senha</label>
-          <div class="pass-wrap">
-            <input type="password" id="backup-conf" placeholder="Repetir senha">
-            <button type="button" class="btn-eye" onclick="togglePass('backup-conf',this)">👁</button>
-          </div>
-        </div>
-      </div>
-      <p id="backup-err" class="auth-err" style="margin:8px 0;"></p>
-      <button class="btn-print-main" style="margin-top:4px;" onclick="exportBackup()">⬇️ Exportar Backup</button>
-    </div>
-
-    <!-- Restore -->
-    <div class="form-card">
-      <h2 class="card-title">📂 Restaurar dados</h2>
-      <p style="font-size:13px;color:var(--gray);margin-bottom:14px;">
-        Importa um ficheiro de backup <code>.brb</code> anteriormente exportado.
-      </p>
-      <div class="form-grid">
-        <div class="field-group full">
-          <label>Ficheiro de backup (.brb)</label>
-          <input type="file" id="restore-file" accept=".brb,.json" style="padding:8px;">
-        </div>
-        <div class="field-group">
-          <label>Senha do backup</label>
-          <div class="pass-wrap">
-            <input type="password" id="restore-pass" placeholder="Senha do ficheiro">
-            <button type="button" class="btn-eye" onclick="togglePass('restore-pass',this)">👁</button>
-          </div>
-        </div>
-        <div class="field-group">
-          <label>Modo de importação</label>
-          <div style="display:flex;gap:10px;margin-top:4px;flex-wrap:wrap;">
-            <label class="yn-lbl"><input type="radio" name="restore-mode" value="merge" checked> Adicionar aos existentes</label>
-            <label class="yn-lbl"><input type="radio" name="restore-mode" value="replace"> Substituir tudo</label>
-          </div>
-        </div>
-      </div>
-      <p id="restore-err" class="auth-err" style="margin:8px 0;"></p>
-      <button class="btn-print-main" style="margin-top:4px;background:#059669;" onclick="importBackup()">⬆️ Restaurar Backup</button>
-    </div>
-
-    <!-- RGPD -->
-    <div class="form-card">
-      <h2 class="card-title">📋 Relatório RGPD</h2>
-      <p style="font-size:13px;color:var(--gray);margin-bottom:14px;">
-        Gera um relatório com todos os dados pessoais armazenados, em formato JSON e HTML legível.
-        Útil para auditorias e cumprimento do Regulamento Geral de Proteção de Dados.
-      </p>
-      <button class="btn-print-main" style="background:#7c3aed;" onclick="exportRGPD()">📋 Exportar Relatório RGPD</button>
-    </div>
-
-    <!-- Utilizadores -->
-    <div class="form-card" id="admin-users-section">
-      <h2 class="card-title">👥 Gestão de Utilizadores</h2>
-      <div id="users-list" style="margin-bottom:16px;"></div>
-      <div style="border-top:2px solid var(--pink-light);padding-top:16px;">
-        <h3 style="font-size:14px;font-weight:700;color:var(--pink);margin-bottom:12px;">+ Novo utilizador</h3>
-        <div class="form-grid">
-          <div class="field-group">
-            <label>Nome de utilizador</label>
-            <input type="text" id="new-user-name" placeholder="Ex: assistente1">
-          </div>
-          <div class="field-group">
-            <label>Senha</label>
-            <div class="pass-wrap">
-              <input type="password" id="new-user-pass" placeholder="Mínimo 8 caracteres">
-              <button type="button" class="btn-eye" onclick="togglePass('new-user-pass',this)">👁</button>
-            </div>
-          </div>
-          <div class="field-group">
-            <label>Função</label>
-            <select id="new-user-role">
-              <option value="user">👁️ Utilizador</option>
-              <option value="admin">⭐ Admin</option>
-            </select>
-          </div>
-        </div>
-        <p id="add-user-err" class="auth-err" style="margin:8px 0;"></p>
-        <button class="btn-print-main" style="margin-top:4px;" onclick="addUser()">+ Criar utilizador</button>
-      </div>
-    </div>
-
-    <!-- Alterar senha própria -->
-    <div class="form-card">
-      <h2 class="card-title">🔑 Alterar a minha senha</h2>
-      <div class="form-grid">
-        <div class="field-group full">
-          <label>Senha actual</label>
-          <div class="pass-wrap">
-            <input type="password" id="chg-old-pass" placeholder="Senha actual">
-            <button type="button" class="btn-eye" onclick="togglePass('chg-old-pass',this)">👁</button>
-          </div>
-        </div>
-        <div class="field-group">
-          <label>Nova senha</label>
-          <div class="pass-wrap">
-            <input type="password" id="chg-new-pass" placeholder="Nova senha (≥8 caracteres)">
-            <button type="button" class="btn-eye" onclick="togglePass('chg-new-pass',this)">👁</button>
-          </div>
-        </div>
-        <div class="field-group">
-          <label>Confirmar nova senha</label>
-          <div class="pass-wrap">
-            <input type="password" id="chg-conf-pass" placeholder="Repetir nova senha">
-            <button type="button" class="btn-eye" onclick="togglePass('chg-conf-pass',this)">👁</button>
-          </div>
-        </div>
-      </div>
-      <p id="chg-pass-err" class="auth-err" style="margin:8px 0;"></p>
-      <button class="btn-print-main" style="margin-top:4px;" onclick="doChangeOwnPassword()">🔑 Alterar senha</button>
-    </div>
-
   </div>
 </div>
 
@@ -982,9 +985,25 @@
             <div class="field-group full"><label>Se SIM, especifique:</label><textarea id="m-pergunta-esp" rows="2" placeholder="Questões ou preocupações..."></textarea></div>
           </div>
         </div>
-        <div class="field-group full" style="margin-top:12px;"><label>Data do Procedimento</label><input type="date" id="m-data"></div>
       </div>
 
+      <div class="form-card sig-card" id="sig-card-m">
+        <h2 class="card-title">✍️ Assinatura da Cliente</h2>
+        <p class="sig-instructions">Assine abaixo com o dedo, caneta ou rato</p>
+        <div class="sig-canvas-wrap">
+          <canvas id="sig-canvas-m" class="sig-canvas"></canvas>
+          <div class="sig-placeholder" id="sig-ph-m">Toque aqui para assinar</div>
+        </div>
+        <div class="sig-actions">
+          <button type="button" class="btn-sig-clear" onclick="sigClear('m')">🗑️ Limpar assinatura</button>
+          <span class="sig-status" id="sig-status-m"></span>
+        </div>
+      </div>
+      <div class="form-card">
+        <h2 class="card-title">📷 Autorização de Imagem</h2>
+        <div class="yn-row big"><span>Autoriza o uso da sua imagem para redes sociais e portefólio?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="m-imagem" value="Autorizo"> ✅ Autorizo</label><label class="yn-lbl"><input type="radio" name="m-imagem" value="Não autorizo"> ❌ Não autorizo</label></div></div>
+      </div>
+    
       <div class="form-card">
         <h2 class="card-title">🗓️ Dados de Atendimento</h2>
         <div class="form-grid">
@@ -1004,23 +1023,7 @@
           </div>
         </div>
       </div>
-      <div class="form-card sig-card" id="sig-card-m">
-        <h2 class="card-title">✍️ Assinatura da Cliente</h2>
-        <p class="sig-instructions">Assine abaixo com o dedo, caneta ou rato</p>
-        <div class="sig-canvas-wrap">
-          <canvas id="sig-canvas-m" class="sig-canvas"></canvas>
-          <div class="sig-placeholder" id="sig-ph-m">Toque aqui para assinar</div>
-        </div>
-        <div class="sig-actions">
-          <button type="button" class="btn-sig-clear" onclick="sigClear('m')">🗑️ Limpar assinatura</button>
-          <span class="sig-status" id="sig-status-m"></span>
-        </div>
-      </div>
-      <div class="form-card">
-        <h2 class="card-title">📷 Autorização de Imagem</h2>
-        <div class="yn-row big"><span>Autoriza o uso da sua imagem para redes sociais e portefólio?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="m-imagem" value="Autorizo"> ✅ Autorizo</label><label class="yn-lbl"><input type="radio" name="m-imagem" value="Não autorizo"> ❌ Não autorizo</label></div></div>
-      </div>
-    </div><!-- /form-manicure -->
+</div><!-- /form-manicure -->
 
   </div><!-- /form-body -->
 

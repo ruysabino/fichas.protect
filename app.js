@@ -379,7 +379,6 @@ function collectForm() {
       // adicionais
       manutencao: getRadio('m-manutencao'),
       pergunta: getRadio('m-pergunta'), perguntaEsp: val('m-pergunta-esp'),
-      data: val('m-data'),
       imgAuth: getRadio('m-imagem'),
       sigDataURL: sigGetDataURL('m'),
     };
@@ -501,7 +500,7 @@ function populateForm(d) {
     setRadio('m-problema', d.problema); setVal('m-problema-esp', d.problemaEsp);
     setRadio('m-manutencao', d.manutencao);
     setRadio('m-pergunta', d.pergunta); setVal('m-pergunta-esp', d.perguntaEsp);
-    setVal('m-data', d.data); setRadio('m-imagem', d.imgAuth);
+    setRadio('m-imagem', d.imgAuth);
     if (d.sigDataURL) setTimeout(() => sigSetDataURL('m', d.sigDataURL), 100);
   }
 }
@@ -712,7 +711,7 @@ function imagemBlock(imgAuth) {
 
 /* ── PESTANAS ── */
 function buildPestanasHTML(d) {
-  const dataFmt = formatDate(d.data);
+  const dataFmt = formatDate(d.atendData || d.data || '');
 
   const p1 = `<div class="pd-page">
     ${printHeader('FICHA DE ANAMNESE – EXTENSÃO DE PESTANAS')}
@@ -903,7 +902,7 @@ function buildLaserHTML(d) {
 
 /* ── MANICURE ── */
 function buildManicureHTML(d) {
-  const dataFmt = formatDate(d.data);
+  const dataFmt = formatDate(d.atendData || d.data || '');
 
   // técnicas seleccionadas
   const tecnicasArr = d.tecnica || [];
@@ -1613,10 +1612,3 @@ document.addEventListener('click', e => {
    ══════════════════════════════════════════════════════════════════════════ */
 document.addEventListener('DOMContentLoaded', () => { bootApp().catch(console.error); });
 
-/* Utility: toggle password visibility */
-function togglePass(inputId, btn) {
-  const inp = document.getElementById(inputId);
-  if (!inp) return;
-  inp.type = inp.type === 'password' ? 'text' : 'password';
-  btn.textContent = inp.type === 'password' ? '👁' : '🙈';
-}
