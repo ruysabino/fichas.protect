@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 110">
+  <!-- Icon at left -->
+  <rect x="2" y="2" width="106" height="106" rx="14" ry="14" fill="#FFF1F2"/>
+  <rect x="3.5" y="3.5" width="103" height="103" rx="13" fill="none" stroke="#E46589" stroke-width="2.2"/>
+  <g stroke="#E46589" stroke-linecap="round">
+    <line x1="55" y1="32" x2="55" y2="14" stroke-width="1.6"/>
+    <line x1="55" y1="32" x2="64" y2="15" stroke-width="1.2"/>
+    <line x1="55" y1="32" x2="46" y2="15" stroke-width="1.2"/>
+    <line x1="55" y1="32" x2="72" y2="19" stroke-width="1.1"/>
+    <line x1="55" y1="32" x2="38" y2="19" stroke-width="1.1"/>
+    <line x1="55" y1="32" x2="79" y2="24" stroke-width="0.95"/>
+    <line x1="55" y1="32" x2="31" y2="24" stroke-width="0.95"/>
+    <line x1="55" y1="32" x2="84" y2="30" stroke-width="0.85"/>
+    <line x1="55" y1="32" x2="26" y2="30" stroke-width="0.85"/>
+  </g>
+  <path d="M22,45 Q55,33 88,45 Q55,57 22,45Z" fill="#FFF1F2" stroke="#E46589" stroke-width="2.3"/>
+  <circle cx="55" cy="51" r="13" fill="#FFF1F2" stroke="#E46589" stroke-width="2.1"/>
+  <path d="M55,61 C55,61 45,55 43,51 C41,47 43,44 47,44 C50,44 53,47 55,49 C57,47 60,44 63,44 C67,44 69,47 67,51 C65,55 55,61 55,61Z" fill="#E46589"/>
+  <!-- Brand text -->
+  <text x="128" y="52" font-family="Georgia,'Times New Roman',serif" font-size="38" font-style="italic" fill="#E46589" letter-spacing="0.5">Beleza Rara</text>
+  <line x1="128" y1="62" x2="472" y2="62" stroke="#E46589" stroke-width="0.8" opacity="0.3"/>
+  <text x="128" y="82" font-family="Arial,Helvetica,sans-serif" font-size="13" fill="#C07090" letter-spacing="3">VALQUIRIA ALMEIDA</text>
+</svg>

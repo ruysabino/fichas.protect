@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
+  <!-- Background -->
+  <rect x="0" y="0" width="500" height="500" rx="60" ry="60" fill="#FFF1F2"/>
+  <!-- Border -->
+  <rect x="5" y="5" width="490" height="490" rx="57" ry="57" fill="none" stroke="#E46589" stroke-width="10"/>
+
+  <!-- Rays (11 rays, fan from 50%,30.5%) -->
+  <g stroke="#E46589" stroke-linecap="round">
+    <line x1="250" y1="152" x2="250" y2="67"  stroke-width="7.5"/>
+    <line x1="250" y1="152" x2="291" y2="72"  stroke-width="5.5"/>
+    <line x1="250" y1="152" x2="209" y2="72"  stroke-width="5.5"/>
+    <line x1="250" y1="152" x2="329" y2="86"  stroke-width="5.0"/>
+    <line x1="250" y1="152" x2="171" y2="86"  stroke-width="5.0"/>
+    <line x1="250" y1="152" x2="361" y2="108" stroke-width="4.5"/>
+    <line x1="250" y1="152" x2="139" y2="108" stroke-width="4.5"/>
+    <line x1="250" y1="152" x2="387" y2="137" stroke-width="4.0"/>
+    <line x1="250" y1="152" x2="113" y2="137" stroke-width="4.0"/>
+    <line x1="250" y1="152" x2="403" y2="167" stroke-width="3.5"/>
+    <line x1="250" y1="152" x2="97"  y2="167" stroke-width="3.5"/>
+  </g>
+
+  <!-- Eye almond (Q bezier: left tip → top → right tip, return via bottom) -->
+  <path d="M104,208 Q250,157 396,208 Q250,259 104,208Z"
+        fill="#FFF1F2" stroke="#E46589" stroke-width="11" stroke-linejoin="round"/>
+
+  <!-- Iris ring -->
+  <circle cx="250" cy="234" r="59" fill="#FFF1F2" stroke="#E46589" stroke-width="9.5"/>
+
+  <!-- Heart (parametric, perfectly symmetric, fill only) -->
+  <path d="
+    M250,274
+    C250,274 208,248 200,231
+    C193,217 200,207 213,207
+    C224,207 237,216 250,228
+    C263,216 276,207 287,207
+    C300,207 307,217 300,231
+    C292,248 250,274 250,274Z
+  " fill="#E46589"/>
+</svg>
