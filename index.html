@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beleza Rara – Fichas de Anamnese</title>
+<meta name="description" content="Sistema de fichas de anamnese digital – Beleza Rara, Valquiria Almeida">
+<meta name="theme-color" content="#e0185e">
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Nunito:wght@300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════
+     ECRÃ – LOGIN
+     ═══════════════════════════════════════════════════════════ -->
+<div id="screen-login" class="screen auth-screen" style="display:none;">
+  <div class="auth-bg"></div>
+  <div class="auth-card">
+    <div class="auth-logo">
+      <svg viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg" style="width:72px;height:72px;">
+        <rect x="0" y="0" width="500" height="500" rx="60" ry="60" fill="#FFF1F2"/>
+        <rect x="5" y="5" width="490" height="490" rx="57" ry="57" fill="none" stroke="#E46589" stroke-width="10"/>
+        <g stroke="#E46589" stroke-linecap="round">
+          <line x1="250" y1="152" x2="250" y2="67" stroke-width="7.5"/>
+          <line x1="250" y1="152" x2="291" y2="72" stroke-width="5.5"/>
+          <line x1="250" y1="152" x2="209" y2="72" stroke-width="5.5"/>
+          <line x1="250" y1="152" x2="329" y2="86" stroke-width="5.0"/>
+          <line x1="250" y1="152" x2="171" y2="86" stroke-width="5.0"/>
+          <line x1="250" y1="152" x2="361" y2="108" stroke-width="4.5"/>
+          <line x1="250" y1="152" x2="139" y2="108" stroke-width="4.5"/>
+        </g>
+        <path d="M104,208 Q250,157 396,208 Q250,259 104,208Z" fill="#FFF1F2" stroke="#E46589" stroke-width="11"/>
+        <circle cx="250" cy="234" r="59" fill="#FFF1F2" stroke="#E46589" stroke-width="9.5"/>
+        <path d="M250,274 C250,274 208,248 200,231 C193,217 200,207 213,207 C224,207 237,216 250,228 C263,216 276,207 287,207 C300,207 307,217 300,231 C292,248 250,274 250,274Z" fill="#E46589"/>
+      </svg>
+      <div>
+        <div class="auth-brand">Beleza Rara</div>
+        <div class="auth-brand-sub">Valquiria Almeida</div>
+      </div>
+    </div>
+    <h2 class="auth-title">Entrar no sistema</h2>
+    <div class="auth-fields">
+      <div class="field-group">
+        <label>Utilizador</label>
+        <input type="text" id="login-user" placeholder="Nome de utilizador" autocomplete="username">
+      </div>
+      <div class="field-group">
+        <label>Senha</label>
+        <div class="pass-wrap">
+          <input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password">
+          <button type="button" class="btn-eye" onclick="togglePass('login-pass',this)">👁</button>
+        </div>
+      </div>
+      <p id="login-err" class="auth-err"></p>
+      <button id="login-btn" class="btn-auth-primary" onclick="doLogin()">🔐 Entrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     ECRÃ – CONFIGURAÇÃO INICIAL (first run)
+     ═══════════════════════════════════════════════════════════ -->
+<div id="screen-setup" class="screen auth-screen" style="display:none;">
+  <div class="auth-bg"></div>
+  <div class="auth-card">
+    <div class="auth-logo">
+      <svg viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg" style="width:64px;height:64px;">
+        <rect x="0" y="0" width="500" height="500" rx="60" ry="60" fill="#FFF1F2"/>
+        <rect x="5" y="5" width="490" height="490" rx="57" ry="57" fill="none" stroke="#E46589" stroke-width="10"/>
+        <g stroke="#E46589" stroke-linecap="round">
+          <line x1="250" y1="152" x2="250" y2="67" stroke-width="7.5"/>
+          <line x1="250" y1="152" x2="291" y2="72" stroke-width="5.5"/>
+          <line x1="250" y1="152" x2="209" y2="72" stroke-width="5.5"/>
+        </g>
+        <path d="M104,208 Q250,157 396,208 Q250,259 104,208Z" fill="#FFF1F2" stroke="#E46589" stroke-width="11"/>
+        <circle cx="250" cy="234" r="59" fill="#FFF1F2" stroke="#E46589" stroke-width="9.5"/>
+        <path d="M250,274 C250,274 208,248 200,231 C193,217 200,207 213,207 C224,207 237,216 250,228 C263,216 276,207 287,207 C300,207 307,217 300,231 C292,248 250,274 250,274Z" fill="#E46589"/>
+      </svg>
+      <div>
+        <div class="auth-brand">Beleza Rara</div>
+        <div class="auth-brand-sub">Configuração inicial</div>
+      </div>
+    </div>
+    <h2 class="auth-title">Bem-vinda! ✨</h2>
+    <p class="auth-subtitle">Configure o acesso ao sistema pela primeira vez.</p>
+    <div class="auth-fields">
+      <div class="field-group">
+        <label>Nome do salão</label>
+        <input type="text" id="setup-nome" placeholder="Ex: Beleza Rara" value="Beleza Rara">
+      </div>
+      <div class="field-group">
+        <label>Nome de utilizador (admin)</label>
+        <input type="text" id="setup-user" placeholder="Ex: valquiria" autocomplete="username">
+      </div>
+      <div class="field-group">
+        <label>Senha (mínimo 8 caracteres)</label>
+        <div class="pass-wrap">
+          <input type="password" id="setup-pass" placeholder="••••••••" autocomplete="new-password">
+          <button type="button" class="btn-eye" onclick="togglePass('setup-pass',this)">👁</button>
+        </div>
+      </div>
+      <div class="field-group">
+        <label>Confirmar senha</label>
+        <div class="pass-wrap">
+          <input type="password" id="setup-conf" placeholder="••••••••" autocomplete="new-password">
+          <button type="button" class="btn-eye" onclick="togglePass('setup-conf',this)">👁</button>
+        </div>
+      </div>
+      <p id="setup-err" class="auth-err"></p>
+      <button class="btn-auth-primary" onclick="doSetup()">✅ Configurar sistema</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     ECRÃ – DEFINIÇÕES (admin)
+     ═══════════════════════════════════════════════════════════ -->
+<div id="screen-definicoes" class="screen" style="display:none;">
+  <div class="fichas-topbar">
+    <button class="btn-back" onclick="backFromDefinicoes()">← Voltar</button>
+    <span class="fichas-title">⚙️ Definições</span>
+    <div></div>
+  </div>
+  <div class="fichas-body" style="max-width:680px;">
+
+    <!-- Backup -->
+    <div class="form-card">
+      <h2 class="card-title">💾 Backup — Exportar dados</h2>
+      <p style="font-size:13px;color:var(--gray);margin-bottom:14px;">
+        Exporta todas as fichas e clientes para um ficheiro cifrado (<code>.brb</code>).
+        Guarde-o num local seguro (Google Drive, Dropbox, pen USB).
+      </p>
+      <div class="form-grid">
+        <div class="field-group">
+          <label>Senha do backup</label>
+          <div class="pass-wrap">
+            <input type="password" id="backup-pass" placeholder="Senha para cifrar o ficheiro">
+            <button type="button" class="btn-eye" onclick="togglePass('backup-pass',this)">👁</button>
+          </div>
+        </div>
+        <div class="field-group">
+          <label>Confirmar senha</label>
+          <div class="pass-wrap">
+            <input type="password" id="backup-conf" placeholder="Repetir senha">
+            <button type="button" class="btn-eye" onclick="togglePass('backup-conf',this)">👁</button>
+          </div>
+        </div>
+      </div>
+      <p id="backup-err" class="auth-err" style="margin:8px 0;"></p>
+      <button class="btn-print-main" style="margin-top:4px;" onclick="exportBackup()">⬇️ Exportar Backup</button>
+    </div>
+
+    <!-- Restore -->
+    <div class="form-card">
+      <h2 class="card-title">📂 Restaurar dados</h2>
+      <p style="font-size:13px;color:var(--gray);margin-bottom:14px;">
+        Importa um ficheiro de backup <code>.brb</code> anteriormente exportado.
+      </p>
+      <div class="form-grid">
+        <div class="field-group full">
+          <label>Ficheiro de backup (.brb)</label>
+          <input type="file" id="restore-file" accept=".brb,.json" style="padding:8px;">
+        </div>
+        <div class="field-group">
+          <label>Senha do backup</label>
+          <div class="pass-wrap">
+            <input type="password" id="restore-pass" placeholder="Senha do ficheiro">
+            <button type="button" class="btn-eye" onclick="togglePass('restore-pass',this)">👁</button>
+          </div>
+        </div>
+        <div class="field-group">
+          <label>Modo de importação</label>
+          <div style="display:flex;gap:10px;margin-top:4px;flex-wrap:wrap;">
+            <label class="yn-lbl"><input type="radio" name="restore-mode" value="merge" checked> Adicionar aos existentes</label>
+            <label class="yn-lbl"><input type="radio" name="restore-mode" value="replace"> Substituir tudo</label>
+          </div>
+        </div>
+      </div>
+      <p id="restore-err" class="auth-err" style="margin:8px 0;"></p>
+      <button class="btn-print-main" style="margin-top:4px;background:#059669;" onclick="importBackup()">⬆️ Restaurar Backup</button>
+    </div>
+
+    <!-- RGPD -->
+    <div class="form-card">
+      <h2 class="card-title">📋 Relatório RGPD</h2>
+      <p style="font-size:13px;color:var(--gray);margin-bottom:14px;">
+        Gera um relatório com todos os dados pessoais armazenados, em formato JSON e HTML legível.
+        Útil para auditorias e cumprimento do Regulamento Geral de Proteção de Dados.
+      </p>
+      <button class="btn-print-main" style="background:#7c3aed;" onclick="exportRGPD()">📋 Exportar Relatório RGPD</button>
+    </div>
+
+    <!-- Utilizadores -->
+    <div class="form-card" id="admin-users-section">
+      <h2 class="card-title">👥 Gestão de Utilizadores</h2>
+      <div id="users-list" style="margin-bottom:16px;"></div>
+      <div style="border-top:2px solid var(--pink-light);padding-top:16px;">
+        <h3 style="font-size:14px;font-weight:700;color:var(--pink);margin-bottom:12px;">+ Novo utilizador</h3>
+        <div class="form-grid">
+          <div class="field-group">
+            <label>Nome de utilizador</label>
+            <input type="text" id="new-user-name" placeholder="Ex: assistente1">
+          </div>
+          <div class="field-group">
+            <label>Senha</label>
+            <div class="pass-wrap">
+              <input type="password" id="new-user-pass" placeholder="Mínimo 8 caracteres">
+              <button type="button" class="btn-eye" onclick="togglePass('new-user-pass',this)">👁</button>
+            </div>
+          </div>
+          <div class="field-group">
+            <label>Função</label>
+            <select id="new-user-role">
+              <option value="user">👁️ Utilizador</option>
+              <option value="admin">⭐ Admin</option>
+            </select>
+          </div>
+        </div>
+        <p id="add-user-err" class="auth-err" style="margin:8px 0;"></p>
+        <button class="btn-print-main" style="margin-top:4px;" onclick="addUser()">+ Criar utilizador</button>
+      </div>
+    </div>
+
+    <!-- Alterar senha própria -->
+    <div class="form-card">
+      <h2 class="card-title">🔑 Alterar a minha senha</h2>
+      <div class="form-grid">
+        <div class="field-group full">
+          <label>Senha actual</label>
+          <div class="pass-wrap">
+            <input type="password" id="chg-old-pass" placeholder="Senha actual">
+            <button type="button" class="btn-eye" onclick="togglePass('chg-old-pass',this)">👁</button>
+          </div>
+        </div>
+        <div class="field-group">
+          <label>Nova senha</label>
+          <div class="pass-wrap">
+            <input type="password" id="chg-new-pass" placeholder="Nova senha (≥8 caracteres)">
+            <button type="button" class="btn-eye" onclick="togglePass('chg-new-pass',this)">👁</button>
+          </div>
+        </div>
+        <div class="field-group">
+          <label>Confirmar nova senha</label>
+          <div class="pass-wrap">
+            <input type="password" id="chg-conf-pass" placeholder="Repetir nova senha">
+            <button type="button" class="btn-eye" onclick="togglePass('chg-conf-pass',this)">👁</button>
+          </div>
+        </div>
+      </div>
+      <p id="chg-pass-err" class="auth-err" style="margin:8px 0;"></p>
+      <button class="btn-print-main" style="margin-top:4px;" onclick="doChangeOwnPassword()">🔑 Alterar senha</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     ECRÃ 1 – SELEÇÃO
+     ═══════════════════════════════════════════════════════════ -->
+<div id="screen-select" class="screen" style="display:none;">
+  <div class="select-bg"></div>
+  <div class="select-card">
+    <div class="logo-block">
+      <svg viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg" class="logo-svg">
+        <rect x="0" y="0" width="500" height="500" rx="60" ry="60" fill="#FFF1F2"/>
+        <rect x="5" y="5" width="490" height="490" rx="57" ry="57" fill="none" stroke="#E46589" stroke-width="10"/>
+        <g stroke="#E46589" stroke-linecap="round">
+          <line x1="250" y1="152" x2="250" y2="67"  stroke-width="7.5"/>
+          <line x1="250" y1="152" x2="291" y2="72"  stroke-width="5.5"/>
+          <line x1="250" y1="152" x2="209" y2="72"  stroke-width="5.5"/>
+          <line x1="250" y1="152" x2="329" y2="86"  stroke-width="5.0"/>
+          <line x1="250" y1="152" x2="171" y2="86"  stroke-width="5.0"/>
+          <line x1="250" y1="152" x2="361" y2="108" stroke-width="4.5"/>
+          <line x1="250" y1="152" x2="139" y2="108" stroke-width="4.5"/>
+          <line x1="250" y1="152" x2="387" y2="137" stroke-width="4.0"/>
+          <line x1="250" y1="152" x2="113" y2="137" stroke-width="4.0"/>
+        </g>
+        <path d="M104,208 Q250,157 396,208 Q250,259 104,208Z" fill="#FFF1F2" stroke="#E46589" stroke-width="11"/>
+        <circle cx="250" cy="234" r="59" fill="#FFF1F2" stroke="#E46589" stroke-width="9.5"/>
+        <path d="M250,274 C250,274 208,248 200,231 C193,217 200,207 213,207 C224,207 237,216 250,228 C263,216 276,207 287,207 C300,207 307,217 300,231 C292,248 250,274 250,274Z" fill="#E46589"/>
+      </svg>
+      <div class="logo-text">
+        <span class="logo-name">Beleza Rara</span>
+        <span class="logo-sub">Valquiria Almeida</span>
+      </div>
+    </div>
+    <div class="select-topbar">
+      <span id="user-badge" class="user-badge"></span>
+      <div id="admin-only-btns" class="admin-btns" style="display:none;">
+        <button class="btn-admin" onclick="showDefinicoes()">⚙️ Definições</button>
+      </div>
+      <button class="btn-logout" onclick="doLogout()">🚪 Sair</button>
+    </div>
+    <h1 class="select-title">Fichas de Anamnese</h1>
+    <p class="select-desc">Selecione o procedimento para criar uma nova ficha</p>
+    <div class="procedure-cards">
+      <button class="proc-card" onclick="openForm('pestanas')">
+        <div class="proc-icon">👁️</div>
+        <div class="proc-label">Extensão de Pestanas</div>
+        <div class="proc-sub">Ficha + Consentimento + Imagem</div>
+      </button>
+      <button class="proc-card" onclick="openForm('depilacao')">
+        <div class="proc-icon">✨</div>
+        <div class="proc-label">Depilação</div>
+        <div class="proc-sub">Ficha de anamnese</div>
+      </button>
+      <button class="proc-card" onclick="openForm('laser')">
+        <div class="proc-icon">⚡</div>
+        <div class="proc-label">Laser de Diodo</div>
+        <div class="proc-sub">Ficha + registo de sessões</div>
+      </button>
+      <button class="proc-card" onclick="openForm('manicure')">
+        <div class="proc-icon">💅</div>
+        <div class="proc-label">Manicure</div>
+        <div class="proc-sub">Ficha + consentimento</div>
+      </button>
+    </div>
+    <div class="select-bottom-btns">
+      <button class="btn-ver-fichas" onclick="showClientes()">👥 Clientes</button>
+      <button class="btn-ver-fichas" onclick="showFichas()">📂 Fichas Guardadas</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     ECRÃ 2 – LISTA DE FICHAS GUARDADAS
+     ═══════════════════════════════════════════════════════════ -->
+<div id="screen-fichas" class="screen" style="display:none;">
+  <div class="fichas-topbar">
+    <button class="btn-back" onclick="backFromFichas()">← Voltar</button>
+    <span class="fichas-title">📂 Fichas Guardadas</span>
+    <div></div>
+  </div>
+  <div class="fichas-body">
+    <div id="fichas-list"></div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     ECRÃ – LISTA DE CLIENTES
+     ═══════════════════════════════════════════════════════════ -->
+<div id="screen-clientes" class="screen" style="display:none;">
+  <div class="fichas-topbar">
+    <button class="btn-back" onclick="backFromClientes()">← Voltar</button>
+    <span class="fichas-title">👥 Clientes</span>
+    <button class="btn-print" onclick="openClienteForm(null)">+ Nova Cliente</button>
+  </div>
+  <div class="fichas-body">
+    <div class="search-bar-wrap">
+      <input type="text" id="clientes-search" class="clientes-search-input"
+             placeholder="🔍 Pesquisar por nome, telefone ou e-mail…"
+             oninput="filterClientes(this.value)">
+    </div>
+    <div id="clientes-list"></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     ECRÃ – FORMULÁRIO DE CLIENTE
+     ═══════════════════════════════════════════════════════════ -->
+<div id="screen-cliente-form" class="screen" style="display:none;">
+  <div class="form-topbar">
+    <button class="btn-back" onclick="backFromClienteForm()">← Voltar</button>
+    <span id="cliente-form-title">Nova Cliente</span>
+    <button class="btn-save" onclick="saveCliente()">💾 Guardar</button>
+  </div>
+  <div class="form-body">
+    <div class="form-card">
+      <h2 class="card-title">👤 Dados da Cliente</h2>
+      <div class="form-grid">
+        <div class="field-group full"><label>Nome completo *</label><input type="text" id="cl-nome" placeholder="Nome completo da cliente"></div>
+        <div class="field-group"><label>Data de Nascimento</label><input type="date" id="cl-nasc" oninput="onNascChange('cl-nasc','cl-idade')"></div>
+        <div class="field-group"><label>Idade (auto)</label><input type="text" id="cl-idade" readonly style="background:#f9f9f9;cursor:default;color:#555;" placeholder="Ex: 35 anos e 180 dias"></div>
+        <div class="field-group"><label>Sexo</label>
+          <select id="cl-sexo"><option value="">--</option><option>Feminino</option><option>Masculino</option><option>Outro</option></select>
+        </div>
+        <div class="field-group"><label>Telefone</label><input type="tel" id="cl-tel" placeholder="+351 ..."></div>
+        <div class="field-group full"><label>Morada</label><input type="text" id="cl-morada" placeholder="Rua, nº, Localidade"></div>
+        <div class="field-group"><label>E-mail</label><input type="email" id="cl-email" placeholder="email@exemplo.com"></div>
+        <div class="field-group"><label>Doc. Identificação (NIF/BI/Passaporte)</label><input type="text" id="cl-doc" placeholder="Nº documento"></div>
+        <div class="field-group full"><label>Nacionalidade</label>
+          <div class="nac-wrapper" id="nac-cl">
+            <div class="nac-display" onclick="toggleNac('cl')">
+              <span class="nac-flag" id="nac-flag-cl"></span>
+              <span class="nac-label" id="nac-lbl-cl">Selecionar país…</span>
+              <span class="nac-arrow">▾</span>
+            </div>
+            <div class="nac-dropdown" id="nac-drop-cl" style="display:none;">
+              <input type="text" class="nac-search" placeholder="🔍 Pesquisar país…" oninput="filterNac('cl',this.value)" autocomplete="off">
+              <div class="nac-list" id="nac-list-cl"></div>
+            </div>
+            <input type="hidden" id="cl-nac" name="cl-nac">
+          </div>
+        </div>
+        <div class="field-group full"><label>Observações / Notas</label>
+          <textarea id="cl-obs" rows="3" placeholder="Alergias conhecidas, preferências, notas gerais…"></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="form-actions">
+    <button class="btn-clear" onclick="clearClienteForm()">🗑️ Limpar</button>
+    <button class="btn-print-main" onclick="saveCliente()">💾 Guardar Cliente</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     ECRÃ 3 – FORMULÁRIO
+     ═══════════════════════════════════════════════════════════ -->
+<div id="screen-form" class="screen" style="display:none;">
+  <div class="form-topbar">
+    <button class="btn-back" onclick="goBack()">← Voltar</button>
+    <span id="form-title-bar">Ficha de Anamnese</span>
+    <div class="topbar-actions">
+      <button class="btn-save"  onclick="saveFicha()">💾 Guardar</button>
+      <button class="btn-print" onclick="printForms()">🖨️ Imprimir</button>
+    </div>
+  </div>
+
+  <div class="form-body">
+
+    <!-- ════════════════════════════════════════════════════════
+         BLOCO REUTILIZÁVEL: Dados da Cliente (injectado via JS)
+         ════════════════════════════════════════════════════════ -->
+
+    <!-- ─── EXTENSÃO DE PESTANAS ──────────────────────────── -->
+    <div id="form-pestanas" class="form-section" style="display:none">
+
+      <div class="form-card" id="dados-pestanas">
+        <h2 class="card-title">📋 Dados da Cliente</h2>
+        <div class="cliente-search-inline">
+          <input type="text" id="p-busca-cliente" class="cliente-busca-input"
+                 placeholder="🔍 Buscar cliente por nome…"
+                 oninput="buscaClienteInline('p', this.value)"
+                 autocomplete="off">
+          <div class="cliente-busca-results" id="p-busca-results" style="display:none;"></div>
+        </div>
+        <div class="form-grid">
+          <div class="field-group full"><label>Nome completo</label><input type="text" id="p-nome" placeholder="Nome da cliente"></div>
+          <div class="field-group"><label>Data de Nascimento</label><input type="date" id="p-nasc" oninput="onNascChange('p-nasc','p-idade')"></div>
+          <div class="field-group"><label>Idade (auto)</label><input type="text" id="p-idade" placeholder="Ex: 35 anos e 180 dias" readonly style="background:#f9f9f9;cursor:default;color:#555;"></div>
+          <div class="field-group"><label>Sexo</label>
+            <select id="p-sexo"><option value="">--</option><option>Feminino</option><option>Masculino</option><option>Outro</option></select>
+          </div>
+          <div class="field-group"><label>Telefone</label><input type="tel" id="p-tel" placeholder="+351 ..."></div>
+          <div class="field-group full"><label>Morada</label><input type="text" id="p-morada" placeholder="Rua, nº, Localidade"></div>
+          <div class="field-group"><label>E-mail</label><input type="email" id="p-email" placeholder="email@exemplo.com"></div>
+          <div class="field-group"><label>Doc. Identificação (NIF/BI/Passaporte)</label><input type="text" id="p-doc" placeholder="Nº documento"></div>
+          <div class="field-group full"><label>Nacionalidade</label>
+            <div class="nac-wrapper" id="nac-p">
+              <div class="nac-display" onclick="toggleNac('p')">
+                <span class="nac-flag" id="nac-flag-p"></span>
+                <span class="nac-label" id="nac-lbl-p">Selecionar país…</span>
+                <span class="nac-arrow">▾</span>
+              </div>
+              <div class="nac-dropdown" id="nac-drop-p" style="display:none;">
+                <input type="text" class="nac-search" placeholder="🔍 Pesquisar país…" oninput="filterNac('p',this.value)" autocomplete="off">
+                <div class="nac-list" id="nac-list-p"></div>
+              </div>
+              <input type="hidden" id="p-nac" name="p-nac">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-card">
+        <h2 class="card-title">🔍 Avaliação</h2>
+        <div class="yn-list">
+          <div class="yn-row"><span>É gestante ou lactante?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="p-gestante" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="p-gestante" value="NÃO"> NÃO</label></div><input type="text" class="yn-obs" placeholder="Há quanto tempo?"></div>
+          <div class="yn-row"><span>Já fez procedimento nos olhos?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="p-proced" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="p-proced" value="NÃO"> NÃO</label></div><input type="text" class="yn-obs" placeholder="Observação"></div>
+          <div class="yn-row"><span>Possui alergia a esmalte ou cosméticos?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="p-alergia" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="p-alergia" value="NÃO"> NÃO</label></div><input type="text" class="yn-obs" placeholder="Qual?"></div>
+          <div class="yn-row"><span>Possui glaucoma ou problema ocular?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="p-glaucoma" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="p-glaucoma" value="NÃO"> NÃO</label></div><input type="text" class="yn-obs" placeholder="Qual?"></div>
+          <div class="yn-row"><span>Faz tratamento oncológico?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="p-onco" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="p-onco" value="NÃO"> NÃO</label></div><input type="text" class="yn-obs" placeholder="Observação"></div>
+          <div class="yn-row"><span>Está de rímel?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="p-rimel" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="p-rimel" value="NÃO"> NÃO</label></div><input type="text" class="yn-obs" placeholder="Observação"></div>
+        </div>
+      </div>
+
+      <div class="form-card">
+        <h2 class="card-title">🛠️ Procedimento</h2>
+        <div class="form-grid">
+          <div class="field-group full"><label>Estilo</label><input type="text" id="p-estilo" placeholder="Ex: Natural, Cat Eye, Mega Volume..."></div>
+          <div class="field-group"><label>Curvatura</label><input type="text" id="p-curvatura" placeholder="Ex: B, C, D, L..."></div>
+          <div class="field-group"><label>Espessura</label><input type="text" id="p-espessura" placeholder="Ex: 0.07, 0.10, 0.12..."></div>
+          <div class="field-group full"><label>Modelo dos fios</label><input type="text" id="p-modelo" placeholder="Ex: Seda, Vison, Pvc..."></div>
+          <div class="field-group"><label>Data do Procedimento</label><input type="date" id="p-data"></div>
+        </div>
+      </div>
+
+      <div class="form-card">
+        <h2 class="card-title">✅ Consentimento – Questionário de Saúde</h2>
+        <div class="yn-list">
+          <div class="yn-row sm"><span>Sofre de alguma alergia conhecida (látex, esmalte, colas)?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="c-alergia" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="c-alergia" value="NÃO"> NÃO</label></div></div>
+          <div class="yn-row sm"><span>Tem antecedentes de problemas oculares (terçolhos, conjuntivites, blefarite)?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="c-ocular" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="c-ocular" value="NÃO"> NÃO</label></div></div>
+          <div class="yn-row sm"><span>Realizou alguma cirurgia ocular nos últimos 6 meses?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="c-cirurgia" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="c-cirurgia" value="NÃO"> NÃO</label></div></div>
+          <div class="yn-row sm"><span>Utiliza lentes de contacto?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="c-lentes" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="c-lentes" value="NÃO"> NÃO</label></div></div>
+          <div class="yn-row sm"><span>Está com alguma irritação ou sensibilidade ocular hoje?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="c-irritacao" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="c-irritacao" value="NÃO"> NÃO</label></div></div>
+        </div>
+      </div>
+
+      <div class="form-card">
+        <h2 class="card-title">🗓️ Dados de Atendimento</h2>
+        <div class="form-grid">
+          <div class="field-group"><label>Data do Procedimento</label><input type="date" id="p-atend-data"></div>
+          <div class="field-group"><label>Profissional Responsável</label><input type="text" id="p-profissional" placeholder="Nome da profissional"></div>
+        </div>
+        <div style="margin-top:16px;">
+          <label class="field-group" style="display:block;margin-bottom:8px;font-size:12px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.06em;">Assinatura do Profissional</label>
+          <p class="sig-instructions">Assine abaixo com o dedo, caneta ou rato</p>
+          <div class="sig-canvas-wrap">
+            <canvas id="sig-canvas-pp" class="sig-canvas"></canvas>
+            <div class="sig-placeholder" id="sig-ph-pp">Toque aqui para assinar</div>
+          </div>
+          <div class="sig-actions">
+            <button type="button" class="btn-sig-clear" onclick="sigClear('pp')">🗑️ Limpar assinatura</button>
+            <span class="sig-status" id="sig-status-pp"></span>
+          </div>
+        </div>
+      </div>
+      <div class="form-card sig-card" id="sig-card-p">
+        <h2 class="card-title">✍️ Assinatura da Cliente</h2>
+        <p class="sig-instructions">Assine abaixo com o dedo, caneta ou rato</p>
+        <div class="sig-canvas-wrap">
+          <canvas id="sig-canvas-p" class="sig-canvas"></canvas>
+          <div class="sig-placeholder" id="sig-ph-p">Toque aqui para assinar</div>
+        </div>
+        <div class="sig-actions">
+          <button type="button" class="btn-sig-clear" onclick="sigClear('p')">🗑️ Limpar assinatura</button>
+          <span class="sig-status" id="sig-status-p"></span>
+        </div>
+      </div>
+      <div class="form-card">
+        <h2 class="card-title">📷 Autorização de Imagem</h2>
+        <div class="yn-row big"><span>Autoriza o uso da sua imagem para redes sociais e portefólio?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="p-imagem" value="Autorizo"> ✅ Autorizo</label><label class="yn-lbl"><input type="radio" name="p-imagem" value="Não autorizo"> ❌ Não autorizo</label></div></div>
+      </div>
+    </div><!-- /form-pestanas -->
+
+    <!-- ─── DEPILAÇÃO ─────────────────────────────────────── -->
+    <div id="form-depilacao" class="form-section" style="display:none">
+
+      <div class="form-card">
+        <h2 class="card-title">📋 Dados da Cliente</h2>
+        <div class="cliente-search-inline">
+          <input type="text" id="d-busca-cliente" class="cliente-busca-input"
+                 placeholder="🔍 Buscar cliente por nome…"
+                 oninput="buscaClienteInline('d', this.value)"
+                 autocomplete="off">
+          <div class="cliente-busca-results" id="d-busca-results" style="display:none;"></div>
+        </div>
+        <div class="form-grid">
+          <div class="field-group full"><label>Nome completo</label><input type="text" id="d-nome" placeholder="Nome da cliente"></div>
+          <div class="field-group"><label>Data de Nascimento</label><input type="date" id="d-nasc" oninput="onNascChange('d-nasc','d-idade')"></div>
+          <div class="field-group"><label>Idade (auto)</label><input type="text" id="d-idade" placeholder="Ex: 35 anos e 180 dias" readonly style="background:#f9f9f9;cursor:default;color:#555;"></div>
+          <div class="field-group"><label>Sexo</label><select id="d-sexo"><option value="">--</option><option>Feminino</option><option>Masculino</option><option>Outro</option></select></div>
+          <div class="field-group"><label>Telefone</label><input type="tel" id="d-tel" placeholder="+351 ..."></div>
+          <div class="field-group full"><label>Morada</label><input type="text" id="d-morada" placeholder="Rua, nº, Localidade"></div>
+          <div class="field-group"><label>E-mail</label><input type="email" id="d-email" placeholder="email@exemplo.com"></div>
+          <div class="field-group"><label>Doc. Identificação (NIF/BI/Passaporte)</label><input type="text" id="d-doc" placeholder="Nº documento"></div>
+          <div class="field-group full"><label>Nacionalidade</label>
+            <div class="nac-wrapper" id="nac-d">
+              <div class="nac-display" onclick="toggleNac('d')">
+                <span class="nac-flag" id="nac-flag-d"></span>
+                <span class="nac-label" id="nac-lbl-d">Selecionar país…</span>
+                <span class="nac-arrow">▾</span>
+              </div>
+              <div class="nac-dropdown" id="nac-drop-d" style="display:none;">
+                <input type="text" class="nac-search" placeholder="🔍 Pesquisar país…" oninput="filterNac('d',this.value)" autocomplete="off">
+                <div class="nac-list" id="nac-list-d"></div>
+              </div>
+              <input type="hidden" id="d-nac" name="d-nac">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-card">
+        <h2 class="card-title">📝 Histórico</h2>
+        <div class="yn-list">
+
+          <!-- 1 — SIM/NÃO + método checkboxes -->
+          <div class="yn-row yn-row-col">
+            <div class="yn-row-top">
+              <span>1) Já fez depilação antes?</span>
+              <div class="yn-btns">
+                <label class="yn-lbl"><input type="radio" name="d-fez" value="SIM"> SIM</label>
+                <label class="yn-lbl"><input type="radio" name="d-fez" value="NÃO"> NÃO</label>
+              </div>
+            </div>
+            <div class="yn-sub">
+              <span class="yn-sub-label">Se sim, qual foi o método?</span>
+              <div class="yn-sub-checks">
+                <label class="yn-lbl"><input type="checkbox" name="d-metodo" value="Cera"> 🕯️ Cera</label>
+                <label class="yn-lbl"><input type="checkbox" name="d-metodo" value="Lâmina"> 🪒 Lâmina</label>
+                <label class="yn-lbl"><input type="checkbox" name="d-metodo" value="Laser"> ⚡ Laser</label>
+                <label class="yn-lbl"><input type="checkbox" name="d-metodo" value="Outro"> Outro</label>
+                <input type="text" class="yn-obs" id="d-metodo-outro" placeholder="Especifique...">
+              </div>
+            </div>
+          </div>
+
+          <!-- 2 — SIM/NÃO + texto -->
+          <div class="yn-row yn-row-col">
+            <div class="yn-row-top">
+              <span>2) Tem alguma alergia a produtos de depilação ou sensibilidade na pele?</span>
+              <div class="yn-btns">
+                <label class="yn-lbl"><input type="radio" name="d-alergia" value="SIM"> SIM</label>
+                <label class="yn-lbl"><input type="radio" name="d-alergia" value="NÃO"> NÃO</label>
+              </div>
+            </div>
+            <div class="yn-sub">
+              <span class="yn-sub-label">Se sim, especifique:</span>
+              <input type="text" class="yn-obs yn-obs-wide" id="d-alergia-esp" placeholder="Descrição da alergia...">
+            </div>
+          </div>
+
+          <!-- 3 — texto livre -->
+          <div class="yn-row yn-row-col">
+            <div class="yn-row-top">
+              <span>3) Qual é a área que deseja depilar hoje?</span>
+            </div>
+            <div class="yn-sub">
+              <input type="text" class="yn-obs yn-obs-wide" id="d-area" placeholder="Ex: pernas, axilas, virilha, buço...">
+            </div>
+          </div>
+
+          <!-- 4 — SIM/NÃO -->
+          <div class="yn-row">
+            <span>4) Está a tomar algum medicamento ou usando produtos tópicos que possam afetar a depilação?</span>
+            <div class="yn-btns">
+              <label class="yn-lbl"><input type="radio" name="d-medic" value="SIM"> SIM</label>
+              <label class="yn-lbl"><input type="radio" name="d-medic" value="NÃO"> NÃO</label>
+            </div>
+          </div>
+
+          <!-- 5 — checkboxes de reação -->
+          <div class="yn-row yn-row-col">
+            <div class="yn-row-top">
+              <span>5) Teve alguma reação adversa à depilação no passado?</span>
+            </div>
+            <div class="yn-sub">
+              <div class="yn-sub-checks">
+                <label class="yn-lbl"><input type="checkbox" name="d-reacao" value="Irritação"> 🔴 Irritação</label>
+                <label class="yn-lbl"><input type="checkbox" name="d-reacao" value="Pelos encravados"> 🌀 Pelos encravados</label>
+                <label class="yn-lbl"><input type="checkbox" name="d-reacao" value="Queimaduras"> 🔥 Queimaduras</label>
+                <label class="yn-lbl"><input type="checkbox" name="d-reacao" value="Outro"> Outro</label>
+                <input type="text" class="yn-obs" id="d-reacao-outro" placeholder="Especifique...">
+              </div>
+            </div>
+          </div>
+
+          <!-- 6 — texto livre -->
+          <div class="yn-row yn-row-col">
+            <div class="yn-row-top">
+              <span>6) Com que frequência faz depilação?</span>
+            </div>
+            <div class="yn-sub">
+              <input type="text" class="yn-obs yn-obs-wide" id="d-freq" placeholder="Ex: mensal, quinzenal, semanal...">
+            </div>
+          </div>
+
+          <!-- 7 — checkboxes objetivo -->
+          <div class="yn-row yn-row-col">
+            <div class="yn-row-top">
+              <span>7) Qual é o seu objetivo com a depilação?</span>
+            </div>
+            <div class="yn-sub">
+              <div class="yn-sub-checks">
+                <label class="yn-lbl"><input type="checkbox" name="d-obj" value="Remoção temporária"> ✂️ Remoção temporária</label>
+                <label class="yn-lbl"><input type="checkbox" name="d-obj" value="Redução permanente"> 🎯 Redução permanente</label>
+                <label class="yn-lbl"><input type="checkbox" name="d-obj" value="Manutenção"> 🔄 Manutenção</label>
+                <label class="yn-lbl"><input type="checkbox" name="d-obj" value="Outro"> Outro</label>
+                <input type="text" class="yn-obs" id="d-obj-outro" placeholder="Especifique...">
+              </div>
+            </div>
+          </div>
+
+          <!-- 8 — SIM/NÃO -->
+          <div class="yn-row">
+            <span>8) Está grávida ou a amamentar?</span>
+            <div class="yn-btns">
+              <label class="yn-lbl"><input type="radio" name="d-gravida" value="SIM"> SIM</label>
+              <label class="yn-lbl"><input type="radio" name="d-gravida" value="NÃO"> NÃO</label>
+            </div>
+          </div>
+
+        </div><!-- /yn-list -->
+      </div>
+
+      <div class="form-card">
+        <h2 class="card-title">🗓️ Dados de Atendimento</h2>
+        <div class="form-grid">
+          <div class="field-group"><label>Data do Procedimento</label><input type="date" id="d-atend-data"></div>
+          <div class="field-group"><label>Profissional Responsável</label><input type="text" id="d-profissional" placeholder="Nome da profissional"></div>
+        </div>
+        <div style="margin-top:16px;">
+          <label class="field-group" style="display:block;margin-bottom:8px;font-size:12px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.06em;">Assinatura do Profissional</label>
+          <p class="sig-instructions">Assine abaixo com o dedo, caneta ou rato</p>
+          <div class="sig-canvas-wrap">
+            <canvas id="sig-canvas-dp" class="sig-canvas"></canvas>
+            <div class="sig-placeholder" id="sig-ph-dp">Toque aqui para assinar</div>
+          </div>
+          <div class="sig-actions">
+            <button type="button" class="btn-sig-clear" onclick="sigClear('dp')">🗑️ Limpar assinatura</button>
+            <span class="sig-status" id="sig-status-dp"></span>
+          </div>
+        </div>
+      </div>
+      <div class="form-card sig-card" id="sig-card-d">
+        <h2 class="card-title">✍️ Assinatura da Cliente</h2>
+        <p class="sig-instructions">Assine abaixo com o dedo, caneta ou rato</p>
+        <div class="sig-canvas-wrap">
+          <canvas id="sig-canvas-d" class="sig-canvas"></canvas>
+          <div class="sig-placeholder" id="sig-ph-d">Toque aqui para assinar</div>
+        </div>
+        <div class="sig-actions">
+          <button type="button" class="btn-sig-clear" onclick="sigClear('d')">🗑️ Limpar assinatura</button>
+          <span class="sig-status" id="sig-status-d"></span>
+        </div>
+      </div>
+      <div class="form-card">
+        <h2 class="card-title">📷 Autorização de Imagem</h2>
+        <div class="yn-row big"><span>Autoriza o uso da sua imagem para redes sociais e portefólio?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="d-imagem" value="Autorizo"> ✅ Autorizo</label><label class="yn-lbl"><input type="radio" name="d-imagem" value="Não autorizo"> ❌ Não autorizo</label></div></div>
+      </div>
+    </div><!-- /form-depilacao -->
+
+    <!-- ─── LASER DE DIODO ────────────────────────────────── -->
+    <div id="form-laser" class="form-section" style="display:none">
+
+      <div class="form-card">
+        <h2 class="card-title">📋 Dados da Cliente</h2>
+        <div class="cliente-search-inline">
+          <input type="text" id="l-busca-cliente" class="cliente-busca-input"
+                 placeholder="🔍 Buscar cliente por nome…"
+                 oninput="buscaClienteInline('l', this.value)"
+                 autocomplete="off">
+          <div class="cliente-busca-results" id="l-busca-results" style="display:none;"></div>
+        </div>
+        <div class="form-grid">
+          <div class="field-group full"><label>Nome completo</label><input type="text" id="l-nome" placeholder="Nome da cliente"></div>
+          <div class="field-group"><label>Data de Nascimento</label><input type="date" id="l-nasc" oninput="onNascChange('l-nasc','l-idade')"></div>
+          <div class="field-group"><label>Idade (auto)</label><input type="text" id="l-idade" placeholder="Ex: 35 anos e 180 dias" readonly style="background:#f9f9f9;cursor:default;color:#555;"></div>
+          <div class="field-group"><label>Sexo</label><select id="l-sexo"><option value="">--</option><option>Feminino</option><option>Masculino</option><option>Outro</option></select></div>
+          <div class="field-group"><label>Telefone</label><input type="tel" id="l-tel" placeholder="+351 ..."></div>
+          <div class="field-group full"><label>Morada</label><input type="text" id="l-morada" placeholder="Rua, nº, Localidade"></div>
+          <div class="field-group"><label>E-mail</label><input type="email" id="l-email" placeholder="email@exemplo.com"></div>
+          <div class="field-group"><label>Doc. Identificação (NIF/BI/Passaporte)</label><input type="text" id="l-doc" placeholder="Nº documento"></div>
+          <div class="field-group full"><label>Nacionalidade</label>
+            <div class="nac-wrapper" id="nac-l">
+              <div class="nac-display" onclick="toggleNac('l')">
+                <span class="nac-flag" id="nac-flag-l"></span>
+                <span class="nac-label" id="nac-lbl-l">Selecionar país…</span>
+                <span class="nac-arrow">▾</span>
+              </div>
+              <div class="nac-dropdown" id="nac-drop-l" style="display:none;">
+                <input type="text" class="nac-search" placeholder="🔍 Pesquisar país…" oninput="filterNac('l',this.value)" autocomplete="off">
+                <div class="nac-list" id="nac-list-l"></div>
+              </div>
+              <input type="hidden" id="l-nac" name="l-nac">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-card">
+        <h2 class="card-title">🔍 Avaliação Clínica</h2>
+        <div class="yn-list">
+          <div class="yn-row"><span>Algum problema grave de saúde ou doença?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="l-saude" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="l-saude" value="NÃO"> NÃO</label></div></div>
+          <div class="yn-row"><span>Sensibilidade da Pele?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="l-pele" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="l-pele" value="NÃO"> NÃO</label></div></div>
+          <div class="yn-row"><span>Gravidez?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="l-grav" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="l-grav" value="NÃO"> NÃO</label></div></div>
+          <div class="yn-row"><span>Amamentação?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="l-ama" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="l-ama" value="NÃO"> NÃO</label></div></div>
+          <div class="yn-row"><span>Tem prótese metálica, bypass, desfibrilhador ou cardioversor?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="l-prot" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="l-prot" value="NÃO"> NÃO</label></div></div>
+          <div class="yn-row"><span>Alterações de coagulação?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="l-coag" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="l-coag" value="NÃO"> NÃO</label></div></div>
+          <div class="yn-row"><span>Doenças neuromusculares?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="l-neuro" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="l-neuro" value="NÃO"> NÃO</label></div></div>
+          <div class="yn-row"><span>Antecedentes oncológicos?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="l-onco" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="l-onco" value="NÃO"> NÃO</label></div></div>
+          <div class="yn-row"><span>Implantes recentes de colagénio na zona a tratar?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="l-cola" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="l-cola" value="NÃO"> NÃO</label></div></div>
+          <div class="yn-row"><span>Está a fazer tratamento estético na zona a tratar?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="l-trat" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="l-trat" value="NÃO"> NÃO</label></div></div>
+          <div class="yn-row"><span>Tem tatuagens na zona a tratar?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="l-tatu" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="l-tatu" value="NÃO"> NÃO</label></div></div>
+          <div class="yn-row"><span>Tem dermatites (eczema, psoríase, fungos na pele)?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="l-derm" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="l-derm" value="NÃO"> NÃO</label></div></div>
+          <div class="yn-row"><span>Tem alergias?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="l-aler" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="l-aler" value="NÃO"> NÃO</label></div></div>
+          <div class="yn-row"><span>Tem problemas hormonais?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="l-horm" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="l-horm" value="NÃO"> NÃO</label></div></div>
+          <div class="yn-row"><span>Está a decorrer a menopausa ou andropausa?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="l-meno" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="l-meno" value="NÃO"> NÃO</label></div></div>
+          <div class="yn-row"><span>Tem doenças autoimunes?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="l-auto" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="l-auto" value="NÃO"> NÃO</label></div></div>
+          <div class="yn-row"><span>Tem grande concentração de varizes ou derrames?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="l-vari" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="l-vari" value="NÃO"> NÃO</label></div></div>
+          <div class="yn-row"><span>Tem acne activo?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="l-acne" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="l-acne" value="NÃO"> NÃO</label></div></div>
+          <div class="yn-row"><span>Tem cicatrizes?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="l-cica" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="l-cica" value="NÃO"> NÃO</label></div></div>
+          <div class="yn-row"><span>Tem epilepsia?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="l-epil" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="l-epil" value="NÃO"> NÃO</label></div></div>
+          <div class="yn-row"><span>Tem diabetes?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="l-diab" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="l-diab" value="NÃO"> NÃO</label></div></div>
+          <div class="yn-row"><span>Tem vitiligo?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="l-viti" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="l-viti" value="NÃO"> NÃO</label></div></div>
+        </div>
+      </div>
+
+      <div class="form-card">
+        <h2 class="card-title">☀️ Avaliação Pré-Tratamento</h2>
+        <div class="yn-list">
+          <div class="yn-row"><span>Fez peeling mecânico nos últimos 15 dias?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="l-peel" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="l-peel" value="NÃO"> NÃO</label></div></div>
+          <div class="yn-row"><span>Fez medicação oral ou tópica que torne a pele sensível?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="l-med" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="l-med" value="NÃO"> NÃO</label></div></div>
+          <div class="yn-row"><span>Esteve exposto ao sol nas últimas 48h?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="l-sol" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="l-sol" value="NÃO"> NÃO</label></div></div>
+          <div class="yn-row"><span>Utilizou creme depilatório nas últimas 72h?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="l-crem" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="l-crem" value="NÃO"> NÃO</label></div></div>
+          <div class="yn-row"><span>Utilizou autobronzeador nos últimos 5 dias?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="l-auto2" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="l-auto2" value="NÃO"> NÃO</label></div></div>
+          <div class="yn-row"><span>Fez recentemente solário?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="l-sola" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="l-sola" value="NÃO"> NÃO</label></div></div>
+          <div class="yn-row"><span>Alguma vez fez tratamentos de depilação a laser?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="l-prev" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="l-prev" value="NÃO"> NÃO</label></div></div>
+        </div>
+        <div class="form-grid" style="margin-top:16px;">
+          <div class="field-group full"><label>Se SIM, em quais zonas?</label><input type="text" id="l-zonas-prev" placeholder="Zonas tratadas anteriormente"></div>
+          <div class="field-group full"><label>Última vez que fez?</label><input type="text" id="l-ultima" placeholder="Data aproximada"></div>
+          <div class="field-group full"><label>Fototipo de pele</label>
+            <div class="fototipo-selector">
+              <label class="ft-btn"><input type="radio" name="l-foto" value="I"> I</label>
+              <label class="ft-btn"><input type="radio" name="l-foto" value="II"> II</label>
+              <label class="ft-btn"><input type="radio" name="l-foto" value="III"> III</label>
+              <label class="ft-btn"><input type="radio" name="l-foto" value="IV"> IV</label>
+              <label class="ft-btn"><input type="radio" name="l-foto" value="V"> V</label>
+              <label class="ft-btn"><input type="radio" name="l-foto" value="VI"> VI</label>
+            </div>
+          </div>
+          <div class="field-group full"><label>Observações</label><textarea id="l-obs" rows="3" placeholder="Observações adicionais..."></textarea></div>
+          <div class="field-group"><label>Data de início do tratamento</label><input type="date" id="l-data-inicio"></div>
+        </div>
+      </div>
+
+      <div class="form-card">
+        <h2 class="card-title">📊 Registo de Sessões</h2>
+        <div class="sessions-table-wrap">
+          <table class="sessions-table">
+            <thead><tr><th>Sessão</th><th>Data</th><th>Zona</th><th>FotoTipo</th><th>Pulso</th><th>Frequência</th><th>Energia</th><th>Duração</th><th>Passagens</th><th>Resultados</th><th></th></tr></thead>
+            <tbody id="sessions-tbody"></tbody>
+          </table>
+        </div>
+        <button class="btn-add-row" onclick="addSessionRow()">+ Adicionar sessão</button>
+      </div>
+
+      <div class="form-card">
+        <h2 class="card-title">🗓️ Dados de Atendimento</h2>
+        <div class="form-grid">
+          <div class="field-group"><label>Data do Procedimento</label><input type="date" id="l-atend-data"></div>
+          <div class="field-group"><label>Profissional Responsável</label><input type="text" id="l-profissional" placeholder="Nome da profissional"></div>
+        </div>
+        <div style="margin-top:16px;">
+          <label class="field-group" style="display:block;margin-bottom:8px;font-size:12px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.06em;">Assinatura do Profissional</label>
+          <p class="sig-instructions">Assine abaixo com o dedo, caneta ou rato</p>
+          <div class="sig-canvas-wrap">
+            <canvas id="sig-canvas-lp" class="sig-canvas"></canvas>
+            <div class="sig-placeholder" id="sig-ph-lp">Toque aqui para assinar</div>
+          </div>
+          <div class="sig-actions">
+            <button type="button" class="btn-sig-clear" onclick="sigClear('lp')">🗑️ Limpar assinatura</button>
+            <span class="sig-status" id="sig-status-lp"></span>
+          </div>
+        </div>
+      </div>
+      <div class="form-card sig-card" id="sig-card-l">
+        <h2 class="card-title">✍️ Assinatura da Cliente</h2>
+        <p class="sig-instructions">Assine abaixo com o dedo, caneta ou rato</p>
+        <div class="sig-canvas-wrap">
+          <canvas id="sig-canvas-l" class="sig-canvas"></canvas>
+          <div class="sig-placeholder" id="sig-ph-l">Toque aqui para assinar</div>
+        </div>
+        <div class="sig-actions">
+          <button type="button" class="btn-sig-clear" onclick="sigClear('l')">🗑️ Limpar assinatura</button>
+          <span class="sig-status" id="sig-status-l"></span>
+        </div>
+      </div>
+      <div class="form-card">
+        <h2 class="card-title">📷 Autorização de Imagem</h2>
+        <div class="yn-row big"><span>Autoriza o uso da sua imagem para redes sociais e portefólio?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="l-imagem" value="Autorizo"> ✅ Autorizo</label><label class="yn-lbl"><input type="radio" name="l-imagem" value="Não autorizo"> ❌ Não autorizo</label></div></div>
+      </div>
+    </div><!-- /form-laser -->
+
+    <!-- ─── MANICURE ───────────────────────────────────────── -->
+    <div id="form-manicure" class="form-section" style="display:none">
+
+      <div class="form-card">
+        <h2 class="card-title">📋 Dados da Cliente</h2>
+        <div class="cliente-search-inline">
+          <input type="text" id="m-busca-cliente" class="cliente-busca-input"
+                 placeholder="🔍 Buscar cliente por nome…"
+                 oninput="buscaClienteInline('m', this.value)"
+                 autocomplete="off">
+          <div class="cliente-busca-results" id="m-busca-results" style="display:none;"></div>
+        </div>
+        <div class="form-grid">
+          <div class="field-group full"><label>Nome completo</label><input type="text" id="m-nome" placeholder="Nome da cliente"></div>
+          <div class="field-group"><label>Data de Nascimento</label><input type="date" id="m-nasc" oninput="onNascChange('m-nasc','m-idade')"></div>
+          <div class="field-group"><label>Idade (auto)</label><input type="text" id="m-idade" placeholder="Ex: 35 anos e 180 dias" readonly style="background:#f9f9f9;cursor:default;color:#555;"></div>
+          <div class="field-group"><label>Sexo</label><select id="m-sexo"><option value="">--</option><option>Feminino</option><option>Masculino</option><option>Outro</option></select></div>
+          <div class="field-group"><label>Telefone</label><input type="tel" id="m-tel" placeholder="+351 ..."></div>
+          <div class="field-group full"><label>Morada</label><input type="text" id="m-morada" placeholder="Rua, nº, Localidade"></div>
+          <div class="field-group"><label>E-mail</label><input type="email" id="m-email" placeholder="email@exemplo.com"></div>
+          <div class="field-group"><label>Doc. Identificação (NIF/BI/Passaporte)</label><input type="text" id="m-doc" placeholder="Nº documento"></div>
+          <div class="field-group full"><label>Nacionalidade</label>
+            <div class="nac-wrapper" id="nac-m">
+              <div class="nac-display" onclick="toggleNac('m')">
+                <span class="nac-flag" id="nac-flag-m"></span>
+                <span class="nac-label" id="nac-lbl-m">Selecionar país…</span>
+                <span class="nac-arrow">▾</span>
+              </div>
+              <div class="nac-dropdown" id="nac-drop-m" style="display:none;">
+                <input type="text" class="nac-search" placeholder="🔍 Pesquisar país…" oninput="filterNac('m',this.value)" autocomplete="off">
+                <div class="nac-list" id="nac-list-m"></div>
+              </div>
+              <input type="hidden" id="m-nac" name="m-nac">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-card">
+        <h2 class="card-title">💅 Informações de Saúde</h2>
+        <div class="yn-list">
+
+          <div class="yn-row">
+            <span>1) Tem alguma alergia a produtos químicos ou materiais usados em tratamentos de unhas? (cola, acrílico, gel, etc.)</span>
+            <div class="yn-btns"><label class="yn-lbl"><input type="radio" name="m-alergia" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="m-alergia" value="NÃO"> NÃO</label></div>
+          </div>
+          <div class="form-grid" style="margin:0 0 8px 0;">
+            <div class="field-group full"><label>Se SIM, especifique:</label><input type="text" id="m-alergia-esp" placeholder="Descrição da alergia..."></div>
+            <div class="field-group full"><label>Alergia a alguma marca específica?</label><input type="text" id="m-alergia-marca" placeholder="Nome da marca..."></div>
+          </div>
+
+          <div class="yn-row">
+            <span>2) Tem alguma condição médica que afeta as unhas ou pele das mãos? (fungos, psoríase, eczema, etc.)</span>
+            <div class="yn-btns"><label class="yn-lbl"><input type="radio" name="m-condicao" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="m-condicao" value="NÃO"> NÃO</label></div>
+          </div>
+          <div class="form-grid" style="margin:0 0 8px 0;">
+            <div class="field-group full"><label>Se SIM, especifique:</label><input type="text" id="m-condicao-esp" placeholder="Condição médica..."></div>
+          </div>
+
+          <div class="yn-row">
+            <span>3) Está grávida ou a amamentar?</span>
+            <div class="yn-btns"><label class="yn-lbl"><input type="radio" name="m-gravida" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="m-gravida" value="NÃO"> NÃO</label></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-card">
+        <h2 class="card-title">💎 Histórico de Alongamento de Unhas</h2>
+        <div class="yn-list">
+
+          <div class="yn-row">
+            <span>4) Já fez alongamento de unhas anteriormente?</span>
+            <div class="yn-btns"><label class="yn-lbl"><input type="radio" name="m-histo" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="m-histo" value="NÃO"> NÃO</label></div>
+          </div>
+
+          <div class="yn-row" style="flex-wrap:wrap;gap:8px;">
+            <span style="width:100%;flex:unset;">5) Qual técnica foi usada?</span>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;">
+              <label class="yn-lbl"><input type="checkbox" name="m-tecnica" value="Acrílico"> Acrílico</label>
+              <label class="yn-lbl"><input type="checkbox" name="m-tecnica" value="Gel"> Gel</label>
+              <label class="yn-lbl"><input type="checkbox" name="m-tecnica" value="Fibra"> Fibra</label>
+              <label class="yn-lbl"><input type="checkbox" name="m-tecnica" value="Outra"> Outra</label>
+            </div>
+            <input type="text" class="yn-obs" id="m-tecnica-outra" placeholder="Outra técnica...">
+          </div>
+
+          <div class="yn-row">
+            <span>6) Teve algum problema de alergia, infecção ou dano às unhas naturais como resultado de procedimento anterior?</span>
+            <div class="yn-btns"><label class="yn-lbl"><input type="radio" name="m-problema" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="m-problema" value="NÃO"> NÃO</label></div>
+          </div>
+          <div class="form-grid" style="margin:0 0 8px 0;">
+            <div class="field-group full"><label>Se SIM, especifique:</label><input type="text" id="m-problema-esp" placeholder="Descrição do problema..."></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-card">
+        <h2 class="card-title">ℹ️ Informações Adicionais</h2>
+        <div class="yn-list">
+          <div class="yn-row">
+            <span>7) Está ciente de que a manutenção regular é necessária para preservar o alongamento das suas unhas?</span>
+            <div class="yn-btns"><label class="yn-lbl"><input type="radio" name="m-manutencao" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="m-manutencao" value="NÃO"> NÃO</label></div>
+          </div>
+
+          <div class="yn-row">
+            <span>8) Tem alguma pergunta ou preocupação específica sobre o procedimento que gostaria de discutir?</span>
+            <div class="yn-btns"><label class="yn-lbl"><input type="radio" name="m-pergunta" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="m-pergunta" value="NÃO"> NÃO</label></div>
+          </div>
+          <div class="form-grid" style="margin:0 0 8px 0;">
+            <div class="field-group full"><label>Se SIM, especifique:</label><textarea id="m-pergunta-esp" rows="2" placeholder="Questões ou preocupações..."></textarea></div>
+          </div>
+        </div>
+        <div class="field-group full" style="margin-top:12px;"><label>Data do Procedimento</label><input type="date" id="m-data"></div>
+      </div>
+
+      <div class="form-card">
+        <h2 class="card-title">🗓️ Dados de Atendimento</h2>
+        <div class="form-grid">
+          <div class="field-group"><label>Data do Procedimento</label><input type="date" id="m-atend-data"></div>
+          <div class="field-group"><label>Profissional Responsável</label><input type="text" id="m-profissional" placeholder="Nome da profissional"></div>
+        </div>
+        <div style="margin-top:16px;">
+          <label class="field-group" style="display:block;margin-bottom:8px;font-size:12px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.06em;">Assinatura do Profissional</label>
+          <p class="sig-instructions">Assine abaixo com o dedo, caneta ou rato</p>
+          <div class="sig-canvas-wrap">
+            <canvas id="sig-canvas-mp" class="sig-canvas"></canvas>
+            <div class="sig-placeholder" id="sig-ph-mp">Toque aqui para assinar</div>
+          </div>
+          <div class="sig-actions">
+            <button type="button" class="btn-sig-clear" onclick="sigClear('mp')">🗑️ Limpar assinatura</button>
+            <span class="sig-status" id="sig-status-mp"></span>
+          </div>
+        </div>
+      </div>
+      <div class="form-card sig-card" id="sig-card-m">
+        <h2 class="card-title">✍️ Assinatura da Cliente</h2>
+        <p class="sig-instructions">Assine abaixo com o dedo, caneta ou rato</p>
+        <div class="sig-canvas-wrap">
+          <canvas id="sig-canvas-m" class="sig-canvas"></canvas>
+          <div class="sig-placeholder" id="sig-ph-m">Toque aqui para assinar</div>
+        </div>
+        <div class="sig-actions">
+          <button type="button" class="btn-sig-clear" onclick="sigClear('m')">🗑️ Limpar assinatura</button>
+          <span class="sig-status" id="sig-status-m"></span>
+        </div>
+      </div>
+      <div class="form-card">
+        <h2 class="card-title">📷 Autorização de Imagem</h2>
+        <div class="yn-row big"><span>Autoriza o uso da sua imagem para redes sociais e portefólio?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="m-imagem" value="Autorizo"> ✅ Autorizo</label><label class="yn-lbl"><input type="radio" name="m-imagem" value="Não autorizo"> ❌ Não autorizo</label></div></div>
+      </div>
+    </div><!-- /form-manicure -->
+
+  </div><!-- /form-body -->
+
+  <div class="form-actions">
+    <button class="btn-clear"      onclick="clearForm()">🗑️ Limpar</button>
+    <button class="btn-save-main"  onclick="saveFicha()">💾 Guardar</button>
+    <button class="btn-print-main" onclick="printForms()">🖨️ Imprimir / PDF</button>
+  </div>
+</div><!-- /screen-form -->
+
+<script src="security.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
