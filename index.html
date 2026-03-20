@@ -406,12 +406,7 @@
   <div class="fichas-topbar">
     <button class="btn-back" onclick="backFromClientes()">← Voltar</button>
     <span class="fichas-title">👥 Clientes</span>
-    <div style="display:flex;gap:8px;">
-      <button class="btn-print" style="background:none;border:2px solid var(--pink);color:var(--pink);font-size:13px;" onclick="showImportClientes()">⬆️ Importar</button>
-      <button class="btn-print" style="background:none;border:2px solid var(--pink);color:var(--pink);font-size:13px;" onclick="exportClientesCSV()">⬇️ CSV</button>
-      <button class="btn-print" style="background:none;border:2px solid var(--pink);color:var(--pink);font-size:13px;" onclick="exportClientesXLSX()">⬇️ XLSX</button>
-      <button class="btn-print" onclick="openClienteForm(null)">+ Nova</button>
-    </div>
+    <button class="btn-print" onclick="openClienteForm(null)">+ Nova Cliente</button>
   </div>
   <!-- Import modal -->
   <div id="import-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:900;align-items:center;justify-content:center;">
@@ -437,6 +432,17 @@
     </div>
   </div>
   <div class="fichas-body">
+    <div class="clientes-action-bar">
+      <button class="btn-cl-action" onclick="showImportClientes()">
+        <span class="btn-cl-action-icon">⬆️</span> Importar CSV / XLSX
+      </button>
+      <button class="btn-cl-action" onclick="exportClientesCSV()">
+        <span class="btn-cl-action-icon">⬇️</span> Exportar CSV
+      </button>
+      <button class="btn-cl-action" onclick="exportClientesXLSX()">
+        <span class="btn-cl-action-icon">⬇️</span> Exportar XLSX
+      </button>
+    </div>
     <div class="search-bar-wrap">
       <input type="text" id="clientes-search" class="clientes-search-input"
              placeholder="🔍 Pesquisar por nome, telefone ou e-mail…"

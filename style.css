@@ -797,6 +797,46 @@ body {
   padding: 28px 20px;
 }
 
+/* ── Clientes action bar (import / export) ── */
+.clientes-action-bar {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+  padding: 14px 18px;
+  background: white;
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(224,24,94,0.08);
+}
+
+.btn-cl-action {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  border: 2px solid var(--pink-light);
+  border-radius: 10px;
+  padding: 9px 16px;
+  background: var(--pink-pale);
+  color: var(--pink);
+  font-family: 'Nunito', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.btn-cl-action:hover {
+  background: var(--pink);
+  color: white;
+  border-color: var(--pink);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(224,24,94,0.25);
+}
+
+.btn-cl-action-icon { font-size: 15px; line-height: 1; }
+
 .fichas-empty, .fichas-loading {
   text-align: center;
   color: var(--gray);
