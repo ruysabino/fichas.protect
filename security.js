@@ -38,35 +38,60 @@ function b642buf(b64)  {
 }
 
 /**
- * Derive a 256-bit AES key from a password + salt using PBKDF2.
+ * Import raw password bytes as PBKDF2 key material.
+ */
+async function importKeyMaterial(password) {
+  return subtle.importKey('raw', str2buf(password), 'PBKDF2', false, ['deriveBits', 'deriveKey']);
+}
+
+/**
+ * Derive raw bits from password + salt using PBKDF2.
+ * Returns 256 bits (32 bytes) as ArrayBuffer.
+ * Uses deriveBits — no exportKey required, works in all browsers.
  * 310,000 iterations — OWASP 2023 recommendation.
  */
-async function deriveKey(password, salt) {
-  const keyMaterial = await subtle.importKey(
-    'raw', str2buf(password), 'PBKDF2', false, ['deriveKey']
+async function deriveBitsFromPassword(password, salt) {
+  const saltBuf     = typeof salt === 'string' ? hex2buf(salt) : salt;
+  const keyMaterial = await importKeyMaterial(password);
+  return subtle.deriveBits(
+    { name: 'PBKDF2', salt: saltBuf, iterations: 310_000, hash: 'SHA-256' },
+    keyMaterial,
+    256   // 256 bits = 32 bytes
   );
+}
+
+/**
+ * Derive an AES-GCM encryption key from password + salt.
+ * Used only for encrypt/decrypt operations (not for password storage).
+ */
+async function deriveKey(password, salt) {
+  const saltBuf     = typeof salt === 'string' ? hex2buf(salt) : salt;
+  const keyMaterial = await importKeyMaterial(password);
   return subtle.deriveKey(
-    { name: 'PBKDF2', salt: typeof salt === 'string' ? hex2buf(salt) : salt,
-      iterations: 310_000, hash: 'SHA-256' },
+    { name: 'PBKDF2', salt: saltBuf, iterations: 310_000, hash: 'SHA-256' },
     keyMaterial,
     { name: 'AES-GCM', length: 256 },
-    false, ['encrypt', 'decrypt']
+    false,   // NOT extractable — used only for encrypt/decrypt
+    ['encrypt', 'decrypt']
   );
 }
 
-/** Hash password for storage (PBKDF2, returns hex salt + hex hash) */
+/**
+ * Hash a password for storage.
+ * Uses deriveBits (not deriveKey+exportKey) — no "key is not extractable" error.
+ */
 async function hashPassword(password) {
   const salt = crypto.getRandomValues(new Uint8Array(32));
-  const key  = await deriveKey(password, salt);
-  // Export key bytes as the "hash" (deterministic given same password+salt)
-  const raw  = await subtle.exportKey('raw', key);
-  return { salt: buf2hex(salt), hash: buf2hex(raw) };
+  const bits = await deriveBitsFromPassword(password, salt.buffer);
+  return { salt: buf2hex(salt.buffer), hash: buf2hex(bits) };
 }
 
+/**
+ * Verify a password against stored salt + hash.
+ */
 async function verifyPassword(password, storedSalt, storedHash) {
-  const key = await deriveKey(password, storedSalt);
-  const raw = await subtle.exportKey('raw', key);
-  return buf2hex(raw) === storedHash;
+  const bits = await deriveBitsFromPassword(password, storedSalt);
+  return buf2hex(bits) === storedHash;
 }
 
 /**
