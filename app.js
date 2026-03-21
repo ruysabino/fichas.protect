@@ -294,11 +294,13 @@ function collectForm() {
       modelo:       val('p-modelo'),
       fezExt:       getRadio('p-fez-ext'),
       extDuracao:   val('p-ext-duracao'),
-      // Avaliação
-      gest: getRadio('p-gestante'), gestObs: obs(0),
-      proc_ol: getRadio('p-proced'),
-      aler: getRadio('p-alergia'), alerObs: obs(2),
-      glau: getRadio('p-glaucoma'), onco: getRadio('p-onco'), rimel: getRadio('p-rimel'),
+      // Avaliação — obs com IDs explícitos (não depende de índice)
+      gest:    getRadio('p-gestante'), gestObs:   val('p-obs-gest'),
+      proc_ol: getRadio('p-proced'),  procObs:   val('p-obs-proced'),
+      aler:    getRadio('p-alergia'), alerObs:   val('p-obs-aler'),
+      glau:    getRadio('p-glaucoma'),glauObs:   val('p-obs-glau'),
+      onco:    getRadio('p-onco'),    oncoObs:   val('p-obs-onco'),
+      rimel:   getRadio('p-rimel'),   rimelObs:  val('p-obs-rimel'),
       // Consentimento — 14 perguntas
       cAler: getRadio('c-alergia'),         cAlerEsp: val('c-alergia-esp'),
       cOcul: getRadio('c-ocular'),          cOculEsp: val('c-ocular-esp'),
@@ -466,15 +468,23 @@ function populateForm(d) {
     document.getElementById('p-atend-data') && (document.getElementById('p-atend-data').value = d.atendData||'');
     document.getElementById('p-profissional') && (document.getElementById('p-profissional').value = d.profissional||'');
     if (d.sigProfDataURL) setTimeout(() => sigSetDataURL('pp', d.sigProfDataURL), 100);
-    // Avaliação
-    setRadio('p-gestante', d.gest); setRadio('p-proced', d.proc_ol);
-    setRadio('p-alergia', d.aler); setRadio('p-glaucoma', d.glau);
-    setRadio('p-onco', d.onco); setRadio('p-rimel', d.rimel);
+    // Avaliação — restore radio + obs
+    setRadio('p-gestante', d.gest);  setVal('p-obs-gest',  d.gestObs);
+    setRadio('p-proced',   d.proc_ol); setVal('p-obs-proced', d.procObs);
+    setRadio('p-alergia',  d.aler);  setVal('p-obs-aler',  d.alerObs);
+    setRadio('p-glaucoma', d.glau);  setVal('p-obs-glau',  d.glauObs);
+    setRadio('p-onco',     d.onco);  setVal('p-obs-onco',  d.oncoObs);
+    setRadio('p-rimel',    d.rimel); setVal('p-obs-rimel', d.rimelObs);
     // Consentimento — 14 perguntas
     setRadio('c-alergia', d.cAler);            setVal('c-alergia-esp', d.cAlerEsp);
     setRadio('c-ocular', d.cOcul);             setVal('c-ocular-esp', d.cOculEsp);
     setRadio('c-cirurgia', d.cCiru);           setVal('c-cirurgia-esp', d.cCiruEsp);
-    setRadio('c-lentes', d.cLent);             setRadio('c-lentes-retira', d.cLentRetira);
+    setRadio('c-lentes', d.cLent);
+    if (d.cLent === 'SIM') {
+      const lSub = document.getElementById('c-lentes-sub');
+      if (lSub) lSub.style.display = 'flex';
+    }
+    setRadio('c-lentes-retira', d.cLentRetira);
     setRadio('c-irritacao', d.cIrri);          setVal('c-irritacao-esp', d.cIrriEsp);
     setRadio('c-alergia-patches', d.cAlPatch);
     setRadio('c-reacao-ext', d.cReacExt);      setVal('c-reacao-ext-esp', d.cReacExtEsp);
@@ -492,9 +502,7 @@ function populateForm(d) {
       const el = document.querySelector(`input[name="${name}"][value="SIM"]`);
       if (el && el.checked) toggleSub(name+'-sub', el, 'SIM');
     });
-    const ynRows = document.querySelectorAll('#form-pestanas .yn-row');
-    if (ynRows[0]) { const o = ynRows[0].querySelector('.yn-obs'); if (o) o.value = d.gestObs || ''; }
-    if (ynRows[2]) { const o = ynRows[2].querySelector('.yn-obs'); if (o) o.value = d.alerObs || ''; }
+    // obs fields restored above by explicit ID
     if (d.sigDataURL) setTimeout(() => sigSetDataURL('p', d.sigDataURL), 100);
   }
 
@@ -843,11 +851,11 @@ function buildPestanasHTML(d) {
     <div class="pd-section-title">AVALIAÇÃO</div>
     ${makeYnTable([
       ['É gestante ou lactante?' + (d.gestObs ? ' – ' + d.gestObs : ''), d.gest],
-      ['Já fez procedimento nos olhos?', d.proc_ol],
-      ['Possui alergia a esmalte ou cosméticos?' + (d.alerObs ? ' – ' + d.alerObs : ''), d.aler],
-      ['Possui glaucoma ou problema ocular?', d.glau],
-      ['Faz tratamento oncológico?', d.onco],
-      ['Está de rímel?', d.rimel],
+      ['Já fez procedimento nos olhos?'           + (d.procObs  ? ' – ' + d.procObs  : ''), d.proc_ol],
+      ['Possui alergia a esmalte ou cosméticos?'   + (d.alerObs  ? ' – ' + d.alerObs  : ''), d.aler],
+      ['Possui glaucoma ou problema ocular?'        + (d.glauObs  ? ' – ' + d.glauObs  : ''), d.glau],
+      ['Faz tratamento oncológico?'                 + (d.oncoObs  ? ' – ' + d.oncoObs  : ''), d.onco],
+      ['Está de rímel?'                             + (d.rimelObs ? ' – ' + d.rimelObs : ''), d.rimel],
     ])}
     <div class="pd-section-title">PROCEDIMENTO</div>
     ${makeFields([

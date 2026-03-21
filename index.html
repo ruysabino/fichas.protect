@@ -490,12 +490,12 @@
       <div class="form-card">
         <h2 class="card-title">🔍 Avaliação</h2>
         <div class="yn-list">
-          <div class="yn-row"><span>É gestante ou lactante?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="p-gestante" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="p-gestante" value="NÃO"> NÃO</label></div><input type="text" class="yn-obs" placeholder="Há quanto tempo?"></div>
-          <div class="yn-row"><span>Já fez procedimento nos olhos?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="p-proced" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="p-proced" value="NÃO"> NÃO</label></div><input type="text" class="yn-obs" placeholder="Observação"></div>
-          <div class="yn-row"><span>Possui alergia a esmalte ou cosméticos?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="p-alergia" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="p-alergia" value="NÃO"> NÃO</label></div><input type="text" class="yn-obs" placeholder="Qual?"></div>
-          <div class="yn-row"><span>Possui glaucoma ou problema ocular?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="p-glaucoma" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="p-glaucoma" value="NÃO"> NÃO</label></div><input type="text" class="yn-obs" placeholder="Qual?"></div>
-          <div class="yn-row"><span>Faz tratamento oncológico?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="p-onco" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="p-onco" value="NÃO"> NÃO</label></div><input type="text" class="yn-obs" placeholder="Observação"></div>
-          <div class="yn-row"><span>Está de rímel?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="p-rimel" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="p-rimel" value="NÃO"> NÃO</label></div><input type="text" class="yn-obs" placeholder="Observação"></div>
+          <div class="yn-row"><span>É gestante ou lactante?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="p-gestante" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="p-gestante" value="NÃO"> NÃO</label></div><input type="text" class="yn-obs" id="p-obs-gest" placeholder="Há quanto tempo?"></div>
+          <div class="yn-row"><span>Já fez procedimento nos olhos?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="p-proced" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="p-proced" value="NÃO"> NÃO</label></div><input type="text" class="yn-obs" id="p-obs-proced" placeholder="Observação"></div>
+          <div class="yn-row"><span>Possui alergia a esmalte ou cosméticos?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="p-alergia" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="p-alergia" value="NÃO"> NÃO</label></div><input type="text" class="yn-obs" id="p-obs-aler" placeholder="Qual?"></div>
+          <div class="yn-row"><span>Possui glaucoma ou problema ocular?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="p-glaucoma" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="p-glaucoma" value="NÃO"> NÃO</label></div><input type="text" class="yn-obs" id="p-obs-glau" placeholder="Qual?"></div>
+          <div class="yn-row"><span>Faz tratamento oncológico?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="p-onco" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="p-onco" value="NÃO"> NÃO</label></div><input type="text" class="yn-obs" id="p-obs-onco" placeholder="Observação"></div>
+          <div class="yn-row"><span>Está de rímel?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="p-rimel" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="p-rimel" value="NÃO"> NÃO</label></div><input type="text" class="yn-obs" id="p-obs-rimel" placeholder="Observação"></div>
         </div>
       </div>
 
@@ -771,7 +771,6 @@
             <div class="yn-btns">
               <label class="yn-lbl"><input type="radio" name="c-maquiagem" value="SIM"> SIM</label>
               <label class="yn-lbl"><input type="radio" name="c-maquiagem" value="NÃO"> NÃO</label>
-              <label class="yn-lbl"><input type="radio" name="c-maquiagem" value="Talvez"> Talvez</label>
             </div>
           </div>
 
@@ -781,7 +780,6 @@
             <div class="yn-btns">
               <label class="yn-lbl"><input type="radio" name="c-esfregar" value="SIM"> SIM</label>
               <label class="yn-lbl"><input type="radio" name="c-esfregar" value="NÃO"> NÃO</label>
-              <label class="yn-lbl"><input type="radio" name="c-esfregar" value="Talvez"> Talvez</label>
             </div>
           </div>
 
@@ -794,19 +792,6 @@
             </div>
           </div>
 
-        </div>
-      </div>
-
-      <div class="form-card sig-card" id="sig-card-p">
-        <h2 class="card-title">✍️ Assinatura da Cliente</h2>
-        <p class="sig-instructions">Assine abaixo com o dedo, caneta ou rato</p>
-        <div class="sig-canvas-wrap">
-          <canvas id="sig-canvas-p" class="sig-canvas"></canvas>
-          <div class="sig-placeholder" id="sig-ph-p">Toque aqui para assinar</div>
-        </div>
-        <div class="sig-actions">
-          <button type="button" class="btn-sig-clear" onclick="sigClear('p')">🗑️ Limpar assinatura</button>
-          <span class="sig-status" id="sig-status-p"></span>
         </div>
       </div>
 
@@ -827,6 +812,19 @@
             <button type="button" class="btn-sig-clear" onclick="sigClear('pp')">🗑️ Limpar assinatura</button>
             <span class="sig-status" id="sig-status-pp"></span>
           </div>
+        </div>
+      </div>
+
+      <div class="form-card sig-card" id="sig-card-p">
+        <h2 class="card-title">✍️ Assinatura da Cliente</h2>
+        <p class="sig-instructions">Assine abaixo com o dedo, caneta ou rato</p>
+        <div class="sig-canvas-wrap">
+          <canvas id="sig-canvas-p" class="sig-canvas"></canvas>
+          <div class="sig-placeholder" id="sig-ph-p">Toque aqui para assinar</div>
+        </div>
+        <div class="sig-actions">
+          <button type="button" class="btn-sig-clear" onclick="sigClear('p')">🗑️ Limpar assinatura</button>
+          <span class="sig-status" id="sig-status-p"></span>
         </div>
       </div>
 
