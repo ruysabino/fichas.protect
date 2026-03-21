@@ -183,7 +183,7 @@ async function renderFichasList() {
       </div>
       <div class="ficha-card-actions">
         <button class="btn-ficha-open"  onclick="openFicha(${f.id})">✏️ Abrir</button>
-        <button class="btn-ficha-print" onclick="loadAndPrint(${f.id})">🖨️ Imprimir</button>
+        <button class="btn-ficha-print" onclick="loadAndPrint(${f.id})">📄 PDF</button>
         <button class="btn-ficha-del"   onclick="deleteFicha(${f.id})">🗑️</button>
       </div>
     </div>`).join('');
@@ -979,21 +979,149 @@ function printForms() {
   printFromData(currentProc, data);
 }
 
-function printFromData(proc, data) {
-  let html = '';
-  if (proc === 'pestanas')  html = buildPestanasHTML(data);
-  if (proc === 'depilacao') html = buildDepilacaoHTML(data);
-  if (proc === 'laser')     html = buildLaserHTML(data);
-  if (proc === 'manicure')  html = buildManicureHTML(data);
+/* ── Carrega uma biblioteca JS de CDN (com cache por nome) ── */
+const _libCache = {};
+function loadLib(name, url) {
+  if (_libCache[name]) return _libCache[name];
+  _libCache[name] = new Promise((resolve, reject) => {
+    if (name === 'jspdf'     && window.jspdf)    { resolve(window.jspdf);    return; }
+    if (name === 'html2canvas' && window.html2canvas) { resolve(window.html2canvas); return; }
+    const s = document.createElement('script');
+    s.src = url; s.onload = () => resolve(window[name] || window.jspdf || window.html2canvas);
+    s.onerror = () => reject(new Error('Falha ao carregar ' + name));
+    document.head.appendChild(s);
+  });
+  return _libCache[name];
+}
 
-  const win = window.open('', '_blank', 'width=900,height=700');
-  win.document.write(`<!DOCTYPE html><html lang="pt"><head>
-    <meta charset="UTF-8">
-    <title>Beleza Rara – ${TITLES[proc]}</title>
-    <style>${getPrintCSS()}</style>
-  </head><body class="print-body">${html}</body></html>`);
-  win.document.close();
-  win.onload = () => { win.focus(); win.print(); };
+async function printFromData(proc, data) {
+  // ── Botão de feedback ──
+  const btnList = ['btn-print-main', 'btn-print'].map(c =>
+    document.querySelector('.' + c + ':not([style*="display:none"])')).filter(Boolean);
+  const origLabels = btnList.map(b => b.textContent);
+  btnList.forEach(b => { b.textContent = '⏳ A gerar PDF…'; b.disabled = true; });
+
+  try {
+    // ── 1. Carregar bibliotecas (tenta cdnjs, fallback unpkg) ──
+    async function tryLoad(name, urls) {
+      for (const url of urls) {
+        try {
+          await loadLib(name, url);
+          if (name === 'jspdf'       && window.jspdf)       return;
+          if (name === 'html2canvas' && window.html2canvas)  return;
+        } catch(e) { /* tenta próximo */ }
+      }
+      throw new Error('Não foi possível carregar ' + name + '. Verifique a ligação à internet.');
+    }
+
+    await tryLoad('jspdf', [
+      'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js',
+      'https://unpkg.com/jspdf@2.5.1/dist/jspdf.umd.min.js',
+    ]);
+    await tryLoad('html2canvas', [
+      'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js',
+      'https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.min.js',
+    ]);
+
+    const { jsPDF } = window.jspdf;
+
+    // ── 2. Construir HTML da ficha ──
+    let html = '';
+    if (proc === 'pestanas')  html = buildPestanasHTML(data);
+    if (proc === 'depilacao') html = buildDepilacaoHTML(data);
+    if (proc === 'laser')     html = buildLaserHTML(data);
+    if (proc === 'manicure')  html = buildManicureHTML(data);
+
+    // ── 3. Renderizar num iframe oculto ──
+    const iframe = document.createElement('iframe');
+    iframe.style.cssText = 'position:fixed;left:-9999px;top:0;width:794px;height:1123px;border:none;visibility:hidden;';
+    document.body.appendChild(iframe);
+
+    await new Promise(resolve => {
+      iframe.onload = resolve;
+      iframe.srcdoc = `<!DOCTYPE html><html lang="pt"><head>
+        <meta charset="UTF-8">
+        <style>
+          ${getPrintCSS()}
+          body.print-body { background: white; margin: 0; padding: 0; }
+          .pd-page { page-break-after: always; }
+        </style>
+      </head><body class="print-body">${html}</body></html>`;
+    });
+
+    // Aguardar imagens (assinaturas) e fontes
+    await new Promise(r => setTimeout(r, 400));
+
+    // ── 4. Capturar cada página como imagem ──
+    const iDoc   = iframe.contentDocument;
+    const pages  = iDoc.querySelectorAll('.pd-page');
+    const pdf    = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+    const A4_W   = 210;   // mm
+    const A4_H   = 297;   // mm
+    const SCALE  = 2;     // resolução 2× para qualidade
+
+    for (let i = 0; i < pages.length; i++) {
+      const page = pages[i];
+      // Reset any page-break styles for capture
+      page.style.pageBreakAfter = 'avoid';
+      page.style.margin = '0';
+
+      const canvas = await window.html2canvas(page, {
+        scale:           SCALE,
+        useCORS:         true,
+        allowTaint:      true,
+        backgroundColor: '#ffffff',
+        logging:         false,
+        windowWidth:     794,
+        width:           794,
+        height:          page.scrollHeight,
+      });
+
+      const imgData = canvas.toDataURL('image/jpeg', 0.95);
+      const imgH    = (canvas.height / canvas.width) * A4_W;   // altura proporcional em mm
+
+      if (i > 0) pdf.addPage();
+
+      // Se a imagem cabe numa página, inserir directo
+      if (imgH <= A4_H) {
+        pdf.addImage(imgData, 'JPEG', 0, 0, A4_W, imgH);
+      } else {
+        // Imagem mais alta que A4 — dividir em sub-páginas
+        const ratio     = canvas.width / A4_W;   // px por mm
+        const sliceH_mm = A4_H;
+        const sliceH_px = Math.round(sliceH_mm * ratio * SCALE);
+        let   yPx       = 0;
+
+        while (yPx < canvas.height) {
+          const sliceCanvas = document.createElement('canvas');
+          sliceCanvas.width  = canvas.width;
+          sliceCanvas.height = Math.min(sliceH_px, canvas.height - yPx);
+          const ctx = sliceCanvas.getContext('2d');
+          ctx.drawImage(canvas, 0, -yPx);
+          const sliceData = sliceCanvas.toDataURL('image/jpeg', 0.95);
+          const sliceH    = (sliceCanvas.height / canvas.width) * A4_W;
+          if (yPx > 0) pdf.addPage();
+          pdf.addImage(sliceData, 'JPEG', 0, 0, A4_W, sliceH);
+          yPx += sliceH_px;
+        }
+      }
+    }
+
+    // ── 5. Download ──
+    const nomeCliente = (data.nome || 'ficha').replace(/[^a-zA-Z0-9À-ÿ ]/g, '').trim().replace(/\s+/g, '_');
+    const dataStr     = new Date().toISOString().slice(0, 10);
+    pdf.save(`ficha-${proc}-${nomeCliente}-${dataStr}.pdf`);
+
+    showToast('✅ PDF exportado com sucesso!');
+  } catch(e) {
+    console.error('PDF error:', e);
+    showToast('❌ Erro ao gerar PDF: ' + e.message);
+  } finally {
+    // Limpar iframe
+    document.querySelectorAll('iframe[style*="-9999px"]').forEach(el => el.remove());
+    // Restaurar botões
+    btnList.forEach((b, i) => { b.textContent = origLabels[i]; b.disabled = false; });
+  }
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
