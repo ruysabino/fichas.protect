@@ -796,6 +796,39 @@
         </div>
       </div>
 
+      <div class="form-card sig-card" id="sig-card-p">
+        <h2 class="card-title">✍️ Assinatura da Cliente</h2>
+        <p class="sig-instructions">Assine abaixo com o dedo, caneta ou rato</p>
+        <div class="sig-canvas-wrap">
+          <canvas id="sig-canvas-p" class="sig-canvas"></canvas>
+          <div class="sig-placeholder" id="sig-ph-p">Toque aqui para assinar</div>
+        </div>
+        <div class="sig-actions">
+          <button type="button" class="btn-sig-clear" onclick="sigClear('p')">🗑️ Limpar assinatura</button>
+          <span class="sig-status" id="sig-status-p"></span>
+        </div>
+      </div>
+
+      <div class="form-card">
+        <h2 class="card-title">🗓️ Dados de Atendimento</h2>
+        <div class="form-grid">
+          <div class="field-group"><label>Data do Procedimento</label><input type="date" id="p-atend-data"></div>
+          <div class="field-group"><label>Profissional Responsável</label><input type="text" id="p-profissional" placeholder="Nome da profissional"></div>
+        </div>
+        <div style="margin-top:16px;">
+          <label class="field-group" style="display:block;margin-bottom:8px;font-size:12px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.06em;">Assinatura do Profissional</label>
+          <p class="sig-instructions">Assine abaixo com o dedo, caneta ou rato</p>
+          <div class="sig-canvas-wrap">
+            <canvas id="sig-canvas-pp" class="sig-canvas"></canvas>
+            <div class="sig-placeholder" id="sig-ph-pp">Toque aqui para assinar</div>
+          </div>
+          <div class="sig-actions">
+            <button type="button" class="btn-sig-clear" onclick="sigClear('pp')">🗑️ Limpar assinatura</button>
+            <span class="sig-status" id="sig-status-pp"></span>
+          </div>
+        </div>
+      </div>
+
       <div class="form-card">
         <h2 class="card-title">📷 Autorização de Imagem</h2>
         <div class="yn-row big"><span>Autoriza o uso da sua imagem para redes sociais e portefólio?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="p-imagem" value="Autorizo"> ✅ Autorizo</label><label class="yn-lbl"><input type="radio" name="p-imagem" value="Não autorizo"> ❌ Não autorizo</label></div></div>
@@ -1203,29 +1236,134 @@
         <h2 class="card-title">💎 Histórico de Alongamento de Unhas</h2>
         <div class="yn-list">
 
-          <div class="yn-row">
-            <span>4) Já fez alongamento de unhas anteriormente?</span>
-            <div class="yn-btns"><label class="yn-lbl"><input type="radio" name="m-histo" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="m-histo" value="NÃO"> NÃO</label></div>
-          </div>
-
-          <div class="yn-row" style="flex-wrap:wrap;gap:8px;">
-            <span style="width:100%;flex:unset;">5) Qual técnica foi usada?</span>
-            <div style="display:flex;gap:8px;flex-wrap:wrap;">
-              <label class="yn-lbl"><input type="checkbox" name="m-tecnica" value="Acrílico"> Acrílico</label>
-              <label class="yn-lbl"><input type="checkbox" name="m-tecnica" value="Gel"> Gel</label>
-              <label class="yn-lbl"><input type="checkbox" name="m-tecnica" value="Fibra"> Fibra</label>
-              <label class="yn-lbl"><input type="checkbox" name="m-tecnica" value="Outra"> Outra</label>
+          <!-- Q4: Já fez alongamento? -->
+          <div class="yn-row yn-row-col">
+            <div class="yn-row-top">
+              <span>4) Já fez alongamento de unhas anteriormente?</span>
+              <div class="yn-btns">
+                <label class="yn-lbl"><input type="radio" name="m-histo" value="SIM" onchange="toggleSub('m-histo-sub',this,'SIM')"> SIM</label>
+                <label class="yn-lbl"><input type="radio" name="m-histo" value="NÃO" onchange="toggleSub('m-histo-sub',this,'SIM')"> NÃO</label>
+              </div>
             </div>
-            <input type="text" class="yn-obs" id="m-tecnica-outra" placeholder="Outra técnica...">
+            <div class="yn-sub" id="m-histo-sub" style="display:none;">
+              <span class="yn-sub-label">Se SIM, qual técnica foi usada?</span>
+              <div class="pill-group" style="margin-top:4px;">
+                <label class="pill-lbl"><input type="radio" name="m-tecnica-histo" value="Gel"> Gel</label>
+                <label class="pill-lbl"><input type="radio" name="m-tecnica-histo" value="Acrílico (Porcelana)"> Acrílico (Porcelana)</label>
+                <label class="pill-lbl"><input type="radio" name="m-tecnica-histo" value="Fibra de vidro"> Fibra de vidro</label>
+                <label class="pill-lbl"><input type="radio" name="m-tecnica-histo" value="Outro"> Outros</label>
+              </div>
+              <input type="text" class="field-outro-input" id="m-tecnica-outro" placeholder="Outra técnica…" style="display:none;margin-top:8px;">
+            </div>
           </div>
 
+          <!-- Q5: Cor usada (paleta) -->
+          <div class="yn-row yn-row-col">
+            <div class="yn-row-top">
+              <span>5) Cor Usada? (Paleta)</span>
+            </div>
+            <div class="yn-sub" style="display:flex;">
+              <div class="pill-group">
+                <label class="pill-lbl"><input type="radio" name="m-cor-histo" value="Claras / Nude"> Claras / Nude</label>
+                <label class="pill-lbl"><input type="radio" name="m-cor-histo" value="Escuras / Profundas"> Escuras / Profundas</label>
+                <label class="pill-lbl"><input type="radio" name="m-cor-histo" value="Pastel"> Pastel</label>
+                <label class="pill-lbl"><input type="radio" name="m-cor-histo" value="Vibrantes / Neon"> Vibrantes / Neon</label>
+                <label class="pill-lbl"><input type="radio" name="m-cor-histo" value="Neutras / Simples"> Neutras / Simples</label>
+                <label class="pill-lbl"><input type="radio" name="m-cor-histo" value="Outras" onchange="toggleSub('m-cor-histo-outro-wrap',this,'Outras')"> Outras</label>
+              </div>
+              <input type="text" class="field-outro-input" id="m-cor-histo-outro" placeholder="Outra cor…" style="display:none;margin-top:8px;" id="m-cor-histo-outro-wrap">
+            </div>
+          </div>
+
+          <!-- Q6: Problema anterior -->
           <div class="yn-row">
             <span>6) Teve algum problema de alergia, infecção ou dano às unhas naturais como resultado de procedimento anterior?</span>
-            <div class="yn-btns"><label class="yn-lbl"><input type="radio" name="m-problema" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="m-problema" value="NÃO"> NÃO</label></div>
+            <div class="yn-btns">
+              <label class="yn-lbl"><input type="radio" name="m-problema" value="SIM"> SIM</label>
+              <label class="yn-lbl"><input type="radio" name="m-problema" value="NÃO"> NÃO</label>
+            </div>
           </div>
           <div class="form-grid" style="margin:0 0 8px 0;">
-            <div class="field-group full"><label>Se SIM, especifique:</label><input type="text" id="m-problema-esp" placeholder="Descrição do problema..."></div>
+            <div class="field-group full"><label>Se SIM, especifique:</label><input type="text" id="m-problema-esp" placeholder="Descrição do problema…"></div>
           </div>
+
+        </div>
+      </div>
+
+      <!-- ── NOVO: Procedimento Desejado ── -->
+      <div class="form-card">
+        <h2 class="card-title">💅 Procedimento Desejado</h2>
+        <div class="form-grid">
+
+          <!-- 1. Tipo de Unha -->
+          <div class="field-group full">
+            <label>1) Tipo de Unha (Nail Type)</label>
+            <select id="m-nail-type">
+              <option value="">Selecionar forma…</option>
+              <option value="Amêndoa (Almond)">Amêndoa (Almond)</option>
+              <option value="Flecha (Arrow)">Flecha (Arrow)</option>
+              <option value="Bailarina (Coffin/Ballerina)">Bailarina (Coffin/Ballerina)</option>
+              <option value="Aresta (Edge)">Aresta (Edge)</option>
+              <option value="Leque (Flare)">Leque (Flare)</option>
+              <option value="Batom (Lipstick)">Batom (Lipstick)</option>
+              <option value="Pico de Montanha (Mountain Peak)">Pico de Montanha (Mountain Peak)</option>
+              <option value="Ovais (Oval)">Ovais (Oval)</option>
+              <option value="Arredondada (Rounded)">Arredondada (Rounded)</option>
+              <option value="Quadrada (Square)">Quadrada (Square)</option>
+              <option value="Quadrada com Canto Arredondado (Squoval)">Quadrada com Canto Arredondado (Squoval / Soft Square)</option>
+              <option value="Stiletto">Stiletto</option>
+              <option value="Outro">Outras</option>
+            </select>
+            <input type="text" id="m-nail-type-outro" class="field-outro-input" placeholder="Outra forma…" style="display:none;margin-top:8px;">
+          </div>
+
+          <!-- 2. Material -->
+          <div class="field-group full">
+            <label>2) Material</label>
+            <div class="pill-group">
+              <label class="pill-lbl"><input type="radio" name="m-material" value="Acrílico (Porcelana)"> Acrílico (Porcelana)</label>
+              <label class="pill-lbl"><input type="radio" name="m-material" value="Acrygel / Acrigel"> Acrygel / Acrigel</label>
+              <label class="pill-lbl"><input type="radio" name="m-material" value="Fibra de vidro"> Fibra de vidro</label>
+              <label class="pill-lbl"><input type="radio" name="m-material" value="Gel"> Gel</label>
+              <label class="pill-lbl"><input type="radio" name="m-material" value="Pó acrílico"> Pó acrílico</label>
+              <label class="pill-lbl"><input type="radio" name="m-material" value="Polygel (Gel em Pasta)"> Polygel (Gel em Pasta)</label>
+              <label class="pill-lbl"><input type="radio" name="m-material" value="Outro"> Outros</label>
+            </div>
+            <input type="text" id="m-material-outro" class="field-outro-input" placeholder="Outro material…" style="display:none;margin-top:8px;">
+          </div>
+
+          <!-- 3. Molde -->
+          <div class="field-group">
+            <label>3) Molde</label>
+            <div class="pill-group">
+              <label class="pill-lbl"><input type="radio" name="m-molde" value="F1"> F1</label>
+              <label class="pill-lbl"><input type="radio" name="m-molde" value="Papel"> Papel</label>
+              <label class="pill-lbl"><input type="radio" name="m-molde" value="Tip"> Tip</label>
+              <label class="pill-lbl"><input type="radio" name="m-molde" value="Outro"> Outros</label>
+            </div>
+            <input type="text" id="m-molde-outro" class="field-outro-input" placeholder="Outro molde…" style="display:none;margin-top:8px;">
+          </div>
+
+          <!-- 4. Nova Cor (Paleta) -->
+          <div class="field-group">
+            <label>4) Nova Cor Usada (Paleta)</label>
+            <div class="pill-group">
+              <label class="pill-lbl"><input type="radio" name="m-cor-nova" value="Claras / Nude"> Claras / Nude</label>
+              <label class="pill-lbl"><input type="radio" name="m-cor-nova" value="Escuras / Profundas"> Escuras / Profundas</label>
+              <label class="pill-lbl"><input type="radio" name="m-cor-nova" value="Pastel"> Pastel</label>
+              <label class="pill-lbl"><input type="radio" name="m-cor-nova" value="Vibrantes / Neon"> Vibrantes / Neon</label>
+              <label class="pill-lbl"><input type="radio" name="m-cor-nova" value="Neutras / Simples"> Neutras / Simples</label>
+              <label class="pill-lbl"><input type="radio" name="m-cor-nova" value="Outras"> Outras</label>
+            </div>
+            <input type="text" id="m-cor-nova-outro" class="field-outro-input" placeholder="Outra cor…" style="display:none;margin-top:8px;">
+          </div>
+
+          <!-- 5. Código da Cor -->
+          <div class="field-group full">
+            <label>5) Código da Cor</label>
+            <input type="text" id="m-cor-codigo" placeholder="Ex: OPI — Bubble Bath, Essie #48…">
+          </div>
+
         </div>
       </div>
 

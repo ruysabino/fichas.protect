@@ -401,6 +401,15 @@ function collectForm() {
       nac: val('m-nac'),
       atendData: val('m-atend-data'), profissional: val('m-profissional'),
       sigProfDataURL: sigGetDataURL('mp'),
+      // Procedimento Desejado
+      nailType:      val('m-nail-type') === 'Outro' ? val('m-nail-type-outro') : val('m-nail-type'),
+      material:      getRadio('m-material') === 'Outro' ? val('m-material-outro') : getRadio('m-material'),
+      molde:         getRadio('m-molde') === 'Outro' ? val('m-molde-outro') : getRadio('m-molde'),
+      corNova:       getRadio('m-cor-nova') === 'Outras' ? val('m-cor-nova-outro') : getRadio('m-cor-nova'),
+      corCodigo:     val('m-cor-codigo'),
+      // Histórico (actualizado)
+      histoTecnica:  getRadio('m-tecnica-histo') === 'Outro' ? val('m-tecnica-outro') : getRadio('m-tecnica-histo'),
+      corHisto:      getRadio('m-cor-histo') === 'Outras' ? val('m-cor-histo-outro') : getRadio('m-cor-histo'),
       // informações de saúde
       alergia: getRadio('m-alergia'),
       alergiaEsp: val('m-alergia-esp'), alergiaMarca: val('m-alergia-marca'),
@@ -550,10 +559,51 @@ function populateForm(d) {
     setVal('m-sexo', d.sexo); setVal('m-tel', d.tel);
     setVal('m-morada', d.morada); setVal('m-email', d.email);
     setVal('m-doc', d.doc); setNac('m', d.nac);
+    // Atendimento
     document.getElementById('m-atend-data') && (document.getElementById('m-atend-data').value = d.atendData||'');
     document.getElementById('m-profissional') && (document.getElementById('m-profissional').value = d.profissional||'');
     if (d.sigProfDataURL) setTimeout(() => sigSetDataURL('mp', d.sigProfDataURL), 100);
-        setRadio('m-alergia', d.alergia); setVal('m-alergia-esp', d.alergiaEsp);
+    // Procedimento Desejado
+    if (d.nailType) {
+      const knownNail = ['Amêndoa (Almond)','Flecha (Arrow)','Bailarina (Coffin/Ballerina)','Aresta (Edge)',
+        'Leque (Flare)','Batom (Lipstick)','Pico de Montanha (Mountain Peak)','Ovais (Oval)',
+        'Arredondada (Rounded)','Quadrada (Square)','Quadrada com Canto Arredondado (Squoval)','Stiletto'];
+      const nsEl = document.getElementById('m-nail-type');
+      if (nsEl) {
+        if (knownNail.some(n => n === d.nailType)) { nsEl.value = d.nailType; }
+        else { nsEl.value = 'Outro'; const ot=document.getElementById('m-nail-type-outro'); if(ot){ot.value=d.nailType;ot.style.display='block';} }
+      }
+    }
+    (['m-material','m-molde']).forEach(name => {
+      const fieldKey = name === 'm-material' ? 'material' : 'molde';
+      if (d[fieldKey]) {
+        setRadio(name, d[fieldKey]);
+        const r = document.querySelector(`input[name="${name}"]:checked`);
+        const o = document.getElementById(name+'-outro');
+        if (r && r.value === 'Outro' && o) { o.value = d[fieldKey]; o.style.display='block'; }
+      }
+    });
+    if (d.corNova) {
+      const knownCor = ['Claras / Nude','Escuras / Profundas','Pastel','Vibrantes / Neon','Neutras / Simples'];
+      if (knownCor.includes(d.corNova)) setRadio('m-cor-nova', d.corNova);
+      else { setRadio('m-cor-nova','Outras'); const oc=document.getElementById('m-cor-nova-outro'); if(oc){oc.value=d.corNova;oc.style.display='block';} }
+    }
+    setVal('m-cor-codigo', d.corCodigo);
+    // Histórico
+    setRadio('m-histo', d.histo);
+    const mHistoSIMEl = document.querySelector('input[name="m-histo"][value="SIM"]');
+    if (mHistoSIMEl && mHistoSIMEl.checked) { const sub=document.getElementById('m-histo-sub'); if(sub)sub.style.display='flex'; }
+    if (d.histoTecnica) {
+      const knownTec = ['Gel','Acrílico (Porcelana)','Fibra de vidro'];
+      if (knownTec.includes(d.histoTecnica)) setRadio('m-tecnica-histo', d.histoTecnica);
+      else { setRadio('m-tecnica-histo','Outro'); const ot2=document.getElementById('m-tecnica-outro'); if(ot2){ot2.value=d.histoTecnica;ot2.style.display='block';} }
+    }
+    if (d.corHisto) {
+      const knownCorH = ['Claras / Nude','Escuras / Profundas','Pastel','Vibrantes / Neon','Neutras / Simples'];
+      if (knownCorH.includes(d.corHisto)) setRadio('m-cor-histo', d.corHisto);
+      else { setRadio('m-cor-histo','Outras'); const och=document.getElementById('m-cor-histo-outro'); if(och){och.value=d.corHisto;och.style.display='block';} }
+    }
+    setRadio('m-alergia', d.alergia); setVal('m-alergia-esp', d.alergiaEsp);
     setVal('m-alergia-marca', d.alergiaMarca);
     setRadio('m-condicao', d.condicao); setVal('m-condicao-esp', d.condicaoEsp);
     setRadio('m-gravida', d.gravida);
@@ -2205,5 +2255,42 @@ document.addEventListener('DOMContentLoaded', () => {
   // Wire "já fez extensão" → show/hide duração
   document.querySelectorAll('input[name="p-fez-ext"]').forEach(r =>
     r.addEventListener('change', fezExtChange));
+
+  // Manicure: técnica histórico → show outro input
+  document.querySelectorAll('input[name="m-tecnica-histo"]').forEach(r =>
+    r.addEventListener('change', () => {
+      const o = document.getElementById('m-tecnica-outro');
+      if (o) o.style.display = r.value === 'Outro' && r.checked ? 'block' : 'none';
+    }));
+
+  // Manicure: nail type → show outro input
+  const nailSel = document.getElementById('m-nail-type');
+  if (nailSel) nailSel.addEventListener('change', () => {
+    const o = document.getElementById('m-nail-type-outro');
+    if (o) o.style.display = nailSel.value === 'Outro' ? 'block' : 'none';
+  });
+
+  // Manicure: material / molde → show outro inputs
+  ['m-material','m-molde'].forEach(name => {
+    document.querySelectorAll(`input[name="${name}"]`).forEach(r =>
+      r.addEventListener('change', () => {
+        const o = document.getElementById(name + '-outro');
+        if (o) o.style.display = r.value === 'Outro' && r.checked ? 'block' : 'none';
+      }));
+  });
+
+  // Manicure: cor nova → show outro
+  document.querySelectorAll('input[name="m-cor-nova"]').forEach(r =>
+    r.addEventListener('change', () => {
+      const o = document.getElementById('m-cor-nova-outro');
+      if (o) o.style.display = r.value === 'Outras' && r.checked ? 'block' : 'none';
+    }));
+
+  // Manicure: cor histórico → show outro
+  document.querySelectorAll('input[name="m-cor-histo"]').forEach(r =>
+    r.addEventListener('change', () => {
+      const o = document.getElementById('m-cor-histo-outro');
+      if (o) o.style.display = r.value === 'Outras' && r.checked ? 'block' : 'none';
+    }));
 });
 
