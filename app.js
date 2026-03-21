@@ -1020,18 +1020,17 @@ function buildLaserHTML(d) {
     <div style="font-weight:700;font-size:9pt;margin-bottom:2px;">Observações:</div>
     <div style="border:1.5px solid #E46589;border-radius:3px;min-height:12mm;padding:5px 8px;font-size:9pt;">${d.obs||''}</div>
     <div style="margin:6mm 0 3mm;font-size:8.5pt;line-height:1.55;color:#333;">Tomei conhecimento de todas as precauções e contra-indicações do tratamento. Assumo comunicar em qualquer sessão qualquer alteração da minha situação.</div>
-    ${imagemBlock(d.imgAuth)}
-    ${sigRow([['Assinatura da Cliente',''],['Assinatura da Técnica',''],['Data do Procedimento', dataFmt]], d.sigDataURL, d.sigProfDataURL)}
   </div>`;
 
   const p2 = `<div class="pd-page">
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:5mm;">${logoSVG()}
-      <div><div style="font-style:italic;font-size:8pt;color:#888;">Data do início:</div><div style="font-weight:700;font-size:10pt;">${dataFmt}</div></div>
-    </div>
+    ${printHeader('REGISTO DE SESSÕES – DEPILAÇÃO A LASER DE DIODO')}
+    <div style="margin-bottom:3mm;font-size:8.5pt;color:#555;">Data de início: <strong>${dataFmt}</strong> &nbsp;|&nbsp; Cliente: <strong>${d.nome||''}</strong></div>
     <table class="pd-sessions-table">
       <thead><tr><th>Sessão</th><th>Data</th><th>Zona</th><th>FotoTipo</th><th>Pulso</th><th>Frequência</th><th>Energia</th><th>Duração</th><th>Passagens na Zona</th><th>Resultados Sessão Anterior</th></tr></thead>
       <tbody>${sessHTML}</tbody>
     </table>
+    ${imagemBlock(d.imgAuth)}
+    ${sigRow([['Assinatura da Cliente',''],['Assinatura da Técnica',''],['Data do Procedimento', dataFmt]], d.sigDataURL, d.sigProfDataURL)}
   </div>`;
 
   return p1 + p2;
