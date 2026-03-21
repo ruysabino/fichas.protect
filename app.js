@@ -414,7 +414,8 @@ function collectForm() {
       corHisto:      getRadio('m-cor-histo') === 'Outras' ? val('m-cor-histo-outro') : getRadio('m-cor-histo'),
       // informações de saúde
       alergia: getRadio('m-alergia'),
-      alergiaEsp: val('m-alergia-esp'), alergiaMarca: val('m-alergia-marca'),
+      alergiaEsp: val('m-alergia-esp'),
+      alergiaMarcaYN: getRadio('m-alergia-marca-yn'), alergiaMarca: val('m-alergia-marca'),
       condicao: getRadio('m-condicao'), condicaoEsp: val('m-condicao-esp'),
       gravida: getRadio('m-gravida'),
       // histórico
@@ -611,9 +612,12 @@ function populateForm(d) {
       if (knownCorH.includes(d.corHisto)) setRadio('m-cor-histo', d.corHisto);
       else { setRadio('m-cor-histo','Outras'); const och=document.getElementById('m-cor-histo-outro'); if(och){och.value=d.corHisto;och.style.display='block';} }
     }
-    setRadio('m-alergia', d.alergia); setVal('m-alergia-esp', d.alergiaEsp);
+    setRadio('m-alergia', d.alergia);
+    if (d.alergia === 'SIM') { const s=document.getElementById('m-alergia-sub'); if(s)s.style.display='flex'; }
+    setVal('m-alergia-esp', d.alergiaEsp); setRadio('m-alergia-marca-yn', d.alergiaMarcaYN); setVal('m-alergia-marca', d.alergiaMarca); setVal('m-alergia-esp', d.alergiaEsp);
     setVal('m-alergia-marca', d.alergiaMarca);
-    setRadio('m-condicao', d.condicao); setVal('m-condicao-esp', d.condicaoEsp);
+    setRadio('m-condicao', d.condicao);
+    if (d.condicao === 'SIM') { const s=document.getElementById('m-condicao-sub'); if(s)s.style.display='flex'; } setVal('m-condicao-esp', d.condicaoEsp);
     setRadio('m-gravida', d.gravida);
     setRadio('m-histo', d.histo);
     (d.tecnica || []).forEach(v => {
@@ -623,7 +627,8 @@ function populateForm(d) {
     setVal('m-tecnica-outra', d.tecnicaOutra);
     setRadio('m-problema', d.problema); setVal('m-problema-esp', d.problemaEsp);
     setRadio('m-manutencao', d.manutencao);
-    setRadio('m-pergunta', d.pergunta); setVal('m-pergunta-esp', d.perguntaEsp);
+    setRadio('m-pergunta', d.pergunta);
+    if (d.pergunta === 'SIM') { const s=document.getElementById('m-pergunta-sub'); if(s)s.style.display='flex'; } setVal('m-pergunta-esp', d.perguntaEsp);
     setRadio('m-imagem', d.imgAuth);
     if (d.sigDataURL) setTimeout(() => sigSetDataURL('m', d.sigDataURL), 100);
   }
@@ -1040,36 +1045,51 @@ function buildLaserHTML(d) {
 function buildManicureHTML(d) {
   const dataFmt = formatDate(d.atendData || d.data || '');
 
-  // técnicas seleccionadas
-  const tecnicasArr = d.tecnica || [];
-  const tecList = ['Acrílico','Gel','Fibra','Outra'].map(t => {
-    const sel = tecnicasArr.includes(t);
-    return `<span class="print-box${sel?' checked':''}"></span><span class="print-box-label">${t}${t==='Outra'&&d.tecnicaOutra?' ('+d.tecnicaOutra+')':''}</span>`;
-  }).join('&nbsp;&nbsp;');
+  // ── helpers ──
+  function ynBox(v, label) {
+    const chk = normYn(v) === label.replace('Ã','A').replace('Ã','A');
+    return `<span class="print-box${chk?' checked':''}"></span><span class="print-box-label">${label}</span>`;
+  }
+
+  // ── Histórico: técnica usada ──
+  const tecnicaHisto = d.histoTecnica || '';
+  const knownTec = ['Gel','Acrílico (Porcelana)','Fibra de vidro'];
+  const tecHistoLine = tecnicaHisto
+    ? `Técnica: <strong>${tecnicaHisto}</strong>`
+    : '—';
+
+  // ── Cor histórico ──
+  const corHistoLine = d.corHisto || '—';
+
+  // ── Procedimento Desejado ──
+  const nailTypeLine   = d.nailType   || '—';
+  const materialLine   = d.material   || '—';
+  const moldeLine      = d.molde      || '—';
+  const corNovaLine    = d.corNova    || '—';
+  const corCodigoLine  = d.corCodigo  || '—';
 
   const p1 = `<div class="pd-page">
     ${printHeader('FICHA DE ANAMNESE – MANICURE')}
     ${dadosClienteBlock(d)}
     ${atendimentoBlock(d)}
-    <div class="pd-section-title">INFORMAÇÕES DE SAÚDE</div>
+
+    <div class="pd-section-title">CONSENTIMENTO – QUESTIONÁRIO DE SAÚDE</div>
     <table class="pd-yn-table">
       <tr>
-        <td class="pd-yn-q" style="width:68%;">1) Tem alguma alergia a produtos químicos ou materiais usados em tratamentos de unhas? (cola, acrílico, gel, etc.)</td>
+        <td class="pd-yn-q" style="width:68%;">1) Tem alguma alergia a produtos químicos ou materiais? (cola, acrílico, gel, etc.)</td>
         <td class="pd-yn-a">
           <span class="print-box${normYn(d.alergia)==='SIM'?' checked':''}"></span><span class="print-box-label">SIM</span>&nbsp;&nbsp;<span class="print-box${normYn(d.alergia)==='NAO'?' checked':''}"></span><span class="print-box-label">NÃO</span>
         </td>
       </tr>
     </table>
-    <div style="font-size:8.5pt;margin:2px 0 4px;">
-      Se SIM, especifique: <span style="border-bottom:1px solid #aaa;display:inline-block;min-width:120px;">${d.alergiaEsp||''}</span>
-      &nbsp;&nbsp; Alergia a marca específica: <span style="border-bottom:1px solid #aaa;display:inline-block;min-width:100px;">${d.alergiaMarca||''}</span>
-    </div>
+    ${d.alergia==='SIM' ? `<div style="font-size:8.5pt;margin:2px 0 3px;padding-left:4px;">
+      ↳ Descrição: <span style="border-bottom:1px solid #aaa;display:inline-block;min-width:120px;">${esc(d.alergiaEsp||'')}</span>
+      &nbsp; Marca específica (${d.alergiaMarcaYN||'—'}): <span style="border-bottom:1px solid #aaa;display:inline-block;min-width:100px;">${esc(d.alergiaMarca||'')}</span>
+    </div>` : ''}
     ${makeYnTable([
       ['2) Tem alguma condição médica que afeta as unhas ou pele das mãos? (fungos, psoríase, eczema, etc.)', d.condicao],
     ])}
-    <div style="font-size:8.5pt;margin:2px 0 4px;">
-      Se SIM, especifique: <span style="border-bottom:1px solid #aaa;display:inline-block;min-width:200px;">${d.condicaoEsp||''}</span>
-    </div>
+    ${d.condicao==='SIM' ? `<div style="font-size:8.5pt;margin:2px 0 3px;padding-left:4px;">↳ ${esc(d.condicaoEsp||'—')}</div>` : ''}
     ${makeYnTable([
       ['3) Está grávida ou a amamentar?', d.gravida],
     ])}
@@ -1078,26 +1098,29 @@ function buildManicureHTML(d) {
     ${makeYnTable([
       ['4) Já fez alongamento de unhas anteriormente?', d.histo],
     ])}
-    <div style="margin:3mm 0 2mm;font-size:9pt;font-weight:600;">5) Qual técnica foi usada?</div>
-    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:4mm;">${tecList}</div>
+    ${d.histo==='SIM' ? `<div style="font-size:8.5pt;margin:2px 0 3px;padding-left:4px;">↳ ${tecHistoLine}</div>` : ''}
+    <div style="font-size:8.5pt;margin:3px 0 4px;">5) Cor Usada (Paleta): <strong>${corHistoLine}</strong></div>
     ${makeYnTable([
-      ['6) Teve algum problema de alergia, infecção ou dano às unhas naturais como resultado de procedimento anterior?', d.problema],
+      ['6) Teve algum problema de alergia, infecção ou dano às unhas naturais em procedimento anterior?', d.problema],
     ])}
-    <div style="font-size:8.5pt;margin:2px 0 6px;">
-      Se SIM, especifique: <span style="border-bottom:1px solid #aaa;display:inline-block;min-width:200px;">${d.problemaEsp||''}</span>
-    </div>
+    ${d.problema==='SIM' ? `<div style="font-size:8.5pt;margin:2px 0 3px;padding-left:4px;">↳ ${esc(d.problemaEsp||'—')}</div>` : ''}
+
+    <div class="pd-section-title">PROCEDIMENTO DESEJADO</div>
+    ${makeFields([
+      [['Tipo de Unha:', nailTypeLine], ['Material:', materialLine]],
+      [['Molde:', moldeLine], ['Nova Cor (Paleta):', corNovaLine]],
+      [['Código da Cor:', corCodigoLine]],
+    ])}
 
     <div class="pd-section-title">INFORMAÇÕES ADICIONAIS</div>
     ${makeYnTable([
-      ['7) Está ciente de que a manutenção regular é necessária para preservar o alongamento das suas unhas?', d.manutencao],
-      ['8) Tem alguma pergunta ou preocupação específica sobre o procedimento de alongamento de unhas?', d.pergunta],
+      ['7) Está ciente de que a manutenção regular é necessária para preservar o alongamento?', d.manutencao],
+      ['8) Tem alguma pergunta ou preocupação específica sobre o procedimento?', d.pergunta],
     ])}
-    <div style="font-size:8.5pt;margin:2px 0 6px;">
-      Se SIM, especifique: <span style="border-bottom:1px solid #aaa;display:inline-block;min-width:200px;">${d.perguntaEsp||''}</span>
-    </div>
+    ${d.pergunta==='SIM' ? `<div style="font-size:8.5pt;margin:2px 0 6px;padding-left:4px;">↳ ${esc(d.perguntaEsp||'—')}</div>` : ''}
 
     <div style="margin:5mm 0 3mm;font-size:8.5pt;line-height:1.55;color:#333;">
-      <b>Assinatura do Cliente:</b> Declaro que as informações fornecidas acima são verdadeiras e completas. Entendo os riscos e benefícios do alongamento de unhas e concordo com o procedimento.
+      <b>Declaração:</b> Declaro que as informações fornecidas acima são verdadeiras e completas. Entendo os riscos e benefícios do procedimento e concordo com a sua realização.
     </div>
     ${imagemBlock(d.imgAuth)}
     ${sigRow([['Assinatura da Cliente',''],['Profissional Responsável',''],['Data', dataFmt]], d.sigDataURL, d.sigProfDataURL)}
@@ -1105,6 +1128,7 @@ function buildManicureHTML(d) {
 
   return p1;
 }
+
 
 /* ══════════════════════════════════════════════════════════════════════════
    IMPRESSÃO
