@@ -4,6 +4,12 @@
    ========================================================================== */
 'use strict';
 
+/* ── HTML escape (fallback — app.js loads first with the full version) ── */
+const _esc = typeof esc === 'function' ? esc : s => String(s||'')
+  .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+  .replace(/"/g,'&quot;').replace(/'/g,'&#x27;');
+
+
 /* ══════════════════════════════════════════════════════════════════════════
    ESTADO DE AUTENTICAÇÃO
    ══════════════════════════════════════════════════════════════════════════ */
@@ -276,6 +282,7 @@ function togglePass(inputId, btn) {
    ECRÃ DE DEFINIÇÕES
    ══════════════════════════════════════════════════════════════════════════ */
 function showDefinicoes() {
+  if (!isAdmin()) { showToast('⚠️ Acesso restrito a administradores.'); return; }
   showScreen('screen-definicoes');
   renderUsersList();
 }
@@ -285,22 +292,27 @@ function backFromDefinicoes() { showScreen('screen-select'); }
 function renderUsersList() {
   const el = document.getElementById('users-list');
   if (!el) return;
-  el.innerHTML = getAllUsers().map(u => `
-    <div class="user-row">
+  el.innerHTML = getAllUsers().map(u => {
+    const safeUser = _esc(u.username);
+    const safeRole = u.role === 'admin' ? '⭐ Admin' : '👁️ Utilizador';
+    // onclick uses the raw username via data attribute to avoid injection in attribute
+    return `<div class="user-row">
       <div class="user-row-info">
-        <span class="user-row-name">👤 ${u.username}</span>
-        <span class="user-row-role ${u.role}">${u.role === 'admin' ? '⭐ Admin' : '👁️ Utilizador'}</span>
+        <span class="user-row-name">👤 ${safeUser}</span>
+        <span class="user-row-role ${u.role === 'admin' ? 'admin' : 'user'}">${safeRole}</span>
       </div>
       <div class="user-row-actions">
         ${u.username !== currentUser()
-          ? `<button class="btn-user-reset" onclick="promptResetPassword('${u.username}')">🔑 Senha</button>
-             <button class="btn-user-del"   onclick="confirmDeleteUser('${u.username}')">🗑️</button>`
+          ? `<button class="btn-user-reset" data-user="${safeUser}" onclick="promptResetPassword(this.dataset.user)">🔑 Senha</button>
+             <button class="btn-user-del"   data-user="${safeUser}" onclick="confirmDeleteUser(this.dataset.user)">🗑️</button>`
           : '<span style="font-size:12px;color:var(--gray);">(você)</span>'}
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 
 async function addUser() {
+  if (!isAdmin()) { showToast('⚠️ Sem permissão para criar utilizadores.'); return; }
   const user = document.getElementById('new-user-name')?.value.trim();
   const pass = document.getElementById('new-user-pass')?.value;
   const role = document.getElementById('new-user-role')?.value || 'user';
@@ -318,6 +330,7 @@ async function addUser() {
 }
 
 async function promptResetPassword(username) {
+  if (!isAdmin()) { showToast('⚠️ Sem permissão.'); return; }
   const newPass = prompt(`Nova senha para "${username}" (mínimo 8 caracteres):`);
   if (!newPass) return;
   if (newPass.length < 8) { alert('Senha muito curta.'); return; }
@@ -326,6 +339,7 @@ async function promptResetPassword(username) {
 }
 
 function confirmDeleteUser(username) {
+  if (!isAdmin()) { showToast('⚠️ Sem permissão.'); return; }
   if (!confirm(`Eliminar utilizador "${username}"?`)) return;
   deleteUser(username);
   renderUsersList();

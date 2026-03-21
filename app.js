@@ -3,6 +3,18 @@
    ========================================================================== */
 'use strict';
 
+/* ── Escape HTML para prevenir XSS ── */
+function esc(str) {
+  if (!str && str !== 0) return '';
+  return String(str)
+    .replace(/&/g,  '&amp;')
+    .replace(/</g,  '&lt;')
+    .replace(/>/g,  '&gt;')
+    .replace(/"/g,  '&quot;')
+    .replace(/'/g,  '&#x27;');
+}
+
+
 let currentProc    = '';
 let currentFichaId = null;
 let db             = null;
@@ -175,7 +187,7 @@ async function renderFichasList() {
   container.innerHTML = all.map(f => `
     <div class="ficha-card">
       <div class="ficha-card-left">
-        <div class="ficha-card-nome">${f.nome || '(sem nome)'}</div>
+        <div class="ficha-card-nome">${esc(f.nome) || '(sem nome)'}</div>
         <div class="ficha-card-meta">
           <span class="ficha-badge">${PROC_LABELS[f.proc] || f.proc}</span>
           <span class="ficha-date">${formatDate(f.dataRegisto) || ''}</span>
@@ -1004,6 +1016,10 @@ async function printFromData(proc, data) {
   try {
     // ── 1. Carregar bibliotecas (tenta cdnjs, fallback unpkg) ──
     async function tryLoad(name, urls) {
+      // Check online status first (cached libs always work offline)
+      if (!window.jspdf && !navigator.onLine) {
+        throw new Error('Sem ligação à internet. O PDF requer ligação na primeira utilização para carregar as bibliotecas.');
+      }
       for (const url of urls) {
         try {
           await loadLib(name, url);
@@ -1220,13 +1236,13 @@ function filterClientes(query) {
   }
 
   container.innerHTML = list.map(c => {
-    const initials = (c.nome||'?').trim().split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
-    const meta = [c.tel, c.email].filter(Boolean).join(' · ');
-    const nac  = getNacDisplay(c.nac||'');
+    const initials = esc((c.nome||'?').trim().split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase());
+    const meta = [esc(c.tel), esc(c.email)].filter(Boolean).join(' · ');
+    const nac  = esc(getNacDisplay(c.nac||''));
     return `<div class="cliente-card">
       <div class="cliente-avatar">${initials}</div>
       <div class="cliente-card-info">
-        <div class="cliente-card-nome">${c.nome||'(sem nome)'}</div>
+        <div class="cliente-card-nome">${esc(c.nome)||'(sem nome)'}</div>
         <div class="cliente-card-meta">
           ${meta ? `<span>${meta}</span>` : ''}
           ${nac  ? `<span class="dot">·</span><span>${nac}</span>` : ''}
@@ -1335,11 +1351,11 @@ async function buscaClienteInline(pfx, query) {
   resultsDiv.style.display = 'block';
   resultsDiv.innerHTML = found.map(c => {
     const initials = (c.nome||'?').trim().split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
-    const sub = [c.tel, getNacDisplay(c.nac)].filter(Boolean).join(' · ');
+    const sub = [esc(c.tel), esc(getNacDisplay(c.nac))].filter(Boolean).join(' · ');
     return `<div class="busca-item" onclick="preencherDadosCliente('${pfx}', ${c.id})">
       <div class="busca-item-avatar">${initials}</div>
       <div class="busca-item-info">
-        <div class="busca-item-nome">${c.nome}</div>
+        <div class="busca-item-nome">${esc(c.nome)}</div>
         ${sub ? `<div class="busca-item-sub">${sub}</div>` : ''}
       </div>
       <span class="busca-item-badge">Usar</span>
@@ -1808,6 +1824,10 @@ function parseCSV(text) {
 function loadSheetJS() {
   return new Promise((resolve, reject) => {
     if (window.XLSX) { resolve(window.XLSX); return; }
+    if (!navigator.onLine) {
+      reject(new Error('Sem ligação à internet. O export XLSX requer ligação na primeira utilização.'));
+      return;
+    }
     const s = document.createElement('script');
     s.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
     s.onload  = () => resolve(window.XLSX);
@@ -1879,10 +1899,10 @@ async function previewImport() {
           <tbody>
             ${_importRows.slice(0,15).map(r => `
               <tr style="border-top:1px solid var(--border);">
-                <td style="padding:5px 8px;font-weight:600;">${r.nome||''}</td>
-                <td style="padding:5px 8px;">${r.tel||''}</td>
-                <td style="padding:5px 8px;">${r.email||''}</td>
-                <td style="padding:5px 8px;">${r.nasc||''}</td>
+                <td style="padding:5px 8px;font-weight:600;">${esc(r.nome)||''}</td>
+                <td style="padding:5px 8px;">${esc(r.tel)||''}</td>
+                <td style="padding:5px 8px;">${esc(r.email)||''}</td>
+                <td style="padding:5px 8px;">${esc(r.nasc)||''}</td>
               </tr>`).join('')}
             ${_importRows.length > 15 ? `<tr><td colspan="4" style="padding:6px 8px;color:var(--gray);font-style:italic;">… e mais ${_importRows.length-15} cliente(s)</td></tr>` : ''}
           </tbody>

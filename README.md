@@ -1,117 +1,80 @@
-# 💗 Beleza Rara — Fichas de Anamnese Digital
+# Fichas de Anamnese — by Valquiria Almeida
 
-> Sistema web para preenchimento e impressão de fichas de anamnese  
-> **Beleza Rara · Valquiria Almeida** · Fundão, Portugal
-
----
-
-## ✨ Funcionalidades
-
-| Procedimento | Documentos gerados |
-|---|---|
-| 👁️ Extensão de Pestanas | Ficha de Anamnese + Termo de Consentimento + Autorização de Imagem |
-| ✨ Depilação | Ficha de Anamnese com histórico completo |
-| ⚡ Laser de Diodo | Ficha clínica detalhada + Tabela de registo de sessões |
-
-- ✅ Impressão fiel ao design original (logo, cores, layout)
-- ✅ Gera PDF directamente pelo browser (Imprimir → Guardar como PDF)
-- ✅ Dados nunca saem do dispositivo — sem servidor, sem base de dados
-- ✅ Funciona offline depois do primeiro carregamento
-- ✅ Responsivo — funciona em tablet e telemóvel
-- ✅ Sem dependências externas · HTML + CSS + JS puro
+Sistema digital de fichas de anamnese para salão de beleza, desenvolvido como aplicação web estática hospedada em GitHub Pages.
 
 ---
 
-## 🚀 Como usar
+## Funcionalidades
 
-### 1. Aceder ao site
-Abra o link do GitHub Pages no browser (Chrome ou Edge recomendado para impressão).
-
-### 2. Seleccionar o procedimento
-Clique no cartão correspondente ao tratamento da cliente.
-
-### 3. Preencher os dados
-Navegue pelas secções e preencha todos os campos relevantes.  
-Campos de Sim/Não têm botões de selecção directa.
-
-### 4. Imprimir / Guardar PDF
-Clique em **🖨️ Imprimir / Gerar PDF** (barra de topo ou fundo da página).  
-No diálogo de impressão do browser:
-- Seleccione **"Guardar como PDF"** como destino
-- Formato: **A4 · Vertical**
-- Margens: **Predefinidas** (o layout já tem margens internas)
-- Active **"Gráficos de fundo"** para preservar cores e logótipo
-- Clique **Guardar**
+- **4 fichas de anamnese**: Extensão de Pestanas, Depilação, Laser de Diodo, Manicure
+- **Cadastro de clientes** com busca e preenchimento automático nas fichas
+- **Assinatura digital** da cliente e do profissional (canvas, dedo/caneta/rato)
+- **Exportar PDF** directamente do sistema (sem impressora virtual)
+- **Import/Export de clientes** em CSV e XLSX
+- **Backup cifrado** (AES-GCM) e restauro com senha
+- **Relatório RGPD** exportável (JSON + HTML)
+- **Autenticação** com utilizador e senha (PBKDF2, 310 000 iterações)
+- **Gestão de utilizadores** com perfis Admin / Utilizador
 
 ---
 
-## 📁 Estrutura de ficheiros
+## Armazenamento de dados
 
-```
-beleza-rara-fichas/
-├── index.html              ← Aplicação principal
-├── style.css               ← Estilos da interface e estilos de impressão
-├── app.js                  ← Lógica e geração dos documentos
-├── README.md               ← Este ficheiro
-└── assets/
-    ├── logo-icon.svg              ← Ícone principal (fundo rosa)
-    ├── logo-horizontal.svg        ← Logo com texto, horizontal
-    ├── logo-vertical.svg          ← Logo com texto, vertical (stacked)
-    ├── favicon.svg                ← Favicon vectorial
-    ├── favicon.ico                ← Favicon multi-resolução (16/32/48/64px)
-    ├── apple-touch-icon.png       ← Ícone iOS (180×180)
-    ├── logo-icon-512.png          ← PNG fundo rosa, 512×512
-    ├── logo-icon-256.png          ← PNG fundo rosa, 256×256
-    ├── logo-icon-192.png          ← PNG fundo rosa, 192×192 (PWA)
-    ├── logo-icon-128.png          ← PNG fundo rosa, 128×128
-    ├── logo-icon-64.png           ← PNG fundo rosa, 64×64
-    ├── logo-icon-32.png           ← PNG fundo rosa, 32×32
-    ├── logo-icon-transparent-512.png   ← PNG transparente, 512×512
-    ├── logo-icon-transparent-256.png   ← PNG transparente, 256×256
-    ├── logo-icon-transparent-128.png   ← PNG transparente, 128×128
-    ├── logo-icon-white-512.png    ← PNG branco (fundos escuros), 512×512
-    └── logo-icon-white-256.png    ← PNG branco (fundos escuros), 256×256
+| Dados | Onde | Persistência |
+|---|---|---|
+| Fichas e clientes | **IndexedDB** no browser | Persistem entre sessões |
+| Utilizadores e senhas (apenas hashes) | **localStorage** | Persistem entre sessões |
+| Sessão activa | **sessionStorage** | Apagada ao fechar o separador |
+
+> ⚠️ Os dados **ficam guardados no browser do dispositivo**. Para não perder dados, faça backups regulares em **Definições → Backup**.
+
+---
+
+## Dependências externas
+
+O sistema funciona maioritariamente offline mas requer ligação à internet nas seguintes situações:
+
+| Funcionalidade | Dependência | Quando |
+|---|---|---|
+| Tipografia | Google Fonts (Playfair Display, Nunito) | Sempre (fallback: Arial) |
+| Exportar PDF | jsPDF + html2canvas (cdnjs / unpkg) | Primeira utilização por sessão |
+| Exportar/Importar XLSX | SheetJS (cdnjs) | Primeira utilização por sessão |
+
+Após o primeiro carregamento de cada sessão, as bibliotecas ficam em cache e o PDF/XLSX funciona sem re-download.
+
+---
+
+## Segurança
+
+- Senhas armazenadas apenas como **hash PBKDF2-SHA256** (salt aleatório de 256 bits, 310 000 iterações)
+- Backups cifrados com **AES-GCM 256-bit**
+- Sessão com expiração de **8 horas**
+- Funções administrativas protegidas por verificação de permissão server-side
+
+> ℹ️ Por ser uma aplicação client-side, a segurança é adequada para uso interno. Não expor a utilizadores não confiáveis sem camada adicional de autenticação.
+
+---
+
+## Deploy (GitHub Pages)
+
+```yaml
+# .github/workflows/deploy.yml
+name: Deploy to GitHub Pages
+on:
+  push:
+    branches: [ main ]
 ```
 
+O deploy é automático a cada push para `main`.
+
 ---
 
-## 🌐 Deploy no GitHub Pages
+## Estrutura de ficheiros
 
-**1.** Crie um repositório público no GitHub (ex: `beleza-rara-fichas`)
-
-**2.** Faça upload de todos os ficheiros mantendo a estrutura de pastas
-
-**3.** Vá a **Settings → Pages → Source: Deploy from branch → main → / (root)** → Save
-
-**4.** Aguarde 1–2 minutos. O site fica disponível em:
 ```
-https://SEU-UTILIZADOR.github.io/beleza-rara-fichas/
+├── index.html      — Estrutura e ecrãs da aplicação
+├── app.js          — Lógica principal, fichas, PDF, import/export
+├── security.js     — Autenticação, cifra, backup/restore, RGPD
+├── style.css       — Estilos
+└── assets/         — Ícones e favicon
 ```
-
----
-
-## 🖨️ Dicas de impressão
-
-| Situação | Solução |
-|---|---|
-| Fundo branco nos cabeçalhos | Activar **"Gráficos de fundo"** nas opções |
-| Página cortada | Verificar tamanho **A4**, orientação **Vertical** |
-| Melhor qualidade | Usar **Chrome** ou **Edge** |
-
----
-
-## 🔒 Privacidade · RGPD
-
-Nenhum dado é enviado para servidores externos. Todo o processamento ocorre localmente no browser. Os dados são apagados ao fechar ou recarregar a página. Os PDFs gerados ficam apenas no dispositivo local.
-
----
-
-## 🛠️ Tecnologia
-
-`HTML5` · `CSS3` · `JavaScript ES6+` · Sem frameworks · Sem dependências · Sem instalação
-
----
-
-<div align="center">
-  <sub>Desenvolvido com 💗 para <strong>Beleza Rara</strong> · Fundão, Portugal · © 2025</sub>
-</div>
