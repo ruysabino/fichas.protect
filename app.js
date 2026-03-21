@@ -577,6 +577,13 @@ function clearFormFields() {
     .querySelectorAll('input, select, textarea')
     .forEach(el => {
       if (el.type === 'radio' || el.type === 'checkbox') el.checked = false;
+      else if (el.classList.contains('stepper-input')) {
+        // Reset steppers to their default values instead of clearing
+        const cfg = STEPPER_CFG[el.id];
+        if (cfg) el.value = cfg.default !== undefined
+          ? cfg.default.toFixed(cfg.decimals)
+          : cfg.min.toFixed(cfg.decimals);
+      }
       else el.value = '';
     });
   const tbody = document.getElementById('sessions-tbody');
@@ -2114,8 +2121,8 @@ document.addEventListener('click', e => {
    STEPPER — espessura (0.03–0.30, step 0.01) e comprimento (4–25, step 1)
    ══════════════════════════════════════════════════════════════════════════ */
 const STEPPER_CFG = {
-  'p-espessura':  { min: 0.03, max: 0.30, step: 0.01, decimals: 2, unit: '' },
-  'p-comprimento':{ min: 4,    max: 25,   step: 1,    decimals: 0, unit: '' },
+  'p-espessura':  { min: 0.03, max: 0.30, step: 0.01, decimals: 2, unit: '', default: 0.10 },
+  'p-comprimento':{ min: 4,    max: 25,   step: 1,    decimals: 0, unit: '', default: 10   },
 };
 
 function stepperChange(id, dir) {
@@ -2123,7 +2130,10 @@ function stepperChange(id, dir) {
   if (!cfg) return;
   const el = document.getElementById(id);
   if (!el) return;
-  let v = parseFloat(el.value) + dir * cfg.step;
+  // If current value is empty or NaN, start from default
+  let current = parseFloat(el.value);
+  if (isNaN(current)) current = cfg.default !== undefined ? cfg.default : cfg.min;
+  let v = current + dir * cfg.step;
   v = Math.min(cfg.max, Math.max(cfg.min, parseFloat(v.toFixed(cfg.decimals))));
   el.value = v.toFixed(cfg.decimals);
 }
