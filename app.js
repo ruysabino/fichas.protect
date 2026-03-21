@@ -769,35 +769,19 @@ function sigRow(blocks, sigDataURL, sigProfDataURL) {
 }
 
 function logoSVG() {
-  return `<svg viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg" style="width:54px;height:54px;flex-shrink:0;">
-    <rect x="0" y="0" width="500" height="500" rx="60" ry="60" fill="#FFF1F2"/>
-    <rect x="5" y="5" width="490" height="490" rx="57" ry="57" fill="none" stroke="#E46589" stroke-width="10"/>
-    <g stroke="#E46589" stroke-linecap="round">
-      <line x1="250" y1="152" x2="250" y2="67"  stroke-width="7.5"/>
-      <line x1="250" y1="152" x2="291" y2="72"  stroke-width="5.5"/>
-      <line x1="250" y1="152" x2="209" y2="72"  stroke-width="5.5"/>
-      <line x1="250" y1="152" x2="329" y2="86"  stroke-width="5.0"/>
-      <line x1="250" y1="152" x2="171" y2="86"  stroke-width="5.0"/>
-      <line x1="250" y1="152" x2="361" y2="108" stroke-width="4.5"/>
-      <line x1="250" y1="152" x2="139" y2="108" stroke-width="4.5"/>
-      <line x1="250" y1="152" x2="387" y2="137" stroke-width="4.0"/>
-      <line x1="250" y1="152" x2="113" y2="137" stroke-width="4.0"/>
-    </g>
-    <path d="M104,208 Q250,157 396,208 Q250,259 104,208Z" fill="#FFF1F2" stroke="#E46589" stroke-width="11"/>
-    <circle cx="250" cy="234" r="59" fill="#FFF1F2" stroke="#E46589" stroke-width="9.5"/>
-    <path d="M250,274 C250,274 208,248 200,231 C193,217 200,207 213,207 C224,207 237,216 250,228 C263,216 276,207 287,207 C300,207 307,217 300,231 C292,248 250,274 250,274Z" fill="#E46589"/>
+  return `<svg viewBox="0 0 463 463" xmlns="http://www.w3.org/2000/svg" style="width:44px;height:44px;flex-shrink:0;">
+    <rect x="0" y="0" width="463" height="463" rx="72" fill="white"/>
+    <rect x="4" y="4" width="455" height="455" rx="69" fill="none" stroke="#e36485" stroke-width="8"/>
+    <g fill="#e36485"><path d="m359.5,16h-96c-0.089,0-0.176,0.01-0.264,0.013-7.203-9.708-18.746-16.013-31.736-16.013s-24.533,6.305-31.736,16.013c-0.088-0.003-0.175-0.013-0.264-0.013h-96c-26.191,0-47.5,21.309-47.5,47.5v352c0,26.191 21.309,47.5 47.5,47.5h256c26.191,0 47.5-21.309 47.5-47.5v-352c0-26.191-21.309-47.5-47.5-47.5zm-128-1c13.51,0 24.5,10.991 24.5,24.5v8c0,4.142 3.357,7.5 7.5,7.5h32c4.687,0 8.5,3.813 8.5,8.5s-3.813,8.5-8.5,8.5h-128c-4.687,0-8.5-3.813-8.5-8.5s3.813-8.5 8.5-8.5h32c4.143,0 7.5-3.358 7.5-7.5v-8c0-13.509 10.99-24.5 24.5-24.5zm160,329.5h-256c-0.275,0-0.5-0.224-0.5-0.5v-352c0-0.276 0.225-0.5 0.5-0.5h40.513c-0.004,0.167-0.013,0.332-0.013,0.5 0,12.958 10.542,23.5 23.5,23.5h128c12.958,0 23.5-10.542 23.5-23.5 0-0.168-0.009-0.333-0.013-0.5h40.513c0.275,0 0.5,0.224 0.5,0.5v352c0,0.276-0.225,0.5-0.5,0.5z"/><path d="m231.5,63c4.143,0 7.5-3.358 7.5-7.5v-16c0-4.142-3.357-7.5-7.5-7.5s-7.5,3.358-7.5,7.5v16c0,4.142 3.357,7.5 7.5,7.5z"/><path d="m223.5,175h96c4.143,0 7.5-3.358 7.5-7.5s-3.357-7.5-7.5-7.5h-96c-4.143,0-7.5,3.358-7.5,7.5s3.357,7.5 7.5,7.5z"/><path d="m138.196,162.197c-2.929,2.929-2.929,7.678 0,10.606l16,16c1.465,1.464 3.385,2.197 5.304,2.197s3.839-0.732 5.304-2.197l32-32c2.929-2.929 2.929-7.678 0-10.606-2.93-2.929-7.678-2.929-10.607,0l-26.697,26.697-10.696-10.697c-2.93-2.929-7.678-2.929-10.608,0z"/><path d="m223.5,255h96c4.143,0 7.5-3.358 7.5-7.5s-3.357-7.5-7.5-7.5h-96c-4.143,0-7.5,3.358-7.5,7.5s3.357,7.5 7.5,7.5z"/><path d="m186.196,226.197l-26.696,26.697-10.696-10.697c-2.93-2.929-7.678-2.929-10.607,0s-2.929,7.678 0,10.606l16,16c1.465,1.464 3.385,2.197 5.304,2.197s3.839-0.732 5.304-2.197l32-32c2.929-2.929 2.929-7.678 0-10.606-2.931-2.929-7.679-2.929-10.609,0z"/><path d="m223.5,335h96c4.143,0 7.5-3.358 7.5-7.5s-3.357-7.5-7.5-7.5h-96c-4.143,0-7.5,3.358-7.5,7.5s3.357,7.5 7.5,7.5z"/><path d="m186.196,306.197l-26.696,26.697-10.696-10.697c-2.93-2.929-7.678-2.929-10.607,0s-2.929,7.678 0,10.606l16,16c1.465,1.464 3.385,2.197 5.304,2.197s3.839-0.732 5.304-2.197l32-32c2.929-2.929 2.929-7.678 0-10.606-2.931-2.929-7.679-2.929-10.609,0z"/></g>
   </svg>`;
 }
 
 function printHeader(title) {
   return `<div class="pd-header">
-    <div class="pd-logo-row">${logoSVG()}
-      <div class="pd-brand">
-        <div class="pd-brand-name">Beleza Rara</div>
-        <div class="pd-brand-sub">Valquiria Almeida</div>
-      </div>
+    <div class="pd-logo-row">
+      ${logoSVG()}
+      <div class="pd-title-bar" style="flex:1;margin:0;">${title}</div>
     </div>
-    <div class="pd-title-bar">${title}</div>
   </div>`;
 }
 
@@ -898,26 +882,13 @@ function buildPestanasHTML(d) {
   </div>`;
 
   const p2 = `<div class="pd-page">
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:6mm;">
-      ${logoSVG()}
-      <div class="pd-title-bar" style="flex:1;margin:0;">TERMO DE CONSENTIMENTO E RESPONSABILIDADE: EXTENSÃO DE PESTANAS</div>
-    </div>
+    ${printHeader('TERMO DE CONSENTIMENTO E RESPONSABILIDADE: EXTENSÃO DE PESTANAS')}
     ${fieldLine('Nome:', d.nome)}
     <div style="margin-top:5mm;" class="pd-consent-text">
       <p><b>1. Natureza do Procedimento</b> — Declaro que fui devidamente esclarecida sobre a técnica de extensão de pestanas, que consiste na aplicação de fios sintéticos individuais ou em leque sobre as minhas pestanas naturais, utilizando uma cola (adesivo) específica para uso ocular.</p>
       <p><b>2. Riscos Possíveis</b> — Embora o procedimento seja estético e não invasivo, podem ocorrer: <b>Irritação Ocular</b> (vermelhidão, lacrimejo nas primeiras 24h); <b>Reações Alérgicas</b> (inchaço, prurido ou dermatite de contacto); <b>Sensibilidade aos Vapores</b> (ardência momentânea); <b>Queda Prematura</b> (se não forem cumpridos os cuidados de manutenção).</p>
-      <p><b>3. Questionário de Saúde</b></p>
-    </div>
-    ${makeYnTable([
-      ['Sofre de alguma alergia conhecida (látex, esmalte, colas)?', d.cAler],
-      ['Tem antecedentes de problemas oculares (terçolhos, conjuntivites, blefarite)?', d.cOcul],
-      ['Realizou alguma cirurgia ocular nos últimos 6 meses?', d.cCiru],
-      ['Utiliza lentes de contacto?', d.cLent],
-      ['Está com alguma irritação ou sensibilidade ocular hoje?', d.cIrri],
-    ])}
-    <div class="pd-consent-text" style="margin-top:4mm;">
-      <p><b>4. Pós-Tratamento</b> — Comprometo-me a: 1) Não molhar nas primeiras 24h; 2) Evitar vapores quentes nas primeiras 48h; 3) Não usar produtos oleosos na zona ocular; 4) Higienizar diariamente com lash shampoo; 5) Remoção obrigatória por profissional.</p>
-      <p><b>5. Consentimento</b> — Autorizo a realização do procedimento e assumo responsabilidade pelos cuidados posteriores.</p>
+      <p><b>3. Pós-Tratamento</b> — Comprometo-me a: 1) Não molhar nas primeiras 24h; 2) Evitar vapores quentes nas primeiras 48h; 3) Não usar produtos oleosos na zona ocular; 4) Higienizar diariamente com lash shampoo; 5) Remoção obrigatória por profissional.</p>
+      <p><b>4. Consentimento</b> — Autorizo a realização do procedimento e assumo responsabilidade pelos cuidados posteriores.</p>
       <p style="font-size:7.5pt;color:#888;"><i>RGPD: Dados recolhidos exclusivamente para gestão da ficha de cliente.</i></p>
     </div>
     ${imagemBlock(d.imgAuth)}
@@ -1304,9 +1275,7 @@ function getPrintCSS() {
     .pd-page{width:210mm;min-height:297mm;background:white;padding:14mm 17mm 12mm;margin:0 auto;page-break-after:always;font-size:9.5pt;color:#222;}
     .pd-page:last-child{page-break-after:auto;}
     .pd-header{margin-bottom:6mm;}
-    .pd-logo-row{display:flex;align-items:center;gap:12px;justify-content:center;margin-bottom:4px;}
-    .pd-brand-name{font-family:Georgia,serif;font-size:20pt;color:#E46589;font-style:italic;line-height:1;}
-    .pd-brand-sub{font-size:8pt;color:#999;letter-spacing:.05em;}
+    .pd-logo-row{display:flex;align-items:center;gap:10px;margin-bottom:4px;}
     .pd-title-bar{background:#E46589;color:white;text-align:center;padding:5px 0;font-size:9.5pt;font-weight:bold;letter-spacing:.12em;border-radius:3px;}
     .print-label{font-size:8pt;color:#555;white-space:nowrap;}
     .print-value{font-size:9.5pt;font-weight:bold;flex:1;min-width:0;}
