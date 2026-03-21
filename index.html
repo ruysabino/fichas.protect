@@ -1207,6 +1207,7 @@
         <h2 class="card-title">✅ Consentimento – Questionário de Saúde</h2>
         <div class="yn-list">
 
+          <!-- Q1: alergia geral -->
           <div class="yn-row yn-row-col">
             <div class="yn-row-top">
               <span>1) Tem alguma alergia a produtos químicos ou materiais usados em tratamentos de unhas? (cola, acrílico, gel, etc.)</span>
@@ -1215,14 +1216,24 @@
                 <label class="yn-lbl"><input type="radio" name="m-alergia" value="NÃO" onchange="toggleSub('m-alergia-sub',this,'SIM')"> NÃO</label>
               </div>
             </div>
-            <div class="yn-sub" id="m-alergia-sub" style="display:none;flex-direction:column;gap:8px;">
+            <div class="yn-sub" id="m-alergia-sub" style="display:none;">
               <span class="yn-sub-label">Se SIM, especifique:</span>
               <input type="text" class="yn-obs yn-obs-wide" id="m-alergia-esp" placeholder="Descrição da alergia...">
-              <span class="yn-sub-label" style="margin-top:4px;">Alergia a alguma marca específica? &nbsp;
-                <label class="yn-lbl" style="font-size:12px;"><input type="radio" name="m-alergia-marca-yn" value="SIM"> SIM</label>
-                <label class="yn-lbl" style="font-size:12px;"><input type="radio" name="m-alergia-marca-yn" value="NÃO"> NÃO</label>
-              </span>
-              <input type="text" class="yn-obs yn-obs-wide" id="m-alergia-marca" placeholder="Qual marca?">
+            </div>
+          </div>
+
+          <!-- Q1b: alergia a marca específica — pergunta independente -->
+          <div class="yn-row yn-row-col">
+            <div class="yn-row-top">
+              <span>1b) Tem alergia a alguma marca específica de produto?</span>
+              <div class="yn-btns">
+                <label class="yn-lbl"><input type="radio" name="m-alergia-marca-yn" value="SIM" onchange="toggleSub('m-alergia-marca-sub',this,'SIM')"> SIM</label>
+                <label class="yn-lbl"><input type="radio" name="m-alergia-marca-yn" value="NÃO" onchange="toggleSub('m-alergia-marca-sub',this,'SIM')"> NÃO</label>
+              </div>
+            </div>
+            <div class="yn-sub" id="m-alergia-marca-sub" style="display:none;">
+              <span class="yn-sub-label">Qual marca?</span>
+              <input type="text" class="yn-obs yn-obs-wide" id="m-alergia-marca" placeholder="Nome da marca...">
             </div>
           </div>
 
@@ -1425,7 +1436,7 @@
           </div>
         </div>
       </div>
-</div><!-- /form-manicure -
+
       <div class="form-card sig-card" id="sig-card-m">
         <h2 class="card-title">✍️ Assinatura da Cliente</h2>
         <p class="sig-instructions">Assine abaixo com o dedo, caneta ou rato</p>
@@ -1438,12 +1449,12 @@
           <span class="sig-status" id="sig-status-m"></span>
         </div>
       </div>
+
       <div class="form-card">
         <h2 class="card-title">📷 Autorização de Imagem</h2>
         <div class="yn-row big"><span>Autoriza o uso da sua imagem para redes sociais e portefólio?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="m-imagem" value="Autorizo"> ✅ Autorizo</label><label class="yn-lbl"><input type="radio" name="m-imagem" value="Não autorizo"> ❌ Não autorizo</label></div></div>
       </div>
-    
-->
+    </div><!-- /form-manicure -->
 
   </div><!-- /form-body -->
 
@@ -1453,6 +1464,7 @@
     <button class="btn-print-main" onclick="printForms()">📄 Exportar PDF</button>
   </div>
 </div><!-- /screen-form -->
+
 
 <script src="security.js"></script>
 <script src="app.js"></script>

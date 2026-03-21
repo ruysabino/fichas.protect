@@ -614,7 +614,10 @@ function populateForm(d) {
     }
     setRadio('m-alergia', d.alergia);
     if (d.alergia === 'SIM') { const s=document.getElementById('m-alergia-sub'); if(s)s.style.display='flex'; }
-    setVal('m-alergia-esp', d.alergiaEsp); setRadio('m-alergia-marca-yn', d.alergiaMarcaYN); setVal('m-alergia-marca', d.alergiaMarca); setVal('m-alergia-esp', d.alergiaEsp);
+    setVal('m-alergia-esp', d.alergiaEsp);
+    setRadio('m-alergia-marca-yn', d.alergiaMarcaYN);
+    if (d.alergiaMarcaYN === 'SIM') { const s=document.getElementById('m-alergia-marca-sub'); if(s)s.style.display='flex'; }
+    setVal('m-alergia-marca', d.alergiaMarca); setVal('m-alergia-esp', d.alergiaEsp);
     setVal('m-alergia-marca', d.alergiaMarca);
     setRadio('m-condicao', d.condicao);
     if (d.condicao === 'SIM') { const s=document.getElementById('m-condicao-sub'); if(s)s.style.display='flex'; } setVal('m-condicao-esp', d.condicaoEsp);
@@ -1082,10 +1085,11 @@ function buildManicureHTML(d) {
         </td>
       </tr>
     </table>
-    ${d.alergia==='SIM' ? `<div style="font-size:8.5pt;margin:2px 0 3px;padding-left:4px;">
-      ↳ Descrição: <span style="border-bottom:1px solid #aaa;display:inline-block;min-width:120px;">${esc(d.alergiaEsp||'')}</span>
-      &nbsp; Marca específica (${d.alergiaMarcaYN||'—'}): <span style="border-bottom:1px solid #aaa;display:inline-block;min-width:100px;">${esc(d.alergiaMarca||'')}</span>
-    </div>` : ''}
+    ${d.alergia==='SIM' ? `<div style="font-size:8.5pt;margin:2px 0 3px;padding-left:4px;">↳ ${esc(d.alergiaEsp||'—')}</div>` : ''}
+    ${makeYnTable([
+      ['1b) Tem alergia a alguma marca específica de produto?', d.alergiaMarcaYN],
+    ])}
+    ${d.alergiaMarcaYN==='SIM' ? `<div style="font-size:8.5pt;margin:2px 0 3px;padding-left:4px;">↳ Marca: ${esc(d.alergiaMarca||'—')}</div>` : ''}
     ${makeYnTable([
       ['2) Tem alguma condição médica que afeta as unhas ou pele das mãos? (fungos, psoríase, eczema, etc.)', d.condicao],
     ])}
