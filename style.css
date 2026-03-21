@@ -131,18 +131,24 @@ body {
 .proc-icon { font-size: 36px; margin-bottom: 12px; } /* legacy */
 .proc-icon-wrap {
   width: 80px; height: 80px;
-  background: var(--pink);
+  background: white;
   border-radius: 22px;
+  border: 2.5px solid #e36485;
   display: flex; align-items: center; justify-content: center;
   margin: 0 auto 18px;
   transition: transform 0.22s, box-shadow 0.22s;
-  box-shadow: 0 4px 18px rgba(224,24,94,0.28);
+  box-shadow: 0 2px 12px rgba(227,100,133,0.13);
   flex-shrink: 0;
 }
 .proc-card:hover .proc-icon-wrap {
+  background: #e36485;
+  border-color: #e36485;
   transform: scale(1.06);
-  box-shadow: 0 8px 24px rgba(224,24,94,0.4);
+  box-shadow: 0 8px 24px rgba(227,100,133,0.35);
 }
+.proc-card:hover .proc-svg { color: white; }
+.proc-card:hover .proc-icon-wrap g,
+.proc-card:hover .proc-icon-wrap path { fill: white; }
 .proc-svg {
   width: 50px; height: 50px;
   display: block;
