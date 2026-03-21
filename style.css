@@ -1582,3 +1582,129 @@ body {
    ═══════════════════════════════════════════════════════════ */
 #import-modal { display: none; }
 #import-modal.open { display: flex !important; }
+
+/* ═══════════════════════════════════════════════════════════
+   PILL RADIO BUTTONS (curvatura, volume, densidade, etc.)
+   ═══════════════════════════════════════════════════════════ */
+.pill-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.pill-lbl {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  cursor: pointer;
+}
+
+.pill-lbl input[type="radio"],
+.pill-lbl input[type="checkbox"] {
+  display: none;   /* hide native input — visual state via sibling label */
+}
+
+/* The visible pill is the label itself when input is checked */
+.pill-lbl {
+  background: var(--pink-pale);
+  border: 2px solid var(--border);
+  border-radius: 999px;
+  padding: 6px 14px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--gray);
+  transition: all 0.18s;
+  user-select: none;
+  white-space: nowrap;
+}
+.pill-lbl:hover {
+  border-color: var(--pink);
+  color: var(--pink);
+  background: white;
+}
+.pill-lbl:has(input:checked) {
+  background: var(--pink);
+  border-color: var(--pink);
+  color: white;
+}
+
+/* Fallback for browsers without :has() support */
+.pill-lbl input:checked ~ span,
+.pill-lbl.selected {
+  background: var(--pink);
+  border-color: var(--pink);
+  color: white;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   STEPPER (espessura / comprimento)
+   ═══════════════════════════════════════════════════════════ */
+.stepper-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  border: 2px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  background: white;
+  width: fit-content;
+  margin-top: 6px;
+}
+
+.stepper-btn {
+  width: 40px; height: 42px;
+  background: var(--pink-pale);
+  border: none;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--pink);
+  cursor: pointer;
+  transition: background 0.15s;
+  line-height: 1;
+  flex-shrink: 0;
+}
+.stepper-btn:hover   { background: var(--pink-light); }
+.stepper-btn:active  { background: var(--pink); color: white; }
+
+.stepper-input {
+  width: 80px;
+  text-align: center;
+  border: none;
+  border-left: 2px solid var(--border);
+  border-right: 2px solid var(--border);
+  font-family: 'Nunito', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  padding: 0 4px;
+  background: white;
+  outline: none;
+  cursor: default;
+}
+
+.stepper-range {
+  display: block;
+  font-size: 11px;
+  color: var(--gray);
+  margin-top: 4px;
+  letter-spacing: .03em;
+}
+
+/* ═══════════════════════════════════════════════════════════
+   OUTRO input (reveal when "Outro" pill/option selected)
+   ═══════════════════════════════════════════════════════════ */
+.field-outro-input {
+  width: 100%;
+  border: 2px solid var(--pink-light);
+  border-radius: 10px;
+  padding: 9px 14px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 14px;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s;
+  background: var(--pink-pale);
+}
+.field-outro-input:focus { border-color: var(--pink); background: white; }

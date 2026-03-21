@@ -501,56 +501,301 @@
       <div class="form-card">
         <h2 class="card-title">🛠️ Procedimento</h2>
         <div class="form-grid">
-          <div class="field-group full"><label>Estilo</label><input type="text" id="p-estilo" placeholder="Ex: Natural, Cat Eye, Mega Volume..."></div>
-          <div class="field-group"><label>Curvatura</label><input type="text" id="p-curvatura" placeholder="Ex: B, C, D, L..."></div>
-          <div class="field-group"><label>Espessura</label><input type="text" id="p-espessura" placeholder="Ex: 0.07, 0.10, 0.12..."></div>
-          <div class="field-group full"><label>Modelo dos fios</label><input type="text" id="p-modelo" placeholder="Ex: Seda, Vison, Pvc..."></div>
-          <div class="field-group"><label>Data do Procedimento</label><input type="date" id="p-data"></div>
+
+          <!-- ESTILO — dropdown (7 opções longas ficam melhor em select) -->
+          <div class="field-group full">
+            <label>Estilo</label>
+            <select id="p-estilo">
+              <option value="">Selecionar estilo…</option>
+              <option value="Cat Eye / Fox Eye">Olho de gata (Cat / Fox Eye)</option>
+              <option value="Doll Eye / Open Eye">Boneca (Doll Eye / Open Eye)</option>
+              <option value="Squirrel">Esquilo (Squirrel)</option>
+              <option value="Eyeliner">Eyeliner (Efeito delineado)</option>
+              <option value="Natural / Mascara Effect">Natural (Mascara Effect)</option>
+              <option value="Kim / Kardashian">Kim/Kardashian (Kim Camellia)</option>
+              <option value="Outro">Outro</option>
+            </select>
+            <input type="text" id="p-estilo-outro" placeholder="Especifique o estilo…" class="field-outro-input" style="display:none;margin-top:8px;" oninput="">
+          </div>
+
+          <!-- CURVATURA — radio pills -->
+          <div class="field-group full">
+            <label>Curvatura</label>
+            <div class="pill-group" id="p-curv-group">
+              <label class="pill-lbl"><input type="radio" name="p-curvatura" value="A(j)"> A(j)</label>
+              <label class="pill-lbl"><input type="radio" name="p-curvatura" value="B"> B</label>
+              <label class="pill-lbl"><input type="radio" name="p-curvatura" value="C"> C</label>
+              <label class="pill-lbl"><input type="radio" name="p-curvatura" value="C+"> C+</label>
+              <label class="pill-lbl"><input type="radio" name="p-curvatura" value="CC"> CC</label>
+              <label class="pill-lbl"><input type="radio" name="p-curvatura" value="D"> D</label>
+              <label class="pill-lbl"><input type="radio" name="p-curvatura" value="DD/U"> DD/U</label>
+              <label class="pill-lbl"><input type="radio" name="p-curvatura" value="I"> I</label>
+              <label class="pill-lbl"><input type="radio" name="p-curvatura" value="L"> L</label>
+              <label class="pill-lbl"><input type="radio" name="p-curvatura" value="LC/L+"> LC/L+</label>
+              <label class="pill-lbl"><input type="radio" name="p-curvatura" value="M"> M</label>
+              <label class="pill-lbl pill-outro-trigger"><input type="radio" name="p-curvatura" value="Outra"> Outra</label>
+            </div>
+            <input type="text" id="p-curvatura-outro" placeholder="Outra curvatura…" class="field-outro-input" style="display:none;margin-top:8px;">
+          </div>
+
+          <!-- ESPESSURA — stepper 0.03 → 0.30, step 0.01 -->
+          <div class="field-group">
+            <label>Espessura (mm)</label>
+            <div class="stepper-wrap">
+              <button type="button" class="stepper-btn" onclick="stepperChange('p-espessura',-1)">−</button>
+              <input type="text" id="p-espessura" class="stepper-input" value="0.10" readonly>
+              <button type="button" class="stepper-btn" onclick="stepperChange('p-espessura',+1)">+</button>
+            </div>
+            <span class="stepper-range">0.03 mm — 0.30 mm</span>
+          </div>
+
+          <!-- COMPRIMENTO — stepper 4 → 25, step 1 -->
+          <div class="field-group">
+            <label>Comprimento (mm)</label>
+            <div class="stepper-wrap">
+              <button type="button" class="stepper-btn" onclick="stepperChange('p-comprimento',-1)">−</button>
+              <input type="text" id="p-comprimento" class="stepper-input" value="10" readonly>
+              <button type="button" class="stepper-btn" onclick="stepperChange('p-comprimento',+1)">+</button>
+            </div>
+            <span class="stepper-range">4 mm — 25 mm</span>
+          </div>
+
+          <!-- VOLUME — radio pills -->
+          <div class="field-group full">
+            <label>Volume</label>
+            <div class="pill-group">
+              <label class="pill-lbl"><input type="radio" name="p-volume" value="Clássico (1D)"> Clássico (1D)</label>
+              <label class="pill-lbl"><input type="radio" name="p-volume" value="2D"> 2D</label>
+              <label class="pill-lbl"><input type="radio" name="p-volume" value="3D"> 3D</label>
+              <label class="pill-lbl"><input type="radio" name="p-volume" value="4D"> 4D</label>
+              <label class="pill-lbl"><input type="radio" name="p-volume" value="5D"> 5D</label>
+              <label class="pill-lbl"><input type="radio" name="p-volume" value="Volume Russo (5D-8D)"> Volume Russo (5D-8D)</label>
+              <label class="pill-lbl"><input type="radio" name="p-volume" value="Mega Volume (9D+)"> Mega Volume (9D+)</label>
+              <label class="pill-lbl"><input type="radio" name="p-volume" value="Híbrido"> Híbrido</label>
+            </div>
+          </div>
+
+          <!-- DENSIDADE — radio pills -->
+          <div class="field-group full">
+            <label>Densidade</label>
+            <div class="pill-group">
+              <label class="pill-lbl"><input type="radio" name="p-densidade" value="Suave"> Suave</label>
+              <label class="pill-lbl"><input type="radio" name="p-densidade" value="Médio"> Médio</label>
+              <label class="pill-lbl"><input type="radio" name="p-densidade" value="Bem cheio / Dramático"> Bem cheio / Dramático</label>
+            </div>
+          </div>
+
+          <!-- MODELO DOS FIOS -->
+          <div class="field-group full"><label>Modelo dos fios</label><input type="text" id="p-modelo" placeholder="Ex: Seda, Vison, PVC…"></div>
+
+          <!-- JÁ FEZ EXTENSÃO ANTES? -->
+          <div class="field-group full">
+            <label>Já fez extensão de cílios antes?</label>
+            <div class="pill-group">
+              <label class="pill-lbl"><input type="radio" name="p-fez-ext" value="SIM"> Sim</label>
+              <label class="pill-lbl"><input type="radio" name="p-fez-ext" value="NÃO"> Não</label>
+            </div>
+            <div id="p-fez-ext-detalhe" style="display:none;margin-top:10px;">
+              <label style="font-size:12px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.06em;">Se SIM, quanto tempo costumavam durar?</label>
+              <input type="text" id="p-ext-duracao" placeholder="Ex: 3 semanas, 1 mês…" style="margin-top:6px;">
+            </div>
+          </div>
+
         </div>
       </div>
 
       <div class="form-card">
         <h2 class="card-title">✅ Consentimento – Questionário de Saúde</h2>
         <div class="yn-list">
-          <div class="yn-row sm"><span>Sofre de alguma alergia conhecida (látex, esmalte, colas)?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="c-alergia" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="c-alergia" value="NÃO"> NÃO</label></div></div>
-          <div class="yn-row sm"><span>Tem antecedentes de problemas oculares (terçolhos, conjuntivites, blefarite)?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="c-ocular" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="c-ocular" value="NÃO"> NÃO</label></div></div>
-          <div class="yn-row sm"><span>Realizou alguma cirurgia ocular nos últimos 6 meses?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="c-cirurgia" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="c-cirurgia" value="NÃO"> NÃO</label></div></div>
-          <div class="yn-row sm"><span>Utiliza lentes de contacto?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="c-lentes" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="c-lentes" value="NÃO"> NÃO</label></div></div>
-          <div class="yn-row sm"><span>Está com alguma irritação ou sensibilidade ocular hoje?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="c-irritacao" value="SIM"> SIM</label><label class="yn-lbl"><input type="radio" name="c-irritacao" value="NÃO"> NÃO</label></div></div>
+
+          <!-- 1 -->
+          <div class="yn-row yn-row-col">
+            <div class="yn-row-top">
+              <span>1) Sofre de alguma alergia conhecida (látex, acrilatos, esmalte, cosméticos, colas)?</span>
+              <div class="yn-btns">
+                <label class="yn-lbl"><input type="radio" name="c-alergia" value="SIM" onchange="toggleSub('c-alergia-sub',this,'SIM')"> SIM</label>
+                <label class="yn-lbl"><input type="radio" name="c-alergia" value="NÃO" onchange="toggleSub('c-alergia-sub',this,'SIM')"> NÃO</label>
+              </div>
+            </div>
+            <div class="yn-sub" id="c-alergia-sub" style="display:none;">
+              <span class="yn-sub-label">Descreva a substância e a reação:</span>
+              <input type="text" class="yn-obs yn-obs-wide" id="c-alergia-esp" placeholder="Ex: látex — vermelhidão e inchaço…">
+            </div>
+          </div>
+
+          <!-- 2 -->
+          <div class="yn-row yn-row-col">
+            <div class="yn-row-top">
+              <span>2) Tem antecedentes de problemas oculares (terçolhos, conjuntivites, blefarite, glaucoma, síndrome do olho seco, etc.)?</span>
+              <div class="yn-btns">
+                <label class="yn-lbl"><input type="radio" name="c-ocular" value="SIM" onchange="toggleSub('c-ocular-sub',this,'SIM')"> SIM</label>
+                <label class="yn-lbl"><input type="radio" name="c-ocular" value="NÃO" onchange="toggleSub('c-ocular-sub',this,'SIM')"> NÃO</label>
+              </div>
+            </div>
+            <div class="yn-sub" id="c-ocular-sub" style="display:none;">
+              <span class="yn-sub-label">Descreva o problema ocular:</span>
+              <input type="text" class="yn-obs yn-obs-wide" id="c-ocular-esp" placeholder="Ex: blefarite crónica…">
+            </div>
+          </div>
+
+          <!-- 3 -->
+          <div class="yn-row yn-row-col">
+            <div class="yn-row-top">
+              <span>3) Realizou alguma cirurgia ocular nos últimos 6 meses?</span>
+              <div class="yn-btns">
+                <label class="yn-lbl"><input type="radio" name="c-cirurgia" value="SIM" onchange="toggleSub('c-cirurgia-sub',this,'SIM')"> SIM</label>
+                <label class="yn-lbl"><input type="radio" name="c-cirurgia" value="NÃO" onchange="toggleSub('c-cirurgia-sub',this,'SIM')"> NÃO</label>
+              </div>
+            </div>
+            <div class="yn-sub" id="c-cirurgia-sub" style="display:none;">
+              <span class="yn-sub-label">Qual procedimento efectuado?</span>
+              <input type="text" class="yn-obs yn-obs-wide" id="c-cirurgia-esp" placeholder="Ex: LASIK, transplante de córnea…">
+            </div>
+          </div>
+
+          <!-- 4 -->
+          <div class="yn-row yn-row-col">
+            <div class="yn-row-top">
+              <span>4) Utiliza lentes de contacto?</span>
+              <div class="yn-btns">
+                <label class="yn-lbl"><input type="radio" name="c-lentes" value="SIM" onchange="toggleSub('c-lentes-sub',this,'SIM')"> SIM</label>
+                <label class="yn-lbl"><input type="radio" name="c-lentes" value="NÃO" onchange="toggleSub('c-lentes-sub',this,'SIM')"> NÃO</label>
+              </div>
+            </div>
+            <div class="yn-sub" id="c-lentes-sub" style="display:none;">
+              <span class="yn-sub-label">Compromete-se a retirá-las antes do procedimento?</span>
+              <div class="pill-group" style="margin-top:6px;">
+                <label class="pill-lbl"><input type="radio" name="c-lentes-retira" value="SIM"> Sim</label>
+                <label class="pill-lbl"><input type="radio" name="c-lentes-retira" value="NÃO"> Não</label>
+              </div>
+            </div>
+          </div>
+
+          <!-- 5 -->
+          <div class="yn-row yn-row-col">
+            <div class="yn-row-top">
+              <span>5) Está com alguma irritação ou sensibilidade ocular hoje?</span>
+              <div class="yn-btns">
+                <label class="yn-lbl"><input type="radio" name="c-irritacao" value="SIM" onchange="toggleSub('c-irritacao-sub',this,'SIM')"> SIM</label>
+                <label class="yn-lbl"><input type="radio" name="c-irritacao" value="NÃO" onchange="toggleSub('c-irritacao-sub',this,'SIM')"> NÃO</label>
+              </div>
+            </div>
+            <div class="yn-sub" id="c-irritacao-sub" style="display:none;">
+              <span class="yn-sub-label">Qual?</span>
+              <input type="text" class="yn-obs yn-obs-wide" id="c-irritacao-esp" placeholder="Ex: vermelhidão, coceira…">
+            </div>
+          </div>
+
+          <!-- 6 -->
+          <div class="yn-row">
+            <span>6) Tem alergia conhecida a colas, micropore, fita transparente ou patches para os olhos?</span>
+            <div class="yn-btns">
+              <label class="yn-lbl"><input type="radio" name="c-alergia-patches" value="SIM"> SIM</label>
+              <label class="yn-lbl"><input type="radio" name="c-alergia-patches" value="NÃO"> NÃO</label>
+            </div>
+          </div>
+
+          <!-- 7 -->
+          <div class="yn-row yn-row-col">
+            <div class="yn-row-top">
+              <span>7) Já teve alguma reação alérgica prévia a extensões de cílios?</span>
+              <div class="yn-btns">
+                <label class="yn-lbl"><input type="radio" name="c-reacao-ext" value="SIM" onchange="toggleSub('c-reacao-ext-sub',this,'SIM')"> SIM</label>
+                <label class="yn-lbl"><input type="radio" name="c-reacao-ext" value="NÃO" onchange="toggleSub('c-reacao-ext-sub',this,'SIM')"> NÃO</label>
+              </div>
+            </div>
+            <div class="yn-sub" id="c-reacao-ext-sub" style="display:none;">
+              <span class="yn-sub-label">Descreva os sintomas (inchaço, coceira, vermelhidão, etc.):</span>
+              <input type="text" class="yn-obs yn-obs-wide" id="c-reacao-ext-esp" placeholder="Ex: inchaço nas pálpebras, vermelhidão…">
+            </div>
+          </div>
+
+          <!-- 8 -->
+          <div class="yn-row yn-row-col">
+            <div class="yn-row-top">
+              <span>8) Está a fazer uso de algum colírio medicamentoso actualmente?</span>
+              <div class="yn-btns">
+                <label class="yn-lbl"><input type="radio" name="c-colirio" value="SIM" onchange="toggleSub('c-colirio-sub',this,'SIM')"> SIM</label>
+                <label class="yn-lbl"><input type="radio" name="c-colirio" value="NÃO" onchange="toggleSub('c-colirio-sub',this,'SIM')"> NÃO</label>
+              </div>
+            </div>
+            <div class="yn-sub" id="c-colirio-sub" style="display:none;">
+              <span class="yn-sub-label">Qual colírio?</span>
+              <input type="text" class="yn-obs yn-obs-wide" id="c-colirio-esp" placeholder="Ex: Systane, Travatan…">
+            </div>
+          </div>
+
+          <!-- 9 -->
+          <div class="yn-row yn-row-col">
+            <div class="yn-row-top">
+              <span>9) Já realizou cirurgia ocular (ex: LASIK, catarata)?</span>
+              <div class="yn-btns">
+                <label class="yn-lbl"><input type="radio" name="c-cirurgia-prev" value="SIM" onchange="toggleSub('c-cirurgia-prev-sub',this,'SIM')"> SIM</label>
+                <label class="yn-lbl"><input type="radio" name="c-cirurgia-prev" value="NÃO" onchange="toggleSub('c-cirurgia-prev-sub',this,'SIM')"> NÃO</label>
+              </div>
+            </div>
+            <div class="yn-sub" id="c-cirurgia-prev-sub" style="display:none;">
+              <span class="yn-sub-label">Há quanto tempo foi a cirurgia?</span>
+              <input type="text" class="yn-obs yn-obs-wide" id="c-cirurgia-prev-esp" placeholder="Ex: há 2 anos…">
+            </div>
+          </div>
+
+          <!-- 10 -->
+          <div class="yn-row">
+            <span>10) Tem sensibilidade à luz (fotofobia)?</span>
+            <div class="yn-btns">
+              <label class="yn-lbl"><input type="radio" name="c-fotofobia" value="SIM"> SIM</label>
+              <label class="yn-lbl"><input type="radio" name="c-fotofobia" value="NÃO"> NÃO</label>
+            </div>
+          </div>
+
+          <!-- 11 -->
+          <div class="yn-row yn-row-col">
+            <div class="yn-row-top">
+              <span>11) Está em tratamento dermatológico no rosto actualmente (ácidos, Roacutan, etc.)?</span>
+              <div class="yn-btns">
+                <label class="yn-lbl"><input type="radio" name="c-dermato" value="SIM" onchange="toggleSub('c-dermato-sub',this,'SIM')"> SIM</label>
+                <label class="yn-lbl"><input type="radio" name="c-dermato" value="NÃO" onchange="toggleSub('c-dermato-sub',this,'SIM')"> NÃO</label>
+              </div>
+            </div>
+            <div class="yn-sub" id="c-dermato-sub" style="display:none;">
+              <span class="yn-sub-label">Especifique:</span>
+              <input type="text" class="yn-obs yn-obs-wide" id="c-dermato-esp" placeholder="Ex: ácido retinóico, Roacutan…">
+            </div>
+          </div>
+
+          <!-- 12 -->
+          <div class="yn-row">
+            <span>12) Costuma usar maquiagem pesada nos olhos com frequência?</span>
+            <div class="yn-btns">
+              <label class="yn-lbl"><input type="radio" name="c-maquiagem" value="SIM"> SIM</label>
+              <label class="yn-lbl"><input type="radio" name="c-maquiagem" value="NÃO"> NÃO</label>
+              <label class="yn-lbl"><input type="radio" name="c-maquiagem" value="Talvez"> Talvez</label>
+            </div>
+          </div>
+
+          <!-- 13 -->
+          <div class="yn-row">
+            <span>13) Costuma esfregar os olhos com frequência?</span>
+            <div class="yn-btns">
+              <label class="yn-lbl"><input type="radio" name="c-esfregar" value="SIM"> SIM</label>
+              <label class="yn-lbl"><input type="radio" name="c-esfregar" value="NÃO"> NÃO</label>
+              <label class="yn-lbl"><input type="radio" name="c-esfregar" value="Talvez"> Talvez</label>
+            </div>
+          </div>
+
+          <!-- 14 -->
+          <div class="yn-row">
+            <span>14) Pratica natação ou actividades aquáticas com frequência?</span>
+            <div class="yn-btns">
+              <label class="yn-lbl"><input type="radio" name="c-natacao" value="SIM"> SIM</label>
+              <label class="yn-lbl"><input type="radio" name="c-natacao" value="NÃO"> NÃO</label>
+            </div>
+          </div>
+
         </div>
       </div>
 
-      <div class="form-card">
-        <h2 class="card-title">🗓️ Dados de Atendimento</h2>
-        <div class="form-grid">
-          <div class="field-group"><label>Data do Procedimento</label><input type="date" id="p-atend-data"></div>
-          <div class="field-group"><label>Profissional Responsável</label><input type="text" id="p-profissional" placeholder="Nome da profissional"></div>
-        </div>
-        <div style="margin-top:16px;">
-          <label class="field-group" style="display:block;margin-bottom:8px;font-size:12px;font-weight:700;color:var(--gray);text-transform:uppercase;letter-spacing:.06em;">Assinatura do Profissional</label>
-          <p class="sig-instructions">Assine abaixo com o dedo, caneta ou rato</p>
-          <div class="sig-canvas-wrap">
-            <canvas id="sig-canvas-pp" class="sig-canvas"></canvas>
-            <div class="sig-placeholder" id="sig-ph-pp">Toque aqui para assinar</div>
-          </div>
-          <div class="sig-actions">
-            <button type="button" class="btn-sig-clear" onclick="sigClear('pp')">🗑️ Limpar assinatura</button>
-            <span class="sig-status" id="sig-status-pp"></span>
-          </div>
-        </div>
-      </div>
-      <div class="form-card sig-card" id="sig-card-p">
-        <h2 class="card-title">✍️ Assinatura da Cliente</h2>
-        <p class="sig-instructions">Assine abaixo com o dedo, caneta ou rato</p>
-        <div class="sig-canvas-wrap">
-          <canvas id="sig-canvas-p" class="sig-canvas"></canvas>
-          <div class="sig-placeholder" id="sig-ph-p">Toque aqui para assinar</div>
-        </div>
-        <div class="sig-actions">
-          <button type="button" class="btn-sig-clear" onclick="sigClear('p')">🗑️ Limpar assinatura</button>
-          <span class="sig-status" id="sig-status-p"></span>
-        </div>
-      </div>
       <div class="form-card">
         <h2 class="card-title">📷 Autorização de Imagem</h2>
         <div class="yn-row big"><span>Autoriza o uso da sua imagem para redes sociais e portefólio?</span><div class="yn-btns"><label class="yn-lbl"><input type="radio" name="p-imagem" value="Autorizo"> ✅ Autorizo</label><label class="yn-lbl"><input type="radio" name="p-imagem" value="Não autorizo"> ❌ Não autorizo</label></div></div>

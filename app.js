@@ -284,14 +284,36 @@ function collectForm() {
       nac: val('p-nac'),
       atendData: val('p-atend-data'), profissional: val('p-profissional'),
       sigProfDataURL: sigGetDataURL('pp'),
-      estilo: val('p-estilo'), curv: val('p-curvatura'),
-      esp: val('p-espessura'), modelo: val('p-modelo'), data: val('p-data'),
+      // Procedimento
+      estilo:       val('p-estilo') === 'Outro' ? val('p-estilo-outro') : val('p-estilo'),
+      curv:         getRadio('p-curvatura') === 'Outra' ? val('p-curvatura-outro') : getRadio('p-curvatura'),
+      esp:          stepperGet('p-espessura'),
+      comprimento:  stepperGet('p-comprimento'),
+      volume:       getRadio('p-volume'),
+      densidade:    getRadio('p-densidade'),
+      modelo:       val('p-modelo'),
+      fezExt:       getRadio('p-fez-ext'),
+      extDuracao:   val('p-ext-duracao'),
+      // Avaliação
       gest: getRadio('p-gestante'), gestObs: obs(0),
       proc_ol: getRadio('p-proced'),
       aler: getRadio('p-alergia'), alerObs: obs(2),
       glau: getRadio('p-glaucoma'), onco: getRadio('p-onco'), rimel: getRadio('p-rimel'),
-      cAler: getRadio('c-alergia'), cOcul: getRadio('c-ocular'),
-      cCiru: getRadio('c-cirurgia'), cLent: getRadio('c-lentes'), cIrri: getRadio('c-irritacao'),
+      // Consentimento — 14 perguntas
+      cAler: getRadio('c-alergia'),         cAlerEsp: val('c-alergia-esp'),
+      cOcul: getRadio('c-ocular'),          cOculEsp: val('c-ocular-esp'),
+      cCiru: getRadio('c-cirurgia'),        cCiruEsp: val('c-cirurgia-esp'),
+      cLent: getRadio('c-lentes'),          cLentRetira: getRadio('c-lentes-retira'),
+      cIrri: getRadio('c-irritacao'),       cIrriEsp: val('c-irritacao-esp'),
+      cAlPatch: getRadio('c-alergia-patches'),
+      cReacExt: getRadio('c-reacao-ext'),   cReacExtEsp: val('c-reacao-ext-esp'),
+      cColirio: getRadio('c-colirio'),      cColirioEsp: val('c-colirio-esp'),
+      cCiruPrev: getRadio('c-cirurgia-prev'), cCiruPrevEsp: val('c-cirurgia-prev-esp'),
+      cFotofobia: getRadio('c-fotofobia'),
+      cDermato: getRadio('c-dermato'),      cDermatoEsp: val('c-dermato-esp'),
+      cMaquiagem: getRadio('c-maquiagem'),
+      cEsfregar: getRadio('c-esfregar'),
+      cNatacao: getRadio('c-natacao'),
       imgAuth: getRadio('p-imagem'),
       sigDataURL: sigGetDataURL('p'),
     };
@@ -418,17 +440,49 @@ function populateForm(d) {
     setVal('p-sexo', d.sexo); setVal('p-tel', d.tel);
     setVal('p-morada', d.morada); setVal('p-email', d.email); setVal('p-doc', d.doc);
     setNac('p', d.nac);
-    setVal('p-estilo', d.estilo); setVal('p-curvatura', d.curv);
-    setVal('p-espessura', d.esp); setVal('p-modelo', d.modelo); setVal('p-data', d.data);
+    // Procedimento
+    setVal('p-estilo', d.estilo); estiloSelectChange('p-estilo','p-estilo-outro');
+    if (d.curv) {
+      const knownCurves = ['A(j)','B','C','C+','CC','D','DD/U','I','L','LC/L+','M'];
+      if (knownCurves.includes(d.curv)) { setRadio('p-curvatura', d.curv); }
+      else { setRadio('p-curvatura','Outra'); setVal('p-curvatura-outro', d.curv); }
+      pillaOutroChange('p-curvatura','p-curvatura-outro');
+    }
+    stepperSet('p-espessura', d.esp || '0.10');
+    stepperSet('p-comprimento', d.comprimento || '10');
+    setRadio('p-volume', d.volume); setRadio('p-densidade', d.densidade);
+    setVal('p-modelo', d.modelo);
+    setRadio('p-fez-ext', d.fezExt); setVal('p-ext-duracao', d.extDuracao); fezExtChange();
+    // Atendimento
     document.getElementById('p-atend-data') && (document.getElementById('p-atend-data').value = d.atendData||'');
     document.getElementById('p-profissional') && (document.getElementById('p-profissional').value = d.profissional||'');
     if (d.sigProfDataURL) setTimeout(() => sigSetDataURL('pp', d.sigProfDataURL), 100);
-        setRadio('p-gestante', d.gest); setRadio('p-proced', d.proc_ol);
+    // Avaliação
+    setRadio('p-gestante', d.gest); setRadio('p-proced', d.proc_ol);
     setRadio('p-alergia', d.aler); setRadio('p-glaucoma', d.glau);
     setRadio('p-onco', d.onco); setRadio('p-rimel', d.rimel);
-    setRadio('c-alergia', d.cAler); setRadio('c-ocular', d.cOcul);
-    setRadio('c-cirurgia', d.cCiru); setRadio('c-lentes', d.cLent);
-    setRadio('c-irritacao', d.cIrri); setRadio('p-imagem', d.imgAuth);
+    // Consentimento — 14 perguntas
+    setRadio('c-alergia', d.cAler);            setVal('c-alergia-esp', d.cAlerEsp);
+    setRadio('c-ocular', d.cOcul);             setVal('c-ocular-esp', d.cOculEsp);
+    setRadio('c-cirurgia', d.cCiru);           setVal('c-cirurgia-esp', d.cCiruEsp);
+    setRadio('c-lentes', d.cLent);             setRadio('c-lentes-retira', d.cLentRetira);
+    setRadio('c-irritacao', d.cIrri);          setVal('c-irritacao-esp', d.cIrriEsp);
+    setRadio('c-alergia-patches', d.cAlPatch);
+    setRadio('c-reacao-ext', d.cReacExt);      setVal('c-reacao-ext-esp', d.cReacExtEsp);
+    setRadio('c-colirio', d.cColirio);         setVal('c-colirio-esp', d.cColirioEsp);
+    setRadio('c-cirurgia-prev', d.cCiruPrev);  setVal('c-cirurgia-prev-esp', d.cCiruPrevEsp);
+    setRadio('c-fotofobia', d.cFotofobia);
+    setRadio('c-dermato', d.cDermato);         setVal('c-dermato-esp', d.cDermatoEsp);
+    setRadio('c-maquiagem', d.cMaquiagem);
+    setRadio('c-esfregar', d.cEsfregar);
+    setRadio('c-natacao', d.cNatacao);
+    setRadio('p-imagem', d.imgAuth);
+    // Restore conditional sub-fields visibility
+    ['c-alergia','c-ocular','c-cirurgia','c-lentes','c-irritacao',
+     'c-reacao-ext','c-colirio','c-cirurgia-prev','c-dermato'].forEach(name => {
+      const el = document.querySelector(`input[name="${name}"][value="SIM"]`);
+      if (el && el.checked) toggleSub(name+'-sub', el, 'SIM');
+    });
     const ynRows = document.querySelectorAll('#form-pestanas .yn-row');
     if (ynRows[0]) { const o = ynRows[0].querySelector('.yn-obs'); if (o) o.value = d.gestObs || ''; }
     if (ynRows[2]) { const o = ynRows[2].querySelector('.yn-obs'); if (o) o.value = d.alerObs || ''; }
@@ -739,8 +793,43 @@ function buildPestanasHTML(d) {
       ['Está de rímel?', d.rimel],
     ])}
     <div class="pd-section-title">PROCEDIMENTO</div>
-    ${makeFields([[['Estilo:', d.estilo]],[['Curvatura:', d.curv],['Espessura:', d.esp],['Modelo dos fios:', d.modelo]]])}
-    ${sigRow([['Assinatura da Cliente',''],['Data do Procedimento', dataFmt]], d.sigDataURL, d.sigProfDataURL)}
+    ${makeFields([
+      [['Estilo:', d.estilo]],
+      [['Curvatura:', d.curv], ['Espessura:', (d.esp||'')+'mm'], ['Comprimento:', (d.comprimento||'')+'mm']],
+      [['Volume:', d.volume], ['Densidade:', d.densidade]],
+      [['Modelo dos fios:', d.modelo]],
+      [['Já fez extensão antes?', d.fezExt==='SIM'?'Sim — duração: '+(d.extDuracao||'N/D'):d.fezExt==='NÃO'?'Não':'']],
+    ])}
+    <div class="pd-section-title">CONSENTIMENTO – QUESTIONÁRIO DE SAÚDE</div>
+    <table class="pd-yn-table">
+      ${[
+        ['1) Alergia a látex, acrilatos, esmalte, cosméticos, colas?', d.cAler, d.cAlerEsp ? 'Substância/reação: '+d.cAlerEsp : ''],
+        ['2) Antecedentes de problemas oculares?', d.cOcul, d.cOculEsp ? 'Problema: '+d.cOculEsp : ''],
+        ['3) Cirurgia ocular nos últimos 6 meses?', d.cCiru, d.cCiruEsp ? 'Procedimento: '+d.cCiruEsp : ''],
+        ['4) Utiliza lentes de contacto?', d.cLent, d.cLentRetira ? 'Retira antes: '+d.cLentRetira : ''],
+        ['5) Irritação ou sensibilidade ocular hoje?', d.cIrri, d.cIrriEsp ? 'Qual: '+d.cIrriEsp : ''],
+        ['6) Alergia a colas, micropore, fita ou patches?', d.cAlPatch, ''],
+        ['7) Reação alérgica prévia a extensões?', d.cReacExt, d.cReacExtEsp ? 'Sintomas: '+d.cReacExtEsp : ''],
+        ['8) Uso de colírio medicamentoso?', d.cColirio, d.cColirioEsp ? 'Qual: '+d.cColirioEsp : ''],
+        ['9) Já realizou cirurgia ocular (LASIK, catarata)?', d.cCiruPrev, d.cCiruPrevEsp ? 'Há quanto tempo: '+d.cCiruPrevEsp : ''],
+        ['10) Sensibilidade à luz (fotofobia)?', d.cFotofobia, ''],
+        ['11) Tratamento dermatológico no rosto actualmente?', d.cDermato, d.cDermatoEsp ? 'Especificação: '+d.cDermatoEsp : ''],
+        ['12) Usa maquiagem pesada nos olhos com frequência?', d.cMaquiagem, ''],
+        ['13) Esfrega os olhos com frequência?', d.cEsfregar, ''],
+        ['14) Pratica natação ou actividades aquáticas?', d.cNatacao, ''],
+      ].map(([q, v, obs]) => {
+        const sim = normYn(v)==='SIM', nao = normYn(v)==='NAO';
+        return `<tr>
+          <td class="pd-yn-q" style="width:60%">${q}${obs ? `<div style="font-size:8pt;color:#555;margin-top:2px;">↳ ${obs}</div>` : ''}</td>
+          <td class="pd-yn-a">
+            <span class="print-box${sim?' checked':''}"></span><span class="print-box-label">SIM</span>
+            &nbsp;<span class="print-box${nao?' checked':''}"></span><span class="print-box-label">NÃO</span>
+            ${v && v!=='SIM' && v!=='NÃO' ? `<span style="font-size:8pt;color:#555;">&nbsp;${v}</span>` : ''}
+          </td>
+        </tr>`;
+      }).join('')}
+    </table>
+        ${sigRow([['Assinatura da Cliente',''],['Data do Procedimento', dataFmt]], d.sigDataURL, d.sigProfDataURL)}
   </div>`;
 
   const p2 = `<div class="pd-page">
@@ -2020,8 +2109,91 @@ document.addEventListener('click', e => {
   if (modal && e.target === modal) closeImportModal();
 });
 
+
+/* ══════════════════════════════════════════════════════════════════════════
+   STEPPER — espessura (0.03–0.30, step 0.01) e comprimento (4–25, step 1)
+   ══════════════════════════════════════════════════════════════════════════ */
+const STEPPER_CFG = {
+  'p-espessura':  { min: 0.03, max: 0.30, step: 0.01, decimals: 2, unit: '' },
+  'p-comprimento':{ min: 4,    max: 25,   step: 1,    decimals: 0, unit: '' },
+};
+
+function stepperChange(id, dir) {
+  const cfg = STEPPER_CFG[id];
+  if (!cfg) return;
+  const el = document.getElementById(id);
+  if (!el) return;
+  let v = parseFloat(el.value) + dir * cfg.step;
+  v = Math.min(cfg.max, Math.max(cfg.min, parseFloat(v.toFixed(cfg.decimals))));
+  el.value = v.toFixed(cfg.decimals);
+}
+
+function stepperGet(id) {
+  const el = document.getElementById(id);
+  return el ? el.value : '';
+}
+
+function stepperSet(id, value) {
+  const el = document.getElementById(id);
+  const cfg = STEPPER_CFG[id];
+  if (el && value !== undefined && value !== '') {
+    el.value = parseFloat(value).toFixed(cfg ? cfg.decimals : 2);
+  }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   TOGGLE SUB-FIELD — mostra/oculta campo condicional quando SIM selecionado
+   ══════════════════════════════════════════════════════════════════════════ */
+function toggleSub(subId, radio, triggerValue) {
+  const sub = document.getElementById(subId);
+  if (!sub) return;
+  sub.style.display = radio.value === triggerValue && radio.checked ? 'flex' : 'none';
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   ESTILO OUTRO — mostra input quando "Outro" selecionado no select
+   ══════════════════════════════════════════════════════════════════════════ */
+function estiloSelectChange(selectId, outroId) {
+  const sel   = document.getElementById(selectId);
+  const outro = document.getElementById(outroId);
+  if (!sel || !outro) return;
+  outro.style.display = sel.value === 'Outro' ? 'block' : 'none';
+}
+
+/* CURVATURA Outro pill — mostra input de texto quando "Outra" selecionado */
+function pillaOutroChange(name, outroId) {
+  const radios = document.querySelectorAll(`input[name="${name}"]`);
+  const outro  = document.getElementById(outroId);
+  if (!outro) return;
+  const checked = Array.from(radios).find(r => r.checked);
+  outro.style.display = (checked && checked.value === 'Outra') ? 'block' : 'none';
+}
+
+/* Já fez extensão — mostrar campo de duração */
+function fezExtChange() {
+  const radios  = document.querySelectorAll('input[name="p-fez-ext"]');
+  const detalhe = document.getElementById('p-fez-ext-detalhe');
+  if (!detalhe) return;
+  const checked = Array.from(radios).find(r => r.checked);
+  detalhe.style.display = (checked && checked.value === 'SIM') ? 'block' : 'none';
+}
+
 /* ══════════════════════════════════════════════════════════════════════════
    INIT
    ══════════════════════════════════════════════════════════════════════════ */
-document.addEventListener('DOMContentLoaded', () => { bootApp().catch(console.error); });
+document.addEventListener('DOMContentLoaded', () => {
+  bootApp().catch(console.error);
+
+  // Wire estilo select → show/hide "Outro" input
+  const estiloSel = document.getElementById('p-estilo');
+  if (estiloSel) estiloSel.addEventListener('change', () => estiloSelectChange('p-estilo','p-estilo-outro'));
+
+  // Wire curvatura pills → show/hide "Outra" input
+  document.querySelectorAll('input[name="p-curvatura"]').forEach(r =>
+    r.addEventListener('change', () => pillaOutroChange('p-curvatura','p-curvatura-outro')));
+
+  // Wire "já fez extensão" → show/hide duração
+  document.querySelectorAll('input[name="p-fez-ext"]').forEach(r =>
+    r.addEventListener('change', fezExtChange));
+});
 
