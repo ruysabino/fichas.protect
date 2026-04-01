@@ -388,56 +388,197 @@ async function exportBackup() {
     const clientes = await dbGetAllClientes();
     const encrypted = await encryptData({ version:2, exportedAt:new Date().toISOString(),
                                           exportedBy:currentUser(), fichas, clientes }, pass);
-    const blob = new Blob([JSON.stringify({ br_backup:true, v:2, data:encrypted })],
-                          { type:'application/json' });
-    const a = Object.assign(document.createElement('a'), {
-      href: URL.createObjectURL(blob),
-      download: `beleza-rara-backup-${new Date().toISOString().slice(0,10)}.brb`
-    });
-    a.click(); URL.revokeObjectURL(a.href);
+    const filename = `beleza-rara-backup-${new Date().toISOString().slice(0,10)}.brb`;
+    const payload  = JSON.stringify({ br_backup:true, v:2, data:encrypted });
+    const blob     = new Blob([payload], { type:'application/json' });
+
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+                  (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+
+    if (isIOS && navigator.share && navigator.canShare) {
+      // iOS: use Web Share API — allows saving to Files, AirDrop, email, etc.
+      try {
+        const file = new File([blob], filename, { type: 'application/json' });
+        if (navigator.canShare({ files: [file] })) {
+          await navigator.share({ files: [file], title: 'Backup Fichas de Anamnese' });
+        } else {
+          // Fallback: show the content in a modal to copy manually
+          _showBackupTextFallback(payload, filename);
+        }
+      } catch(shareErr) {
+        if (shareErr.name !== 'AbortError') {
+          // User cancelled share — that's fine; also show text fallback
+          _showBackupTextFallback(payload, filename);
+        }
+      }
+    } else {
+      // Desktop / Android / non-iOS: standard download
+      const a = Object.assign(document.createElement('a'), {
+        href: URL.createObjectURL(blob), download: filename
+      });
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+    }
+
     document.getElementById('backup-pass').value = '';
     document.getElementById('backup-conf').value = '';
     showToast('✅ Backup exportado com sucesso!');
   } catch(e) { err.textContent = 'Erro ao exportar: ' + e.message; console.error(e); }
 }
 
+/* ── iOS text fallback for backup export ── */
+function _showBackupTextFallback(payload, filename) {
+  // Create a modal with the backup text so user can copy it
+  const existing = document.getElementById('_backup-text-modal');
+  if (existing) existing.remove();
+
+  const modal = document.createElement('div');
+  modal.id = '_backup-text-modal';
+  modal.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:16px;';
+  modal.innerHTML = `
+    <div style="background:white;border-radius:16px;padding:24px;max-width:500px;width:100%;max-height:80vh;overflow-y:auto;">
+      <h3 style="font-family:Georgia,serif;color:#e36485;margin-bottom:8px;">💾 Guardar Backup</h3>
+      <p style="font-size:13px;color:#666;margin-bottom:12px;">
+        Selecione todo o texto abaixo, copie e guarde num ficheiro de texto (.txt ou .brb) usando as Notas ou Ficheiros do iPad:
+      </p>
+      <textarea readonly style="width:100%;height:120px;font-size:10px;font-family:monospace;border:2px solid #e36485;border-radius:8px;padding:8px;resize:none;">${payload}</textarea>
+      <p style="font-size:11px;color:#999;margin:8px 0;">Nome sugerido do ficheiro: <strong>${filename}</strong></p>
+      <div style="display:flex;gap:8px;margin-top:12px;">
+        <button onclick="(async()=>{try{await navigator.clipboard.writeText(document.querySelector('#_backup-text-modal textarea').value);alert('Copiado! Cole nas Notas e guarde como ${filename}');}catch(e){alert('Selecione e copie o texto manualmente');}})();"
+          style="flex:1;background:#e36485;color:white;border:none;border-radius:8px;padding:10px;font-weight:700;font-size:13px;cursor:pointer;">
+          📋 Copiar para Clipboard
+        </button>
+        <button onclick="document.getElementById('_backup-text-modal').remove();"
+          style="flex:1;background:#f3f4f6;color:#666;border:none;border-radius:8px;padding:10px;font-weight:700;font-size:13px;cursor:pointer;">
+          Fechar
+        </button>
+      </div>
+    </div>`;
+  document.body.appendChild(modal);
+  modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
+}
+
 /* ══════════════════════════════════════════════════════════════════════════
    RESTORE — Import JSON cifrado
    ══════════════════════════════════════════════════════════════════════════ */
+/* ── Lê um File como texto — compatível com iOS/Safari (sem File.text()) ── */
+function readFileAsText(file) {
+  return new Promise((resolve, reject) => {
+    if (typeof file.text === 'function') {
+      // Modern browsers (Chrome, Firefox, Edge)
+      file.text().then(resolve).catch(reject);
+    } else {
+      // Safari / iOS / older WebKit — use FileReader
+      const reader = new FileReader();
+      reader.onload  = e => resolve(e.target.result);
+      reader.onerror = e => reject(new Error('Erro ao ler ficheiro: ' + e.target.error));
+      reader.readAsText(file, 'UTF-8');
+    }
+  });
+}
+
 async function importBackup() {
-  const file = document.getElementById('restore-file')?.files[0];
+  const fileInput = document.getElementById('restore-file');
+  const file = fileInput?.files[0];
   const pass = document.getElementById('restore-pass')?.value;
   const mode = document.querySelector('input[name="restore-mode"]:checked')?.value || 'merge';
   const err  = document.getElementById('restore-err');
   err.textContent = ''; err.style.color = 'red';
-  if (!file) { err.textContent = 'Selecione um ficheiro de backup.'; return; }
+
+  if (!file) {
+    // iOS PWA: file picker sometimes doesn't trigger — show paste fallback
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+                  (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    if (isIOS) {
+      err.style.color = '#b45309';
+      err.textContent = '⚠️ No iPad: toque no botão de ficheiro, selecione "Ficheiros" e escolha o .brb. '
+                      + 'Se não aparecer, use a opção "Colar conteúdo" abaixo.';
+    } else {
+      err.textContent = 'Selecione um ficheiro de backup.';
+    }
+    return;
+  }
   if (!pass) { err.textContent = 'Introduza a senha do backup.'; return; }
+
+  const btn = document.querySelector('button[onclick="importBackup()"]');
+  if (btn) { btn.textContent = '⏳ A processar…'; btn.disabled = true; }
+
   try {
-    const raw     = JSON.parse(await file.text());
-    if (!raw.br_backup) throw new Error('Ficheiro inválido ou corrompido.');
+    // Use FileReader-based read (iOS-safe)
+    const text = await readFileAsText(file);
+
+    let raw;
+    try {
+      raw = JSON.parse(text);
+    } catch {
+      throw new Error('Ficheiro não é JSON válido. Certifique-se de que seleccionou o ficheiro .brb correcto.');
+    }
+
+    if (!raw.br_backup) throw new Error('Ficheiro inválido — não é um backup desta aplicação.');
+    if (!raw.data)      throw new Error('Ficheiro corrompido — campo de dados em falta.');
+
     const payload = await decryptData(raw.data, pass);
+
     if (mode === 'replace') {
       const d = await openDB();
-      await new Promise((res, rej) => {
-        const tx = d.transaction([STORE, STORE_CLI], 'readwrite');
-        tx.objectStore(STORE).clear(); tx.objectStore(STORE_CLI).clear();
-        tx.oncomplete = res; tx.onerror = e => rej(e.target.error);
-      });
+      if (d && d._isREST) {
+        // Desktop REST mode
+        const [af, ac] = await Promise.all([dbGetAll(), dbGetAllClientes()]);
+        await Promise.all(af.map(f => fetch(`/api/fichas/${f.id}`, {method:'DELETE'})));
+        await Promise.all(ac.map(c => fetch(`/api/clientes/${c.id}`, {method:'DELETE'})));
+      } else if (d) {
+        await new Promise((res, rej) => {
+          const tx = d.transaction([STORE, STORE_CLI], 'readwrite');
+          tx.objectStore(STORE).clear(); tx.objectStore(STORE_CLI).clear();
+          tx.oncomplete = res; tx.onerror = e => rej(e.target.error);
+        });
+      }
     }
-    let fc=0, cc=0;
-    for (const f of (payload.fichas   ||[])) { const c={...f}; delete c.id; await dbSave(c);         fc++; }
-    for (const c of (payload.clientes ||[])) { const x={...c}; delete x.id; await dbSaveCliente(x);  cc++; }
-    document.getElementById('restore-file').value = '';
-    document.getElementById('restore-pass').value  = '';
-    err.style.color = 'green';
-    err.textContent = `✅ ${fc} fichas e ${cc} clientes importados com sucesso.`;
+
+    let fc = 0, cc = 0;
+    for (const f of (payload.fichas   || [])) { const c = {...f}; delete c.id; await dbSave(c);        fc++; }
+    for (const c of (payload.clientes || [])) { const x = {...c}; delete x.id; await dbSaveCliente(x); cc++; }
+
+    // Reset form
+    fileInput.value = '';
+    document.getElementById('restore-pass').value = '';
+    err.style.color   = 'green';
+    err.textContent   = `✅ ${fc} ficha(s) e ${cc} cliente(s) importado(s) com sucesso.`;
     showToast(`✅ Restaurado: ${fc} fichas, ${cc} clientes.`);
   } catch(e) {
+    err.style.color = 'red';
     err.textContent = e.name === 'OperationError'
       ? '❌ Senha incorrecta ou ficheiro corrompido.'
       : '❌ Erro: ' + e.message;
-    console.error(e);
+    console.error('[importBackup]', e);
+  } finally {
+    if (btn) { btn.textContent = '⬆️ Restaurar Backup'; btn.disabled = false; }
   }
+}
+
+/* ── Restore a partir de texto colado (fallback para iOS PWA) ── */
+async function importBackupFromText() {
+  const textarea = document.getElementById('restore-paste-area');
+  const pass     = document.getElementById('restore-pass')?.value;
+  const mode     = document.querySelector('input[name="restore-mode"]:checked')?.value || 'merge';
+  const err      = document.getElementById('restore-err');
+  err.textContent = ''; err.style.color = 'red';
+
+  const text = textarea?.value?.trim();
+  if (!text) { err.textContent = 'Cole o conteúdo do ficheiro de backup no campo de texto.'; return; }
+  if (!pass) { err.textContent = 'Introduza a senha do backup.'; return; }
+
+  // Reuse the same import logic by creating a fake File
+  const blob = new Blob([text], {type: 'application/json'});
+  const fakeFile = new File([blob], 'backup.brb', {type: 'application/json'});
+
+  // Inject into file input and call main import
+  const dt = new DataTransfer();
+  dt.items.add(fakeFile);
+  document.getElementById('restore-file').files = dt.files;
+  await importBackup();
+  if (textarea) textarea.value = '';
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
