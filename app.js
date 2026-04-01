@@ -125,10 +125,12 @@ async function dbDeleteCliente(id) {
    NAVEGAÇÃO
    ══════════════════════════════════════════════════════════════════════════ */
 const TITLES = {
-  pestanas:  'Extensão de Pestanas',
-  depilacao: 'Depilação',
-  laser:     'Depilação Laser de Diodo',
-  manicure:  'Manicure'
+  pestanas:     'Extensão de Pestanas',
+  depilacao:    'Depilação',
+  laser:        'Depilação Laser de Diodo',
+  manicure:     'Manicure',
+  facial:       'Anamnese Facial',
+  microblading: 'Microblading',
 };
 
 function openForm(proc) {
@@ -429,6 +431,86 @@ function collectForm() {
       sigDataURL: sigGetDataURL('m'),
     };
   }
+
+  // ── FACIAL ──
+  if (currentProc === 'facial') {
+    const sess = [];
+    document.querySelectorAll('#fa-sessoes-body tr').forEach(tr => {
+      const cells = tr.querySelectorAll('input,textarea');
+      if (cells.length >= 3) {
+        const row = [cells[0].value, cells[1].value, cells[2].value];
+        if (row.some(v => v.trim())) sess.push(row);
+      }
+    });
+    return {
+      proc: 'facial', dataRegisto: now,
+      nome: val('fa-nome'), nasc: val('fa-nasc'), idade: val('fa-idade'),
+      sexo: getRadio('fa-sexo'), tel: val('fa-tel'), social: val('fa-social'),
+      morada: val('fa-morada'), email: val('fa-email'), doc: val('fa-doc'),
+      nac: val('fa-nac'),
+      atendData: val('fa-atend-data'), profissional: val('fa-profissional'),
+      sigProfDataURL: sigGetDataURL('fap'),
+      sol: getRadio('fa-sol'), glicemico: getRadio('fa-glicemico'),
+      intestinal: getRadio('fa-intestinal'),
+      tratAnt: getRadio('fa-trat-ant'), tratAntEsp: val('fa-trat-ant-esp'),
+      agua: getRadio('fa-agua'), alcool: getRadio('fa-alcool'),
+      filtro: getRadio('fa-filtro'), menstrual: getRadio('fa-menstrual'),
+      sono: getRadio('fa-sono'), protese: getRadio('fa-protese'),
+      tabaco: getRadio('fa-tabaco'), cardiaco: getRadio('fa-cardiaco'),
+      marcapasso: getRadio('fa-marcapasso'),
+      gestante: getRadio('fa-gestante'), gestanteSemanas: val('fa-gestante-semanas'),
+      cremes: getRadio('fa-cremes'), cremesEsp: val('fa-cremes-esp'),
+      atividade: getRadio('fa-atividade'), atividadeEsp: val('fa-atividade-esp'),
+      anticonc: getRadio('fa-anticonc'), anticoncEsp: val('fa-anticonc-esp'),
+      alergia: getRadio('fa-alergia'), alergiaEsp: val('fa-alergia-esp'),
+      roacutan: getRadio('fa-roacutan'),
+      pele: getRadio('fa-pele'), peleEsp: val('fa-pele-esp'),
+      biotipo: getRadio('fa-biotipo'),
+      cravos: getRadio('fa-cravos'), pustulas: getRadio('fa-pustulas'),
+      nodulos: getRadio('fa-nodulos'), millium: getRadio('fa-millium'),
+      espessura: getRadio('fa-espessura'), fototipo: getRadio('fa-fototipo'),
+      envelhecimento: getRadio('fa-envelhecimento'),
+      ostios: getRadio('fa-ostios'), cicHiper: getRadio('fa-cic-hiper'),
+      queloide: getRadio('fa-queloide'),
+      melasma: getRadio('fa-melasma'), cloasma: getRadio('fa-cloasma'),
+      hpi: getRadio('fa-hpi'), efelides: getRadio('fa-efelides'),
+      melanose: getRadio('fa-melanose'),
+      hipoLesao: getRadio('fa-hipo-lesao'), hipoRad: getRadio('fa-hipo-rad'),
+      hipoOutro: getRadio('fa-hipo-outro'), hipoOutroEsp: val('fa-hipo-outro-esp'),
+      cuidados: val('fa-cuidados'),
+      indicacaoTrat: val('fa-indicacao-trat'), homeCare: val('fa-home-care'),
+      sessions: sess,
+      imgAuth: getRadio('fa-imagem'), sigDataURL: sigGetDataURL('fa'),
+    };
+  }
+
+  // ── MICROBLADING ──
+  if (currentProc === 'microblading') {
+    return {
+      proc: 'microblading', dataRegisto: now,
+      nome: val('mb-nome'), nasc: val('mb-nasc'), idade: val('mb-idade'),
+      sexo: getRadio('mb-sexo'), tel: val('mb-tel'), email: val('mb-email'),
+      morada: val('mb-morada'), doc: val('mb-doc'), nac: val('mb-nac'),
+      atendData: val('mb-atend-data'), profissional: val('mb-profissional'),
+      sigProfDataURL: sigGetDataURL('mbp'),
+      gestante: getRadio('mb-gestante'), gestanteEsp: val('mb-gestante-esp'),
+      diabetes: getRadio('mb-diabetes'), coagulacao: getRadio('mb-coagulacao'),
+      queloide: getRadio('mb-queloide'), doencasSang: getRadio('mb-doencas-sang'),
+      alergia: getRadio('mb-alergia'), alergiaEsp: val('mb-alergia-esp'),
+      anticoag: getRadio('mb-anticoag'), pele: getRadio('mb-pele'),
+      cirurgia: getRadio('mb-cirurgia'), onco: getRadio('mb-onco'),
+      epilepsia: getRadio('mb-epilepsia'), autoimune: getRadio('mb-autoimune'),
+      acneTrat: getRadio('mb-acne-trat'), glaucoma: getRadio('mb-glaucoma'),
+      solar: getRadio('mb-solar'),
+      tatooPrev: getRadio('mb-tatoo-prev'), tatooEsp: val('mb-tatoo-prev-esp'),
+      es: val('mb-es'), ts: val('mb-ts'), tc: val('mb-tc'), tca: val('mb-tca'),
+      epi: getRadio('mb-epi'), epc: val('mb-epc'),
+      apib: val('mb-apib'), apia: val('mb-apia'),
+      apcb: val('mb-apcb'), apca: val('mb-apca'), apf: val('mb-apf'),
+      obsTecnica: val('mb-obs-tecnica'),
+      imgAuth: getRadio('mb-imagem'), sigDataURL: sigGetDataURL('mb'),
+    };
+  }
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
@@ -562,7 +644,9 @@ function populateForm(d) {
     if (d.sigDataURL) setTimeout(() => sigSetDataURL('l', d.sigDataURL), 100);
   }
 
-  if (d.proc === 'manicure') {
+  if (d.proc === 'facial') { populateFacial(d); return; }
+  if (d.proc === 'microblading') { populateMicroblading(d); return; }
+    if (d.proc === 'manicure') {
     setVal('m-nome', d.nome); setVal('m-nasc', d.nasc);
     document.getElementById('m-idade').value = d.nasc ? calcIdade(d.nasc) : (d.idade || '');
     setVal('m-sexo', d.sexo); setVal('m-tel', d.tel);
@@ -1195,10 +1279,12 @@ async function printFromData(proc, data) {
 
     // ── 2. Construir HTML da ficha ──
     let html = '';
-    if (proc === 'pestanas')  html = buildPestanasHTML(data);
-    if (proc === 'depilacao') html = buildDepilacaoHTML(data);
-    if (proc === 'laser')     html = buildLaserHTML(data);
-    if (proc === 'manicure')  html = buildManicureHTML(data);
+    if (proc === 'pestanas')     html = buildPestanasHTML(data);
+    if (proc === 'depilacao')    html = buildDepilacaoHTML(data);
+    if (proc === 'laser')        html = buildLaserHTML(data);
+    if (proc === 'manicure')     html = buildManicureHTML(data);
+    if (proc === 'facial')       html = buildFacialHTML(data);
+    if (proc === 'microblading') html = buildMicrobladingHTML(data);
 
     // ── 3. Renderizar num iframe oculto ──
     const iframe = document.createElement('iframe');
@@ -2240,6 +2326,233 @@ function fezExtChange() {
   if (!detalhe) return;
   const checked = Array.from(radios).find(r => r.checked);
   detalhe.style.display = (checked && checked.value === 'SIM') ? 'block' : 'none';
+}
+
+
+/* ══════════════════════════════════════════════════════════════════════════
+   FACIAL — Sessões helper
+   ══════════════════════════════════════════════════════════════════════════ */
+function faAddSessao(vals) {
+  const tbody = document.getElementById('fa-sessoes-body');
+  if (!tbody) return;
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td><input type="date" value="${vals?.[0]||''}"></td>
+    <td><input type="text" placeholder="Procedimento realizado…" value="${vals?.[1]||''}"></td>
+    <td><textarea rows="1" placeholder="Observações…" style="resize:vertical;">${vals?.[2]||''}</textarea></td>`;
+  tbody.appendChild(tr);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   POPULAR FORMULÁRIO — FACIAL
+   ══════════════════════════════════════════════════════════════════════════ */
+function populateFacial(d) {
+  setVal('fa-nome', d.nome); setVal('fa-nasc', d.nasc);
+  document.getElementById('fa-idade').value = d.nasc ? calcIdade(d.nasc) : (d.idade||'');
+  setRadio('fa-sexo', d.sexo); setVal('fa-tel', d.tel); setVal('fa-social', d.social);
+  setVal('fa-morada', d.morada); setVal('fa-email', d.email); setVal('fa-doc', d.doc);
+  setNac('fa', d.nac);
+  document.getElementById('fa-atend-data') && (document.getElementById('fa-atend-data').value = d.atendData||'');
+  document.getElementById('fa-profissional') && (document.getElementById('fa-profissional').value = d.profissional||'');
+  if (d.sigProfDataURL) setTimeout(() => sigSetDataURL('fap', d.sigProfDataURL), 100);
+  // Questionário
+  ['sol','glicemico','intestinal','tratAnt','agua','alcool','filtro','menstrual',
+   'sono','protese','tabaco','cardiaco','marcapasso','gestante','cremes',
+   'atividade','anticonc','alergia','roacutan','pele'].forEach(f => setRadio('fa-'+f, d[f]));
+  setVal('fa-trat-ant-esp', d.tratAntEsp); setVal('fa-gestante-semanas', d.gestanteSemanas);
+  setVal('fa-cremes-esp', d.cremesEsp); setVal('fa-atividade-esp', d.atividadeEsp);
+  setVal('fa-anticonc-esp', d.anticoncEsp); setVal('fa-alergia-esp', d.alergiaEsp);
+  setVal('fa-pele-esp', d.peleEsp);
+  // Restore sub-fields
+  ['tratAnt','gestante','cremes','atividade','anticonc','alergia','pele'].forEach(f => {
+    const el = document.querySelector(`input[name="fa-${f}"][value="SIM"]`);
+    if (el && el.checked) toggleSub(`fa-${f}-sub`, el, 'SIM');
+  });
+  // Semiológico
+  setRadio('fa-biotipo', d.biotipo); setRadio('fa-espessura', d.espessura);
+  setRadio('fa-fototipo', d.fototipo); setRadio('fa-envelhecimento', d.envelhecimento);
+  ['cravos','pustulas','nodulos','millium','ostios','cicHiper','queloide',
+   'melasma','cloasma','hpi','efelides','melanose','hipoLesao','hipoRad','hipoOutro'].forEach(f => {
+    // map camelCase to kebab
+    const id = 'fa-' + f.replace(/([A-Z])/g, '-$1').toLowerCase();
+    setRadio(id, d[f]);
+  });
+  setVal('fa-hipo-outro-esp', d.hipoOutroEsp);
+  const hipoEl = document.querySelector('input[name="fa-hipo-outro"][value="SIM"]');
+  if (hipoEl && hipoEl.checked) toggleSub('fa-hipo-outro-sub', hipoEl, 'SIM');
+  // Avaliação específica
+  setVal('fa-cuidados', d.cuidados); setVal('fa-indicacao-trat', d.indicacaoTrat);
+  setVal('fa-home-care', d.homeCare);
+  // Sessões
+  const tbody = document.getElementById('fa-sessoes-body');
+  if (tbody) { tbody.innerHTML = ''; (d.sessions||[]).forEach(r => faAddSessao(r)); }
+  // Assinatura
+  setRadio('fa-imagem', d.imgAuth);
+  if (d.sigDataURL) setTimeout(() => sigSetDataURL('fa', d.sigDataURL), 100);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   POPULAR FORMULÁRIO — MICROBLADING
+   ══════════════════════════════════════════════════════════════════════════ */
+function populateMicroblading(d) {
+  setVal('mb-nome', d.nome); setVal('mb-nasc', d.nasc);
+  document.getElementById('mb-idade').value = d.nasc ? calcIdade(d.nasc) : (d.idade||'');
+  setRadio('mb-sexo', d.sexo); setVal('mb-tel', d.tel); setVal('mb-email', d.email);
+  setVal('mb-morada', d.morada); setVal('mb-doc', d.doc); setNac('mb', d.nac);
+  document.getElementById('mb-atend-data') && (document.getElementById('mb-atend-data').value = d.atendData||'');
+  document.getElementById('mb-profissional') && (document.getElementById('mb-profissional').value = d.profissional||'');
+  if (d.sigProfDataURL) setTimeout(() => sigSetDataURL('mbp', d.sigProfDataURL), 100);
+  // Questionário
+  ['gestante','diabetes','coagulacao','queloide','doencasSang','alergia',
+   'anticoag','pele','cirurgia','onco','epilepsia','autoimune','acneTrat',
+   'glaucoma','solar','tatooPrev'].forEach(f => {
+    const id = 'mb-' + f.replace(/([A-Z])/g, '-$1').toLowerCase();
+    setRadio(id, d[f]);
+  });
+  setVal('mb-gestante-esp', d.gestanteEsp); setVal('mb-alergia-esp', d.alergiaEsp);
+  setVal('mb-tatoo-prev-esp', d.tatooEsp);
+  ['gestante','alergia','tatoo-prev'].forEach(f => {
+    const el = document.querySelector(`input[name="mb-${f}"][value="SIM"]`);
+    if (el && el.checked) toggleSub(`mb-${f}-sub`, el, 'SIM');
+  });
+  // Procedimento
+  ['es','ts','tc','tca','epc','apib','apia','apcb','apca','apf','obs-tecnica'].forEach(f => {
+    setVal('mb-' + f, d[f.replace(/-([a-z])/g, (_,c) => c.toUpperCase())] || d[f]);
+  });
+  setRadio('mb-epi', d.epi);
+  // Assinatura
+  setRadio('mb-imagem', d.imgAuth);
+  if (d.sigDataURL) setTimeout(() => sigSetDataURL('mb', d.sigDataURL), 100);
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   BUILD HTML PARA IMPRESSÃO — FACIAL
+   ══════════════════════════════════════════════════════════════════════════ */
+function buildFacialHTML(d) {
+  const dataFmt = formatDate(d.atendData || '');
+  const sessRows = (d.sessions||[]).map(r =>
+    `<tr><td>${r[0]||''}</td><td>${r[1]||''}</td><td>${r[2]||''}</td></tr>`
+  ).join('') || `<tr><td colspan="3" style="color:#aaa;text-align:center;">Sem sessões registadas</td></tr>`;
+
+  return `<div class="pd-page">
+    ${printHeader('FICHA DE ANAMNESE FACIAL')}
+    ${dadosClienteBlock(d)}
+    <div style="font-size:8pt;color:#555;margin-bottom:3mm;">Rede social: <strong>${esc(d.social||'—')}</strong></div>
+    ${atendimentoBlock(d)}
+
+    <div class="pd-section-title">QUESTIONÁRIO DE SAÚDE</div>
+    ${makeYnTable([
+      ['Se expõe ao sol com frequência?', d.sol],
+      ['Consome alimentos de Alto Índice Glicémico?', d.glicemico],
+      ['Funcionamento intestinal regular?', d.intestinal],
+      ['Tratamento facial anterior?' + (d.tratAntEsp?' — '+d.tratAntEsp:''), d.tratAnt],
+      ['Ingere água com frequência?', d.agua],
+      ['Ingere bebida alcoólica?', d.alcool],
+      ['Utiliza filtro solar?', d.filtro],
+      ['Está no período menstrual?', d.menstrual],
+      ['Boa qualidade do sono?', d.sono],
+      ['Possui prótese corporal/facial?', d.protese],
+      ['Tabagismo?', d.tabaco],
+      ['Alterações cardíacas?', d.cardiaco],
+      ['Portador de marcapasso?', d.marcapasso],
+      ['Gestante?' + (d.gestanteSemanas?' — '+d.gestanteSemanas+' sem.':''), d.gestante],
+      ['Cremes ou loções facial?' + (d.cremesEsp?' — '+d.cremesEsp:''), d.cremes],
+      ['Pratica atividade física?' + (d.atividadeEsp?' — '+d.atividadeEsp:''), d.atividade],
+      ['Utiliza anticoncepcional?' + (d.anticoncEsp?' — '+d.anticoncEsp:''), d.anticonc],
+      ['Possui algum tipo de alergia?' + (d.alergiaEsp?' — '+d.alergiaEsp:''), d.alergia],
+      ['Já utilizou Roacutan?', d.roacutan],
+      ['Problemas de pele?' + (d.peleEsp?' — '+d.peleEsp:''), d.pele],
+    ])}
+
+    <div class="pd-section-title">CARACTERÍSTICAS SEMIOLÓGICAS (PROFISSIONAL)</div>
+    ${makeFields([
+      [['Biotipo de pele:', d.biotipo], ['Espessura:', d.espessura]],
+      [['Fototipo:', d.fototipo], ['Grau de Envelhecimento:', d.envelhecimento]],
+    ])}
+    ${makeYnTable([
+      ['Comedões (Cravos)', d.cravos], ['Pústulas (Espinhas)', d.pustulas],
+      ['Nódulos (Espinha interna)', d.nodulos], ['Millium', d.millium],
+      ['Óstios abertos', d.ostios], ['Cicatriz hipertrófica', d.cicHiper], ['Cicatriz queloideana', d.queloide],
+      ['Melasma', d.melasma], ['Cloasma', d.cloasma], ['H.P.I.', d.hpi],
+      ['Efélides', d.efelides], ['Melanose Solar', d.melanose],
+      ['Hipocromia — Lesão', d.hipoLesao], ['Hipocromia — Radiação', d.hipoRad],
+      ['Hipocromia — Outros' + (d.hipoOutroEsp?' ('+d.hipoOutroEsp+')':''), d.hipoOutro],
+    ])}
+
+    <div class="pd-section-title">AVALIAÇÃO ESPECÍFICA</div>
+    ${makeFields([
+      [['Cuidados diários:', esc(d.cuidados||''), 2]],
+      [['Indicação do Tratamento:', esc(d.indicacaoTrat||''), 2]],
+      [['Indicação de Home Care:', esc(d.homeCare||''), 2]],
+    ])}
+
+    <div class="pd-section-title">CONTROLE DE SESSÕES</div>
+    <table class="pd-sessions-table" style="font-size:8pt;">
+      <thead><tr><th>Data</th><th>Procedimento</th><th>Observações</th></tr></thead>
+      <tbody>${sessRows}</tbody>
+    </table>
+
+    ${imagemBlock(d.imgAuth)}
+    ${sigRow([['Assinatura da Cliente',''],['Profissional Responsável',''],['Data do Procedimento',dataFmt]], d.sigDataURL, d.sigProfDataURL)}
+  </div>`;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   BUILD HTML PARA IMPRESSÃO — MICROBLADING
+   ══════════════════════════════════════════════════════════════════════════ */
+function buildMicrobladingHTML(d) {
+  const dataFmt = formatDate(d.atendData || '');
+
+  const p1 = `<div class="pd-page">
+    ${printHeader('FICHA DE ANAMNESE – MICROPIGMENTAÇÃO (MICROBLADING)')}
+    ${dadosClienteBlock(d)}
+    ${atendimentoBlock(d)}
+
+    <div class="pd-section-title">QUESTIONÁRIO DE SAÚDE</div>
+    ${makeYnTable([
+      ['É gestante ou lactante?' + (d.gestanteEsp?' — '+d.gestanteEsp:''), d.gestante],
+      ['Tem diabetes?', d.diabetes],
+      ['Sofre de problemas de coagulação sanguínea (hemofilia)?', d.coagulacao],
+      ['Tem histórico de queloides (cicatrização elevada)?', d.queloide],
+      ['Tem doenças transmissíveis pelo sangue (hepatite, HIV)?', d.doencasSang],
+      ['Tem alguma alergia?' + (d.alergiaEsp?' — '+d.alergiaEsp:''), d.alergia],
+      ['Faz uso de medicação anticoagulante (aspirina, varfarina)?', d.anticoag],
+      ['Tem acne, eczema, psoríase ou outra doença de pele na área?', d.pele],
+      ['Fez cirurgia plástica facial ou botox nos últimos 6 meses?', d.cirurgia],
+      ['Está a fazer tratamento oncológico?', d.onco],
+      ['Tem epilepsia?', d.epilepsia],
+      ['Tem alguma doença autoimune (lúpus, artrite reumatoide)?', d.autoimune],
+      ['Faz tratamento para acne (isotretinoína)?', d.acneTrat],
+      ['Tem glaucoma?', d.glaucoma],
+      ['Teve exposição solar ou bronzeamento artificial recente?', d.solar],
+      ['Já fez micropigmentação ou tatuagem nas sobrancelhas?' + (d.tatooEsp?' — '+d.tatooEsp:''), d.tatooPrev],
+    ])}
+
+    <div class="pd-section-title">INFORMAÇÕES SOBRE O PROCEDIMENTO</div>
+    ${makeFields([
+      [['E.S. (Espaço entre sobrancelhas):', d.es||'—'], ['T.S. (Tamanho sobrancelha):', d.ts||'—']],
+      [['T.C. (Tamanho corpo):', d.tc||'—'], ['T.Ca. (Tamanho cauda):', d.tca||'—']],
+      [['E.PI (Espessura ponto inicial):', d.epi||'—'], ['E.PC (Espessura ponto central):', d.epc||'—']],
+      [['A.PIB:', d.apib||'—'], ['A.PIA:', d.apia||'—'], ['A.PCB:', d.apcb||'—']],
+      [['A.PCA:', d.apca||'—'], ['A.PF:', d.apf||'—']],
+      [['Observações técnicas:', esc(d.obsTecnica||''), 2]],
+    ])}
+  </div>`;
+
+  const p2 = `<div class="pd-page">
+    ${printHeader('TERMO DE CONSENTIMENTO – MICROBLADING')}
+    <p style="font-size:9pt;margin-bottom:4mm;">Eu, <strong>${esc(d.nome||'_____________________________')}</strong>, declaro que:</p>
+    <div class="pd-consent-text">
+      <p>Fui informada e compreendi plenamente o procedimento de micropigmentação (microblading), incluindo os riscos associados (inchaço, vermelhidão, infeção, reação alérgica, variação de cor e possíveis resultados estéticos que podem não corresponder à minha expectativa).</p>
+      <p>Prestei todas as informações de saúde solicitadas de forma verdadeira e completa.</p>
+      <p>Comprometo-me a seguir todas as instruções e cuidados pós-procedimento fornecidos pela profissional, para garantir a melhor cicatrização e resultado possível.</p>
+      <p>Autorizo a profissional a realizar o procedimento na área das sobrancelhas.</p>
+    </div>
+    ${imagemBlock(d.imgAuth)}
+    ${sigRow([['Assinatura da Cliente',''],['Profissional Responsável','Valquiria Almeida dos Santos'],['Data do Procedimento',dataFmt]], d.sigDataURL, d.sigProfDataURL)}
+  </div>`;
+
+  return p1 + p2;
 }
 
 /* ══════════════════════════════════════════════════════════════════════════

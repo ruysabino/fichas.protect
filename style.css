@@ -1714,3 +1714,38 @@ body {
   background: var(--pink-pale);
 }
 .field-outro-input:focus { border-color: var(--pink); background: white; }
+
+/* ═══════════════════════════════════════════════════════════
+   FACIAL — Tabela de Controle de Sessões
+   ═══════════════════════════════════════════════════════════ */
+.fa-sessoes-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  margin-top: 8px;
+}
+.fa-sessoes-table th {
+  background: var(--pink);
+  color: white;
+  padding: 8px 10px;
+  text-align: left;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: .04em;
+}
+.fa-sessoes-table td {
+  border: 1px solid var(--border);
+  padding: 6px 8px;
+  vertical-align: top;
+}
+.fa-sessoes-table td input,
+.fa-sessoes-table td textarea {
+  width: 100%;
+  border: none;
+  outline: none;
+  font-family: 'Nunito', sans-serif;
+  font-size: 13px;
+  background: transparent;
+  resize: none;
+}
+.fa-sessoes-table tr:nth-child(even) td { background: var(--pink-pale); }
