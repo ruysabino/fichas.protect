@@ -769,6 +769,10 @@ function clearFormFields() {
   const [sigCli2, sigProf2] = SIG_PREFIXES[currentProc] || [currentProc[0], currentProc[0]+'p'];
   sigClear(sigCli2);  if (_sig[sigCli2])  _sig[sigCli2].hasStroke  = false;
   sigClear(sigProf2); if (_sig[sigProf2]) _sig[sigProf2].hasStroke = false;
+  // Clear linked clienteId
+  const formEl2 = document.getElementById('form-' + currentProc);
+  if (formEl2) delete formEl2.dataset.clienteId;
+
   // Reset NAC visual display (flag + label) for current form
   const nacPfx = currentProc === 'facial' ? 'fa' : currentProc === 'microblading' ? 'mb' : currentProc[0];
   const nacLbl = document.getElementById('nac-lbl-' + nacPfx);
@@ -1650,12 +1654,22 @@ async function preencherDadosCliente(pfx, clienteId) {
   sv(`${pfx}-nasc`,   c.nasc);
   const idadeEl = document.getElementById(`${pfx}-idade`);
   if (idadeEl) idadeEl.value = c.nasc ? calcIdade(c.nasc) : (c.idade||'');
-  sv(`${pfx}-sexo`,   c.sexo);
+
+  // SEXO — pill radio buttons (not a select)
+  setRadio(`${pfx}-sexo`, c.sexo);
+
   sv(`${pfx}-tel`,    c.tel);
   sv(`${pfx}-morada`, c.morada);
   sv(`${pfx}-email`,  c.email);
   sv(`${pfx}-doc`,    c.doc);
   setNac(pfx, c.nac);
+
+  // Rede Social — compound field
+  setSocial(pfx, c.social);
+
+  // Store clienteId on the form section for later "save client" update
+  const formEl = document.getElementById(`form-${currentProc}`);
+  if (formEl) formEl.dataset.clienteId = clienteId;
 
   // Close results and clear search
   const res = document.getElementById(`${pfx}-busca-results`);
@@ -1663,7 +1677,7 @@ async function preencherDadosCliente(pfx, clienteId) {
   if (res) res.style.display = 'none';
   if (inp) inp.value = '';
 
-  showToast(`✅ Dados de ${c.nome} preenchidos!`);
+  showToast(`✅ Dados de ${esc(c.nome)} preenchidos!`);
 }
 
 // Close busca results when clicking outside
@@ -2793,6 +2807,60 @@ function setSocial(pfx, value) {
     // Raw text — put in handle field, leave network empty
     netEl.value = '';
     hdlEl.value = value;
+  }
+}
+
+
+/* ══════════════════════════════════════════════════════════════════════════
+   GUARDAR CLIENTE A PARTIR DA FICHA
+   ══════════════════════════════════════════════════════════════════════════ */
+async function saveClienteFromFicha() {
+  const pfxMap = {
+    pestanas: 'p', depilacao: 'd', laser: 'l',
+    manicure: 'm', facial: 'fa', microblading: 'mb',
+  };
+  const pfx    = pfxMap[currentProc];
+  if (!pfx) return;
+
+  const formEl    = document.getElementById(`form-${currentProc}`);
+  const clienteId = formEl?.dataset.clienteId ? parseInt(formEl.dataset.clienteId, 10) : null;
+
+  // Collect dados-cliente fields
+  const nome   = document.getElementById(`${pfx}-nome`)?.value.trim() || '';
+  if (!nome) { showToast('⚠️ O nome da cliente é obrigatório.'); return; }
+
+  const updates = {
+    nome,
+    nasc:   document.getElementById(`${pfx}-nasc`)?.value   || '',
+    idade:  document.getElementById(`${pfx}-idade`)?.value  || '',
+    sexo:   document.querySelector(`input[name="${pfx}-sexo"]:checked`)?.value || '',
+    tel:    document.getElementById(`${pfx}-tel`)?.value.trim()    || '',
+    morada: document.getElementById(`${pfx}-morada`)?.value.trim() || '',
+    email:  document.getElementById(`${pfx}-email`)?.value.trim()  || '',
+    doc:    document.getElementById(`${pfx}-doc`)?.value.trim()    || '',
+    nac:    document.getElementById(`${pfx}-nac`)?.value           || '',
+    social: getSocial(pfx),
+  };
+
+  try {
+    if (clienteId) {
+      // Update existing cliente
+      const existing = await dbGetCliente(clienteId) || {};
+      await dbSaveCliente({ ...existing, ...updates, id: clienteId });
+      showToast(`✅ Dados de ${esc(nome)} actualizados!`);
+    } else {
+      // No linked client yet — create new and link
+      const newId = await dbSaveCliente(updates);
+      if (formEl) formEl.dataset.clienteId = newId;
+      // Refresh allClientes cache
+      allClientes = await dbGetAllClientes();
+      showToast(`✅ Cliente ${esc(nome)} criada e guardada!`);
+    }
+    // Also refresh cache
+    allClientes = await dbGetAllClientes();
+  } catch (e) {
+    showToast('❌ Erro ao guardar cliente: ' + e.message);
+    console.error(e);
   }
 }
 
