@@ -844,6 +844,18 @@ body {
   transform: translateY(-1px);
   box-shadow: 0 4px 14px rgba(224,24,94,0.25);
 }
+/* Nova Cliente — destaque como botão primário na action bar */
+.btn-cl-nova {
+  background: var(--pink);
+  color: white;
+  border-color: var(--pink);
+}
+.btn-cl-nova:hover {
+  background: #c2456e;
+  border-color: #c2456e;
+  color: white;
+}
+
 
 .btn-cl-action-icon { font-size: 15px; line-height: 1; }
 

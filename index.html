@@ -383,7 +383,7 @@
   <div class="fichas-topbar">
     <button class="btn-back" onclick="backFromClientes()">← Voltar</button>
     <span class="fichas-title">👥 Clientes</span>
-    <button class="btn-print" onclick="openClienteForm(null)">+ Nova Cliente</button>
+    <div></div>
   </div>
   <!-- Import modal -->
   <div id="import-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:900;align-items:center;justify-content:center;">
@@ -410,6 +410,9 @@
   </div>
   <div class="fichas-body">
     <div class="clientes-action-bar">
+      <button class="btn-cl-action btn-cl-nova" onclick="openClienteForm(null)">
+        <span class="btn-cl-action-icon">➕</span> Nova Cliente
+      </button>
       <button class="btn-cl-action" onclick="showImportClientes()">
         <span class="btn-cl-action-icon">⬆️</span> Importar CSV / XLSX
       </button>
