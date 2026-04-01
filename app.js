@@ -133,6 +133,16 @@ const TITLES = {
   microblading: 'Microblading',
 };
 
+// Map proc names to their canvas prefixes (cliente, profissional)
+const SIG_PREFIXES = {
+  pestanas:     ['p',  'pp'],
+  depilacao:    ['d',  'dp'],
+  laser:        ['l',  'lp'],
+  manicure:     ['m',  'mp'],
+  facial:       ['fa', 'fap'],
+  microblading: ['mb', 'mbp'],
+};
+
 function openForm(proc) {
   currentProc    = proc;
   currentFichaId = null;
@@ -142,8 +152,9 @@ function openForm(proc) {
   document.getElementById('form-' + proc).style.display = 'block';
   document.getElementById('form-title-bar').textContent  = 'Ficha de Anamnese – ' + TITLES[proc];
   clearFormFields();
-  initSignaturePad(proc[0]);         // cliente signature
-  initSignaturePad(proc[0] + 'p');   // profissional signature
+  const [sigCli, sigProf] = SIG_PREFIXES[proc] || [proc[0], proc[0]+'p'];
+  initSignaturePad(sigCli);    // assinatura da cliente
+  initSignaturePad(sigProf);   // assinatura do profissional
   window.scrollTo(0, 0);
 }
 
@@ -739,9 +750,9 @@ function clearFormFields() {
   const tbody = document.getElementById('sessions-tbody');
   if (tbody) { tbody.innerHTML = ''; addSessionRow(); }
   // Clear signature pads (cliente + profissional)
-  const pfx = currentProc[0];
-  sigClear(pfx);       if (_sig[pfx])       _sig[pfx].hasStroke = false;
-  sigClear(pfx + 'p'); if (_sig[pfx + 'p']) _sig[pfx + 'p'].hasStroke = false;
+  const [sigCli2, sigProf2] = SIG_PREFIXES[currentProc] || [currentProc[0], currentProc[0]+'p'];
+  sigClear(sigCli2);  if (_sig[sigCli2])  _sig[sigCli2].hasStroke  = false;
+  sigClear(sigProf2); if (_sig[sigProf2]) _sig[sigProf2].hasStroke = false;
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
