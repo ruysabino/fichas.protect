@@ -2052,6 +2052,7 @@ const COL_MAP = {
   nome:         ['nome','name','cliente','full name','nome completo'],
   nasc:         ['nasc','nascimento','data nascimento','data de nascimento','birth','birthday','dob','data nasc'],
   sexo:         ['sexo','sex','género','gender'],
+  social:       ['social','rede social','rede','instagram','facebook','tiktok','whatsapp','linkedin','youtube','twitter','x'],
   tel:          ['tel','telefone','telemovel','telemóvel','phone','mobile','celular','contacto'],
   morada:       ['morada','endereço','endereco','address','rua','localidade'],
   email:        ['email','e-mail','mail','correio'],
@@ -2235,6 +2236,7 @@ async function confirmImport() {
         nome:   row.nome   || '',
         nasc:   row.nasc   || '',
         sexo:   row.sexo   || '',
+        social: row.social || '',
         tel:    row.tel    || '',
         morada: row.morada || '',
         email:  row.email  || '',
@@ -2260,9 +2262,9 @@ async function exportClientesCSV() {
   const clientes = await dbGetAllClientes();
   if (!clientes.length) { showToast('⚠️ Nenhuma cliente para exportar.'); return; }
 
-  const headers = ['Nome','Nascimento','Sexo','Telefone','Morada','Email','Doc. Identificação','Nacionalidade','Observações'];
+  const headers = ['Nome','Nascimento','Sexo','Rede Social','Telefone','Morada','Email','Doc. Identificação','Nacionalidade','Observações'];
   const rows    = clientes.map(c => [
-    c.nome||'', c.nasc||'', c.sexo||'', c.tel||'', c.morada||'',
+    c.nome||'', c.nasc||'', c.sexo||'', c.social||'', c.tel||'', c.morada||'',
     c.email||'', c.doc||'', c.nac||'', c.obs||''
   ]);
 
@@ -2286,9 +2288,9 @@ async function exportClientesXLSX() {
 
   try {
     const XLSX = await loadSheetJS();
-    const headers = ['Nome','Nascimento','Sexo','Telefone','Morada','Email','Doc. Identificação','Nacionalidade','Observações'];
+    const headers = ['Nome','Nascimento','Sexo','Rede Social','Telefone','Morada','Email','Doc. Identificação','Nacionalidade','Observações'];
     const rows = clientes.map(c => [
-      c.nome||'', c.nasc||'', c.sexo||'', c.tel||'', c.morada||'',
+      c.nome||'', c.nasc||'', c.sexo||'', c.social||'', c.tel||'', c.morada||'',
       c.email||'', c.doc||'', c.nac||'', c.obs||''
     ]);
 
