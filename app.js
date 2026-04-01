@@ -753,6 +753,16 @@ function clearFormFields() {
   const [sigCli2, sigProf2] = SIG_PREFIXES[currentProc] || [currentProc[0], currentProc[0]+'p'];
   sigClear(sigCli2);  if (_sig[sigCli2])  _sig[sigCli2].hasStroke  = false;
   sigClear(sigProf2); if (_sig[sigProf2]) _sig[sigProf2].hasStroke = false;
+  // Reset NAC visual display (flag + label) for current form
+  const nacPfx = currentProc === 'facial' ? 'fa' : currentProc === 'microblading' ? 'mb' : currentProc[0];
+  const nacLbl = document.getElementById('nac-lbl-' + nacPfx);
+  const nacFlg = document.getElementById('nac-flag-' + nacPfx);
+  const nacHid = document.getElementById(nacPfx + '-nac');
+  if (nacLbl) { nacLbl.textContent = 'Selecionar país…'; nacLbl.classList.add('placeholder'); }
+  if (nacFlg) nacFlg.textContent = '';
+  if (nacHid) nacHid.value = '';
+  const nacList = document.getElementById('nac-list-' + nacPfx);
+  if (nacList) { nacList.innerHTML = ''; nacList.dataset.built = ''; }
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
@@ -2445,12 +2455,12 @@ function buildFacialHTML(d) {
     `<tr><td>${r[0]||''}</td><td>${r[1]||''}</td><td>${r[2]||''}</td></tr>`
   ).join('') || `<tr><td colspan="3" style="color:#aaa;text-align:center;">Sem sessões registadas</td></tr>`;
 
-  return `<div class="pd-page">
+  /* ── Página 1: Dados + Questionário de Saúde ── */
+  const p1 = `<div class="pd-page">
     ${printHeader('FICHA DE ANAMNESE FACIAL')}
     ${dadosClienteBlock(d)}
     <div style="font-size:8pt;color:#555;margin-bottom:3mm;">Rede social: <strong>${esc(d.social||'—')}</strong></div>
     ${atendimentoBlock(d)}
-
     <div class="pd-section-title">QUESTIONÁRIO DE SAÚDE</div>
     ${makeYnTable([
       ['Se expõe ao sol com frequência?', d.sol],
@@ -2474,7 +2484,11 @@ function buildFacialHTML(d) {
       ['Já utilizou Roacutan?', d.roacutan],
       ['Problemas de pele?' + (d.peleEsp?' — '+d.peleEsp:''), d.pele],
     ])}
+  </div>`;
 
+  /* ── Página 2: Semiológico + Avaliação + Sessões + Assinaturas ── */
+  const p2 = `<div class="pd-page">
+    ${printHeader('CARACTERÍSTICAS SEMIOLÓGICAS E AVALIAÇÃO – FACIAL')}
     <div class="pd-section-title">CARACTERÍSTICAS SEMIOLÓGICAS (PROFISSIONAL)</div>
     ${makeFields([
       [['Biotipo de pele:', d.biotipo], ['Espessura:', d.espessura]],
@@ -2489,23 +2503,22 @@ function buildFacialHTML(d) {
       ['Hipocromia — Lesão', d.hipoLesao], ['Hipocromia — Radiação', d.hipoRad],
       ['Hipocromia — Outros' + (d.hipoOutroEsp?' ('+d.hipoOutroEsp+')':''), d.hipoOutro],
     ])}
-
     <div class="pd-section-title">AVALIAÇÃO ESPECÍFICA</div>
     ${makeFields([
       [['Cuidados diários:', esc(d.cuidados||''), 2]],
       [['Indicação do Tratamento:', esc(d.indicacaoTrat||''), 2]],
       [['Indicação de Home Care:', esc(d.homeCare||''), 2]],
     ])}
-
     <div class="pd-section-title">CONTROLE DE SESSÕES</div>
     <table class="pd-sessions-table" style="font-size:8pt;">
       <thead><tr><th>Data</th><th>Procedimento</th><th>Observações</th></tr></thead>
       <tbody>${sessRows}</tbody>
     </table>
-
     ${imagemBlock(d.imgAuth)}
     ${sigRow([['Assinatura da Cliente',''],['Profissional Responsável',''],['Data do Procedimento',dataFmt]], d.sigDataURL, d.sigProfDataURL)}
   </div>`;
+
+  return p1 + p2;
 }
 
 /* ══════════════════════════════════════════════════════════════════════════

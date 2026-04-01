@@ -1522,9 +1522,17 @@
           <div class="field-group"><label>E-mail</label><input type="email" id="fa-email" placeholder="email@exemplo.com"></div>
           <div class="field-group"><label>Doc. Identificação</label><input type="text" id="fa-doc" placeholder="NIF / BI / Passaporte"></div>
           <div class="field-group"><label>Nacionalidade</label>
-            <div class="nac-wrap">
-              <input type="text" id="fa-nac" class="nac-input" placeholder="🔍 Pesquisar país…" autocomplete="off" oninput="filterNac(this,'fa-nac-list','fa-nac')" onfocus="showNacList('fa-nac-list')">
-              <div id="fa-nac-list" class="nac-dropdown" style="display:none;"></div>
+            <div class="nac-wrapper" id="nac-fa">
+              <div class="nac-display" onclick="toggleNac('fa')">
+                <span class="nac-flag" id="nac-flag-fa"></span>
+                <span class="nac-label" id="nac-lbl-fa">Selecionar país…</span>
+                <span class="nac-arrow">▾</span>
+              </div>
+              <div class="nac-dropdown" id="nac-drop-fa" style="display:none;">
+                <input type="text" class="nac-search" placeholder="🔍 Pesquisar país…" oninput="filterNac('fa',this.value)" autocomplete="off">
+                <div class="nac-list" id="nac-list-fa"></div>
+              </div>
+              <input type="hidden" id="fa-nac" name="fa-nac">
             </div>
           </div>
         </div>
@@ -1899,9 +1907,17 @@
           <div class="field-group full"><label>Morada</label><input type="text" id="mb-morada" placeholder="Morada completa"></div>
           <div class="field-group"><label>Doc. Identificação</label><input type="text" id="mb-doc" placeholder="NIF / BI / Passaporte"></div>
           <div class="field-group"><label>Nacionalidade</label>
-            <div class="nac-wrap">
-              <input type="text" id="mb-nac" class="nac-input" placeholder="🔍 Pesquisar país…" autocomplete="off" oninput="filterNac(this,'mb-nac-list','mb-nac')" onfocus="showNacList('mb-nac-list')">
-              <div id="mb-nac-list" class="nac-dropdown" style="display:none;"></div>
+            <div class="nac-wrapper" id="nac-mb">
+              <div class="nac-display" onclick="toggleNac('mb')">
+                <span class="nac-flag" id="nac-flag-mb"></span>
+                <span class="nac-label" id="nac-lbl-mb">Selecionar país…</span>
+                <span class="nac-arrow">▾</span>
+              </div>
+              <div class="nac-dropdown" id="nac-drop-mb" style="display:none;">
+                <input type="text" class="nac-search" placeholder="🔍 Pesquisar país…" oninput="filterNac('mb',this.value)" autocomplete="off">
+                <div class="nac-list" id="nac-list-mb"></div>
+              </div>
+              <input type="hidden" id="mb-nac" name="mb-nac">
             </div>
           </div>
         </div>
