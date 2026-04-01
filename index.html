@@ -446,9 +446,30 @@
         <div class="field-group"><label>Data de Nascimento</label><input type="date" id="cl-nasc" oninput="onNascChange('cl-nasc','cl-idade')"></div>
         <div class="field-group"><label>Idade (auto)</label><input type="text" id="cl-idade" readonly style="background:#f9f9f9;cursor:default;color:#555;" placeholder="Ex: 35 anos e 180 dias"></div>
         <div class="field-group"><label>Sexo</label>
-          <select id="cl-sexo"><option value="">--</option><option>Feminino</option><option>Masculino</option><option>Outro</option></select>
+          <div class="pill-group">
+            <label class="pill-lbl"><input type="radio" name="cl-sexo" value="Feminino"> Feminino</label>
+            <label class="pill-lbl"><input type="radio" name="cl-sexo" value="Masculino"> Masculino</label>
+            <label class="pill-lbl"><input type="radio" name="cl-sexo" value="Outro"> Outro</label>
+          </div>
         </div>
-        <div class="field-group"><label>Telefone</label><input type="tel" id="cl-tel" placeholder="+351 ..."></div>
+        <div class="field-group"><label>Telefone</label><input type="tel" id="cl-tel" placeholder="+351 912 345 678"></div>
+        <div class="field-group">
+          <label>Rede Social</label>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <select id="cl-social-net" style="width:130px;flex-shrink:0;" onchange="socialNetChange('cl')">
+              <option value="">— Plataforma —</option>
+              <option value="Instagram">📸 Instagram</option>
+              <option value="Facebook">👤 Facebook</option>
+              <option value="TikTok">🎵 TikTok</option>
+              <option value="WhatsApp">💬 WhatsApp</option>
+              <option value="LinkedIn">💼 LinkedIn</option>
+              <option value="YouTube">▶️ YouTube</option>
+              <option value="Twitter/X">🐦 Twitter/X</option>
+              <option value="Outro">✏️ Outro</option>
+            </select>
+            <input type="text" id="cl-social" placeholder="@utilizador ou link…" style="flex:1;min-width:0;">
+          </div>
+        </div>
         <div class="field-group full"><label>Morada</label><input type="text" id="cl-morada" placeholder="Rua, nº, Localidade"></div>
         <div class="field-group"><label>E-mail</label><input type="email" id="cl-email" placeholder="email@exemplo.com"></div>
         <div class="field-group"><label>Doc. Identificação (NIF/BI/Passaporte)</label><input type="text" id="cl-doc" placeholder="Nº documento"></div>
@@ -514,9 +535,30 @@
           <div class="field-group"><label>Data de Nascimento</label><input type="date" id="p-nasc" oninput="onNascChange('p-nasc','p-idade')"></div>
           <div class="field-group"><label>Idade (auto)</label><input type="text" id="p-idade" placeholder="Ex: 35 anos e 180 dias" readonly style="background:#f9f9f9;cursor:default;color:#555;"></div>
           <div class="field-group"><label>Sexo</label>
-            <select id="p-sexo"><option value="">--</option><option>Feminino</option><option>Masculino</option><option>Outro</option></select>
+            <div class="pill-group">
+              <label class="pill-lbl"><input type="radio" name="p-sexo" value="Feminino"> Feminino</label>
+              <label class="pill-lbl"><input type="radio" name="p-sexo" value="Masculino"> Masculino</label>
+              <label class="pill-lbl"><input type="radio" name="p-sexo" value="Outro"> Outro</label>
+            </div>
           </div>
-          <div class="field-group"><label>Telefone</label><input type="tel" id="p-tel" placeholder="+351 ..."></div>
+          <div class="field-group"><label>Telefone</label><input type="tel" id="p-tel" placeholder="+351 912 345 678"></div>
+          <div class="field-group">
+            <label>Rede Social</label>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <select id="p-social-net" style="width:130px;flex-shrink:0;" onchange="socialNetChange('p')">
+                <option value="">— Plataforma —</option>
+                <option value="Instagram">📸 Instagram</option>
+                <option value="Facebook">👤 Facebook</option>
+                <option value="TikTok">🎵 TikTok</option>
+                <option value="WhatsApp">💬 WhatsApp</option>
+                <option value="LinkedIn">💼 LinkedIn</option>
+                <option value="YouTube">▶️ YouTube</option>
+                <option value="Twitter/X">🐦 Twitter/X</option>
+                <option value="Outro">✏️ Outro</option>
+              </select>
+              <input type="text" id="p-social" placeholder="@utilizador ou link…" style="flex:1;min-width:0;">
+            </div>
+          </div>
           <div class="field-group full"><label>Morada</label><input type="text" id="p-morada" placeholder="Rua, nº, Localidade"></div>
           <div class="field-group"><label>E-mail</label><input type="email" id="p-email" placeholder="email@exemplo.com"></div>
           <div class="field-group"><label>Doc. Identificação (NIF/BI/Passaporte)</label><input type="text" id="p-doc" placeholder="Nº documento"></div>
@@ -900,8 +942,31 @@
           <div class="field-group full"><label>Nome completo</label><input type="text" id="d-nome" placeholder="Nome da cliente"></div>
           <div class="field-group"><label>Data de Nascimento</label><input type="date" id="d-nasc" oninput="onNascChange('d-nasc','d-idade')"></div>
           <div class="field-group"><label>Idade (auto)</label><input type="text" id="d-idade" placeholder="Ex: 35 anos e 180 dias" readonly style="background:#f9f9f9;cursor:default;color:#555;"></div>
-          <div class="field-group"><label>Sexo</label><select id="d-sexo"><option value="">--</option><option>Feminino</option><option>Masculino</option><option>Outro</option></select></div>
-          <div class="field-group"><label>Telefone</label><input type="tel" id="d-tel" placeholder="+351 ..."></div>
+          <div class="field-group"><label>Sexo</label>
+            <div class="pill-group">
+              <label class="pill-lbl"><input type="radio" name="d-sexo" value="Feminino"> Feminino</label>
+              <label class="pill-lbl"><input type="radio" name="d-sexo" value="Masculino"> Masculino</label>
+              <label class="pill-lbl"><input type="radio" name="d-sexo" value="Outro"> Outro</label>
+            </div>
+          </div>
+          <div class="field-group"><label>Telefone</label><input type="tel" id="d-tel" placeholder="+351 912 345 678"></div>
+          <div class="field-group">
+            <label>Rede Social</label>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <select id="d-social-net" style="width:130px;flex-shrink:0;" onchange="socialNetChange('d')">
+                <option value="">— Plataforma —</option>
+                <option value="Instagram">📸 Instagram</option>
+                <option value="Facebook">👤 Facebook</option>
+                <option value="TikTok">🎵 TikTok</option>
+                <option value="WhatsApp">💬 WhatsApp</option>
+                <option value="LinkedIn">💼 LinkedIn</option>
+                <option value="YouTube">▶️ YouTube</option>
+                <option value="Twitter/X">🐦 Twitter/X</option>
+                <option value="Outro">✏️ Outro</option>
+              </select>
+              <input type="text" id="d-social" placeholder="@utilizador ou link…" style="flex:1;min-width:0;">
+            </div>
+          </div>
           <div class="field-group full"><label>Morada</label><input type="text" id="d-morada" placeholder="Rua, nº, Localidade"></div>
           <div class="field-group"><label>E-mail</label><input type="email" id="d-email" placeholder="email@exemplo.com"></div>
           <div class="field-group"><label>Doc. Identificação (NIF/BI/Passaporte)</label><input type="text" id="d-doc" placeholder="Nº documento"></div>
@@ -1088,8 +1153,31 @@
           <div class="field-group full"><label>Nome completo</label><input type="text" id="l-nome" placeholder="Nome da cliente"></div>
           <div class="field-group"><label>Data de Nascimento</label><input type="date" id="l-nasc" oninput="onNascChange('l-nasc','l-idade')"></div>
           <div class="field-group"><label>Idade (auto)</label><input type="text" id="l-idade" placeholder="Ex: 35 anos e 180 dias" readonly style="background:#f9f9f9;cursor:default;color:#555;"></div>
-          <div class="field-group"><label>Sexo</label><select id="l-sexo"><option value="">--</option><option>Feminino</option><option>Masculino</option><option>Outro</option></select></div>
-          <div class="field-group"><label>Telefone</label><input type="tel" id="l-tel" placeholder="+351 ..."></div>
+          <div class="field-group"><label>Sexo</label>
+            <div class="pill-group">
+              <label class="pill-lbl"><input type="radio" name="l-sexo" value="Feminino"> Feminino</label>
+              <label class="pill-lbl"><input type="radio" name="l-sexo" value="Masculino"> Masculino</label>
+              <label class="pill-lbl"><input type="radio" name="l-sexo" value="Outro"> Outro</label>
+            </div>
+          </div>
+          <div class="field-group"><label>Telefone</label><input type="tel" id="l-tel" placeholder="+351 912 345 678"></div>
+          <div class="field-group">
+            <label>Rede Social</label>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <select id="l-social-net" style="width:130px;flex-shrink:0;" onchange="socialNetChange('l')">
+                <option value="">— Plataforma —</option>
+                <option value="Instagram">📸 Instagram</option>
+                <option value="Facebook">👤 Facebook</option>
+                <option value="TikTok">🎵 TikTok</option>
+                <option value="WhatsApp">💬 WhatsApp</option>
+                <option value="LinkedIn">💼 LinkedIn</option>
+                <option value="YouTube">▶️ YouTube</option>
+                <option value="Twitter/X">🐦 Twitter/X</option>
+                <option value="Outro">✏️ Outro</option>
+              </select>
+              <input type="text" id="l-social" placeholder="@utilizador ou link…" style="flex:1;min-width:0;">
+            </div>
+          </div>
           <div class="field-group full"><label>Morada</label><input type="text" id="l-morada" placeholder="Rua, nº, Localidade"></div>
           <div class="field-group"><label>E-mail</label><input type="email" id="l-email" placeholder="email@exemplo.com"></div>
           <div class="field-group"><label>Doc. Identificação (NIF/BI/Passaporte)</label><input type="text" id="l-doc" placeholder="Nº documento"></div>
@@ -1231,8 +1319,31 @@
           <div class="field-group full"><label>Nome completo</label><input type="text" id="m-nome" placeholder="Nome da cliente"></div>
           <div class="field-group"><label>Data de Nascimento</label><input type="date" id="m-nasc" oninput="onNascChange('m-nasc','m-idade')"></div>
           <div class="field-group"><label>Idade (auto)</label><input type="text" id="m-idade" placeholder="Ex: 35 anos e 180 dias" readonly style="background:#f9f9f9;cursor:default;color:#555;"></div>
-          <div class="field-group"><label>Sexo</label><select id="m-sexo"><option value="">--</option><option>Feminino</option><option>Masculino</option><option>Outro</option></select></div>
-          <div class="field-group"><label>Telefone</label><input type="tel" id="m-tel" placeholder="+351 ..."></div>
+          <div class="field-group"><label>Sexo</label>
+            <div class="pill-group">
+              <label class="pill-lbl"><input type="radio" name="m-sexo" value="Feminino"> Feminino</label>
+              <label class="pill-lbl"><input type="radio" name="m-sexo" value="Masculino"> Masculino</label>
+              <label class="pill-lbl"><input type="radio" name="m-sexo" value="Outro"> Outro</label>
+            </div>
+          </div>
+          <div class="field-group"><label>Telefone</label><input type="tel" id="m-tel" placeholder="+351 912 345 678"></div>
+          <div class="field-group">
+            <label>Rede Social</label>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <select id="m-social-net" style="width:130px;flex-shrink:0;" onchange="socialNetChange('m')">
+                <option value="">— Plataforma —</option>
+                <option value="Instagram">📸 Instagram</option>
+                <option value="Facebook">👤 Facebook</option>
+                <option value="TikTok">🎵 TikTok</option>
+                <option value="WhatsApp">💬 WhatsApp</option>
+                <option value="LinkedIn">💼 LinkedIn</option>
+                <option value="YouTube">▶️ YouTube</option>
+                <option value="Twitter/X">🐦 Twitter/X</option>
+                <option value="Outro">✏️ Outro</option>
+              </select>
+              <input type="text" id="m-social" placeholder="@utilizador ou link…" style="flex:1;min-width:0;">
+            </div>
+          </div>
           <div class="field-group full"><label>Morada</label><input type="text" id="m-morada" placeholder="Rua, nº, Localidade"></div>
           <div class="field-group"><label>E-mail</label><input type="email" id="m-email" placeholder="email@exemplo.com"></div>
           <div class="field-group"><label>Doc. Identificação (NIF/BI/Passaporte)</label><input type="text" id="m-doc" placeholder="Nº documento"></div>
@@ -1527,10 +1638,27 @@
             <div class="pill-group">
               <label class="pill-lbl"><input type="radio" name="fa-sexo" value="Feminino"> Feminino</label>
               <label class="pill-lbl"><input type="radio" name="fa-sexo" value="Masculino"> Masculino</label>
+              <label class="pill-lbl"><input type="radio" name="fa-sexo" value="Outro"> Outro</label>
             </div>
           </div>
           <div class="field-group"><label>Telefone</label><input type="tel" id="fa-tel" placeholder="+351 912 345 678"></div>
-          <div class="field-group"><label>Rede social</label><input type="text" id="fa-social" placeholder="@instagram ou Facebook"></div>
+          <div class="field-group">
+            <label>Rede Social</label>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <select id="fa-social-net" style="width:130px;flex-shrink:0;" onchange="socialNetChange('fa')">
+                <option value="">— Plataforma —</option>
+                <option value="Instagram">📸 Instagram</option>
+                <option value="Facebook">👤 Facebook</option>
+                <option value="TikTok">🎵 TikTok</option>
+                <option value="WhatsApp">💬 WhatsApp</option>
+                <option value="LinkedIn">💼 LinkedIn</option>
+                <option value="YouTube">▶️ YouTube</option>
+                <option value="Twitter/X">🐦 Twitter/X</option>
+                <option value="Outro">✏️ Outro</option>
+              </select>
+              <input type="text" id="fa-social" placeholder="@utilizador ou link…" style="flex:1;min-width:0;">
+            </div>
+          </div>
           <div class="field-group full"><label>Morada</label><input type="text" id="fa-morada" placeholder="Morada completa"></div>
           <div class="field-group"><label>E-mail</label><input type="email" id="fa-email" placeholder="email@exemplo.com"></div>
           <div class="field-group"><label>Doc. Identificação</label><input type="text" id="fa-doc" placeholder="NIF / BI / Passaporte"></div>
@@ -1913,9 +2041,27 @@
             <div class="pill-group">
               <label class="pill-lbl"><input type="radio" name="mb-sexo" value="Feminino"> Feminino</label>
               <label class="pill-lbl"><input type="radio" name="mb-sexo" value="Masculino"> Masculino</label>
+              <label class="pill-lbl"><input type="radio" name="mb-sexo" value="Outro"> Outro</label>
             </div>
           </div>
           <div class="field-group"><label>Telefone</label><input type="tel" id="mb-tel" placeholder="+351 912 345 678"></div>
+          <div class="field-group">
+            <label>Rede Social</label>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <select id="mb-social-net" style="width:130px;flex-shrink:0;" onchange="socialNetChange('mb')">
+                <option value="">— Plataforma —</option>
+                <option value="Instagram">📸 Instagram</option>
+                <option value="Facebook">👤 Facebook</option>
+                <option value="TikTok">🎵 TikTok</option>
+                <option value="WhatsApp">💬 WhatsApp</option>
+                <option value="LinkedIn">💼 LinkedIn</option>
+                <option value="YouTube">▶️ YouTube</option>
+                <option value="Twitter/X">🐦 Twitter/X</option>
+                <option value="Outro">✏️ Outro</option>
+              </select>
+              <input type="text" id="mb-social" placeholder="@utilizador ou link…" style="flex:1;min-width:0;">
+            </div>
+          </div>
           <div class="field-group"><label>E-mail</label><input type="email" id="mb-email" placeholder="email@exemplo.com"></div>
           <div class="field-group full"><label>Morada</label><input type="text" id="mb-morada" placeholder="Morada completa"></div>
           <div class="field-group"><label>Doc. Identificação</label><input type="text" id="mb-doc" placeholder="NIF / BI / Passaporte"></div>

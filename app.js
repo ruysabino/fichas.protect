@@ -298,7 +298,8 @@ function collectForm() {
     return {
       proc: 'pestanas', dataRegisto: now,
       nome: val('p-nome'), nasc: val('p-nasc'), idade: val('p-idade'),
-      sexo: val('p-sexo'), tel: val('p-tel'), morada: val('p-morada'),
+      sexo: getRadio('p-sexo'),
+      social: getSocial('p'), tel: val('p-tel'), morada: val('p-morada'),
       email: val('p-email'), doc: val('p-doc'),
       nac: val('p-nac'),
       atendData: val('p-atend-data'), profissional: val('p-profissional'),
@@ -344,7 +345,8 @@ function collectForm() {
     return {
       proc: 'depilacao', dataRegisto: now,
       nome: val('d-nome'), nasc: val('d-nasc'), idade: val('d-idade'),
-      sexo: val('d-sexo'), tel: val('d-tel'), morada: val('d-morada'),
+      sexo: getRadio('d-sexo'),
+      social: getSocial('d'), tel: val('d-tel'), morada: val('d-morada'),
       email: val('d-email'), doc: val('d-doc'),
       nac: val('d-nac'),
       atendData: val('d-atend-data'), profissional: val('d-profissional'),
@@ -384,7 +386,8 @@ function collectForm() {
     return {
       proc: 'laser', dataRegisto: now,
       nome: val('l-nome'), nasc: val('l-nasc'), idade: val('l-idade'),
-      sexo: val('l-sexo'), tel: val('l-tel'), morada: val('l-morada'),
+      sexo: getRadio('l-sexo'),
+      social: getSocial('l'), tel: val('l-tel'), morada: val('l-morada'),
       email: val('l-email'), doc: val('l-doc'),
       nac: val('l-nac'),
       atendData: val('l-atend-data'), profissional: val('l-profissional'),
@@ -417,7 +420,8 @@ function collectForm() {
     return {
       proc: 'manicure', dataRegisto: now,
       nome: val('m-nome'), nasc: val('m-nasc'), idade: val('m-idade'),
-      sexo: val('m-sexo'), tel: val('m-tel'), morada: val('m-morada'),
+      sexo: getRadio('m-sexo'),
+      social: getSocial('m'), tel: val('m-tel'), morada: val('m-morada'),
       email: val('m-email'), doc: val('m-doc'),
       nac: val('m-nac'),
       atendData: val('m-atend-data'), profissional: val('m-profissional'),
@@ -462,7 +466,8 @@ function collectForm() {
     return {
       proc: 'facial', dataRegisto: now,
       nome: val('fa-nome'), nasc: val('fa-nasc'), idade: val('fa-idade'),
-      sexo: getRadio('fa-sexo'), tel: val('fa-tel'), social: val('fa-social'),
+      sexo: getRadio('fa-sexo'),
+      social: getSocial('fa'), tel: val('fa-tel'), 
       morada: val('fa-morada'), email: val('fa-email'), doc: val('fa-doc'),
       nac: val('fa-nac'),
       atendData: val('fa-atend-data'), profissional: val('fa-profissional'),
@@ -506,7 +511,8 @@ function collectForm() {
     return {
       proc: 'microblading', dataRegisto: now,
       nome: val('mb-nome'), nasc: val('mb-nasc'), idade: val('mb-idade'),
-      sexo: getRadio('mb-sexo'), tel: val('mb-tel'), email: val('mb-email'),
+      sexo: getRadio('mb-sexo'),
+      social: getSocial('mb'), tel: val('mb-tel'), email: val('mb-email'),
       morada: val('mb-morada'), doc: val('mb-doc'), nac: val('mb-nac'),
       atendData: val('mb-atend-data'), profissional: val('mb-profissional'),
       sigProfDataURL: sigGetDataURL('mbp'),
@@ -548,7 +554,8 @@ function populateForm(d) {
   if (d.proc === 'pestanas') {
     setVal('p-nome', d.nome); setVal('p-nasc', d.nasc);
     document.getElementById('p-idade').value = d.nasc ? calcIdade(d.nasc) : (d.idade || '');
-    setVal('p-sexo', d.sexo); setVal('p-tel', d.tel);
+    setRadio('p-sexo', d.sexo);
+    setSocial('p', d.social); setVal('p-tel', d.tel);
     setVal('p-morada', d.morada); setVal('p-email', d.email); setVal('p-doc', d.doc);
     setNac('p', d.nac);
     // Procedimento
@@ -609,7 +616,8 @@ function populateForm(d) {
   if (d.proc === 'depilacao') {
     setVal('d-nome', d.nome); setVal('d-nasc', d.nasc);
     document.getElementById('d-idade').value = d.nasc ? calcIdade(d.nasc) : (d.idade || '');
-    setVal('d-sexo', d.sexo); setVal('d-tel', d.tel);
+    setRadio('d-sexo', d.sexo);
+    setSocial('d', d.social); setVal('d-tel', d.tel);
     setVal('d-morada', d.morada); setVal('d-email', d.email); setVal('d-doc', d.doc);
     setNac('d', d.nac);
     document.getElementById('d-atend-data') && (document.getElementById('d-atend-data').value = d.atendData||'');
@@ -642,7 +650,8 @@ function populateForm(d) {
   if (d.proc === 'laser') {
     setVal('l-nome', d.nome); setVal('l-nasc', d.nasc);
     document.getElementById('l-idade').value = d.nasc ? calcIdade(d.nasc) : (d.idade || '');
-    setVal('l-sexo', d.sexo); setVal('l-tel', d.tel);
+    setRadio('l-sexo', d.sexo);
+    setSocial('l', d.social); setVal('l-tel', d.tel);
     setVal('l-morada', d.morada); setVal('l-email', d.email); setVal('l-doc', d.doc);
     setNac('l', d.nac);
     document.getElementById('l-atend-data') && (document.getElementById('l-atend-data').value = d.atendData||'');
@@ -666,7 +675,8 @@ function populateForm(d) {
     if (d.proc === 'manicure') {
     setVal('m-nome', d.nome); setVal('m-nasc', d.nasc);
     document.getElementById('m-idade').value = d.nasc ? calcIdade(d.nasc) : (d.idade || '');
-    setVal('m-sexo', d.sexo); setVal('m-tel', d.tel);
+    setRadio('m-sexo', d.sexo);
+    setSocial('m', d.social); setVal('m-tel', d.tel);
     setVal('m-morada', d.morada); setVal('m-email', d.email);
     setVal('m-doc', d.doc); setNac('m', d.nac);
     // Atendimento
@@ -910,7 +920,8 @@ function dadosClienteBlock(d) {
   return makeFields([
     [['Nome:', d.nome, 2], ['Data de Nascimento:', formatDate(d.nasc)]],
     [['Idade:', d.idade], ['Sexo:', d.sexo], ['Telefone:', d.tel]],
-    [['Morada:', d.morada, 2], ['E-mail:', d.email, 1.5]],
+    [['E-mail:', d.email, 1.5], ['Rede Social:', esc(d.social||''), 1.5]],
+    [['Morada:', d.morada, 2]],
     [['Doc. Identificação (NIF/BI/Passaporte):', d.doc], ['Nacionalidade:', nacDisplay, 1.2]],
   ]);
 }
@@ -1554,7 +1565,9 @@ function populateClienteForm(c) {
   const sv = (id, v) => { const el=document.getElementById(id); if(el&&v) el.value=v; };
   sv('cl-nome', c.nome); sv('cl-nasc', c.nasc);
   document.getElementById('cl-idade').value = c.nasc ? calcIdade(c.nasc) : (c.idade||'');
-  sv('cl-sexo', c.sexo); sv('cl-tel', c.tel);
+  // sexo — pill radio
+  if (c.sexo) { const r=document.querySelector(`input[name='cl-sexo'][value='${c.sexo}']`); if(r){r.checked=true;r.dispatchEvent(new Event('change'));} }
+  setSocial('cl', c.social); sv('cl-tel', c.tel);
   sv('cl-morada', c.morada); sv('cl-email', c.email);
   sv('cl-doc', c.doc); sv('cl-obs', c.obs);
   setNac('cl', c.nac);
@@ -1565,7 +1578,8 @@ function getClienteFormData() {
     nome:   document.getElementById('cl-nome')?.value.trim() || '',
     nasc:   document.getElementById('cl-nasc')?.value || '',
     idade:  document.getElementById('cl-idade')?.value || '',
-    sexo:   document.getElementById('cl-sexo')?.value || '',
+    sexo:   document.querySelector('input[name="cl-sexo"]:checked')?.value || '',
+    social: getSocial('cl'),
     tel:    document.getElementById('cl-tel')?.value.trim() || '',
     morada: document.getElementById('cl-morada')?.value.trim() || '',
     email:  document.getElementById('cl-email')?.value.trim() || '',
@@ -2376,7 +2390,7 @@ function faAddSessao(vals) {
 function populateFacial(d) {
   setVal('fa-nome', d.nome); setVal('fa-nasc', d.nasc);
   document.getElementById('fa-idade').value = d.nasc ? calcIdade(d.nasc) : (d.idade||'');
-  setRadio('fa-sexo', d.sexo); setVal('fa-tel', d.tel); setVal('fa-social', d.social);
+  setRadio('fa-sexo', d.sexo); setVal('fa-tel', d.tel); setSocial('fa', d.social);
   setVal('fa-morada', d.morada); setVal('fa-email', d.email); setVal('fa-doc', d.doc);
   setNac('fa', d.nac);
   document.getElementById('fa-atend-data') && (document.getElementById('fa-atend-data').value = d.atendData||'');
@@ -2448,6 +2462,7 @@ function populateMicroblading(d) {
   });
   setRadio('mb-epi', d.epi);
   // Assinatura
+  setSocial('mb', d.social);
   setRadio('mb-imagem', d.imgAuth);
   if (d.sigDataURL) setTimeout(() => sigSetDataURL('mb', d.sigDataURL), 100);
 }
@@ -2465,7 +2480,6 @@ function buildFacialHTML(d) {
   const p1 = `<div class="pd-page">
     ${printHeader('FICHA DE ANAMNESE FACIAL')}
     ${dadosClienteBlock(d)}
-    <div style="font-size:8pt;color:#555;margin-bottom:3mm;">Rede social: <strong>${esc(d.social||'—')}</strong></div>
     ${atendimentoBlock(d)}
     <div class="pd-section-title">QUESTIONÁRIO DE SAÚDE</div>
     ${makeYnTable([
@@ -2736,6 +2750,50 @@ async function executeReset() {
   //
   closeResetModal();
   showToast('⚠️ Reset simulado — nenhum dado foi apagado. Funcionalidade em fase de activação.');
+}
+
+
+/* ── Rede Social — sincroniza placeholder quando muda plataforma ── */
+function socialNetChange(pfx) {
+  const net   = document.getElementById(pfx + '-social-net');
+  const input = document.getElementById(pfx + '-social');
+  if (!net || !input) return;
+  const placeholders = {
+    'Instagram': '@username', 'Facebook': 'Nome de utilizador ou URL',
+    'TikTok': '@username', 'WhatsApp': '+351 912 345 678',
+    'LinkedIn': 'URL do perfil', 'YouTube': '@canal ou URL',
+    'Twitter/X': '@username', 'Outro': 'Link ou nome de utilizador',
+  };
+  input.placeholder = placeholders[net.value] || '@utilizador ou link…';
+  input.focus();
+}
+
+/* ── Helper: get / set Rede Social compound field ── */
+function getSocial(pfx) {
+  const net = document.getElementById(pfx + '-social-net')?.value || '';
+  const hdl = document.getElementById(pfx + '-social')?.value.trim() || '';
+  if (!net && !hdl) return '';
+  if (!net) return hdl;
+  if (!hdl) return net;
+  return net + ': ' + hdl;
+}
+function setSocial(pfx, value) {
+  if (!value) return;
+  const netEl = document.getElementById(pfx + '-social-net');
+  const hdlEl = document.getElementById(pfx + '-social');
+  if (!netEl || !hdlEl) return;
+  // Try to parse "Network: handle" format
+  const networks = ['Instagram','Facebook','TikTok','WhatsApp','LinkedIn','YouTube','Twitter/X','Outro'];
+  const match = networks.find(n => value.startsWith(n + ': ') || value === n);
+  if (match) {
+    netEl.value = match;
+    hdlEl.value = value.startsWith(match + ': ') ? value.slice(match.length + 2) : '';
+    socialNetChange(pfx);
+  } else {
+    // Raw text — put in handle field, leave network empty
+    netEl.value = '';
+    hdlEl.value = value;
+  }
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
