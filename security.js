@@ -423,6 +423,7 @@ async function exportBackup() {
 
     document.getElementById('backup-pass').value = '';
     document.getElementById('backup-conf').value = '';
+    markBackupDone();
     showToast('✅ Backup exportado com sucesso!');
   } catch(e) { err.textContent = 'Erro ao exportar: ' + e.message; console.error(e); }
 }

@@ -114,6 +114,19 @@
       <button class="btn-print-main" style="background:#7c3aed;" onclick="exportRGPD()">📋 Exportar Relatório RGPD</button>
     </div>
 
+
+    <!-- Reset da Aplicação -->
+    <div class="form-card" style="border:2px solid #fca5a5;">
+      <h2 class="card-title" style="color:#dc2626;">⚠️ Zona de Perigo</h2>
+      <p style="font-size:13px;color:var(--gray);margin-bottom:14px;">
+        O reset apaga <strong>permanentemente</strong> todos os dados da aplicação: fichas, clientes e utilizadores.
+        Esta acção não pode ser desfeita. <strong>Efectue um backup antes de continuar.</strong>
+      </p>
+      <button class="btn-print-main" style="background:#dc2626;width:100%;" onclick="showResetModal()">
+        🗑️ Reset da Aplicação
+      </button>
+    </div>
+
     <!-- Utilizadores -->
     <div class="form-card">
       <h2 class="card-title">👥 Gestão de Utilizadores</h2>
@@ -2079,5 +2092,87 @@
 
 <script src="security.js"></script>
 <script src="app.js"></script>
+
+<!-- ═══════════════════════════════════════════════════════════
+     MODAL: Alerta de Backup (ao tentar sair / fechar)
+     ═══════════════════════════════════════════════════════════ -->
+<div id="modal-backup-alert" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:9000;align-items:center;justify-content:center;padding:16px;">
+  <div style="background:white;border-radius:20px;max-width:440px;width:100%;padding:28px 28px 24px;box-shadow:0 20px 60px rgba(0,0,0,.25);text-align:center;">
+    <div style="font-size:48px;margin-bottom:12px;">⚠️</div>
+    <h2 style="font-family:'Playfair Display',Georgia,serif;color:#e36485;font-size:20px;margin-bottom:10px;">Backup não efectuado</h2>
+    <p style="font-size:14px;color:#555;line-height:1.6;margin-bottom:6px;">
+      Tem <strong id="backup-alert-count">dados</strong> guardados que ainda não foram incluídos num backup.
+    </p>
+    <p style="font-size:13px;color:#888;margin-bottom:22px;">
+      Se fechar agora sem exportar, os dados ficam apenas neste dispositivo.<br>
+      Recomendamos fazer backup antes de sair.
+    </p>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <button onclick="backupAlertGoBackup()" style="background:#e36485;color:white;border:none;border-radius:12px;padding:13px 20px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;">
+        💾 Fazer backup agora
+      </button>
+      <button onclick="backupAlertContinue()" style="background:#f3f4f6;color:#555;border:none;border-radius:12px;padding:12px 20px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Nunito',sans-serif;">
+        Sair mesmo assim
+      </button>
+      <button onclick="closeBackupAlert()" style="background:transparent;color:#aaa;border:none;padding:6px;font-size:13px;cursor:pointer;font-family:'Nunito',sans-serif;">
+        Cancelar (ficar na app)
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     MODAL: Confirmação de Reset da Aplicação
+     ═══════════════════════════════════════════════════════════ -->
+<div id="modal-reset-confirm" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:9001;align-items:center;justify-content:center;padding:16px;">
+  <div style="background:white;border-radius:20px;max-width:460px;width:100%;padding:28px 28px 24px;box-shadow:0 20px 60px rgba(0,0,0,.3);text-align:center;">
+    <div style="font-size:52px;margin-bottom:10px;">🗑️</div>
+    <h2 style="font-family:'Playfair Display',Georgia,serif;color:#dc2626;font-size:20px;margin-bottom:10px;">Reset Total da Aplicação</h2>
+    <div id="reset-step-1">
+      <p style="font-size:14px;color:#555;line-height:1.6;margin-bottom:8px;">
+        Esta operação irá <strong>apagar permanentemente</strong> todos os dados:
+      </p>
+      <ul style="text-align:left;font-size:13px;color:#666;line-height:1.8;margin:0 0 16px;padding-left:20px;">
+        <li>Todas as fichas de anamnese</li>
+        <li>Todos os clientes cadastrados</li>
+        <li>Todas as configurações</li>
+        <li>Todos os utilizadores (excepto este)</li>
+      </ul>
+      <p style="font-size:13px;color:#dc2626;font-weight:700;margin-bottom:20px;">
+        ⚠️ Esta acção é irreversível. Certifique-se de ter um backup actualizado.
+      </p>
+      <div style="display:flex;gap:10px;flex-direction:column;">
+        <button onclick="resetStep2()" style="background:#dc2626;color:white;border:none;border-radius:12px;padding:13px 20px;font-size:15px;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;">
+          Continuar para confirmação →
+        </button>
+        <button onclick="closeResetModal()" style="background:#f3f4f6;color:#555;border:none;border-radius:12px;padding:12px 20px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Nunito',sans-serif;">
+          Cancelar
+        </button>
+      </div>
+    </div>
+    <div id="reset-step-2" style="display:none;">
+      <p style="font-size:14px;color:#555;margin-bottom:16px;">
+        Para confirmar, escreva <strong>APAGAR TUDO</strong> no campo abaixo:
+      </p>
+      <input type="text" id="reset-confirm-input"
+        placeholder="Escreva: APAGAR TUDO"
+        oninput="resetCheckConfirm()"
+        style="width:100%;border:2px solid #e5e7eb;border-radius:10px;padding:12px 14px;font-size:15px;font-family:'Nunito',sans-serif;outline:none;margin-bottom:14px;box-sizing:border-box;text-align:center;"
+        onfocus="this.style.borderColor='#dc2626'"
+        onblur="this.style.borderColor='#e5e7eb'">
+      <p id="reset-confirm-err" style="font-size:12px;color:#dc2626;min-height:18px;margin-bottom:12px;"></p>
+      <div style="display:flex;gap:10px;flex-direction:column;">
+        <button id="reset-confirm-btn" onclick="executeReset()" disabled
+          style="background:#9ca3af;color:white;border:none;border-radius:12px;padding:13px 20px;font-size:15px;font-weight:700;cursor:not-allowed;font-family:'Nunito',sans-serif;transition:background .2s;">
+          🗑️ Apagar Tudo Definitivamente
+        </button>
+        <button onclick="closeResetModal()" style="background:#f3f4f6;color:#555;border:none;border-radius:12px;padding:12px 20px;font-size:14px;font-weight:600;cursor:pointer;font-family:'Nunito',sans-serif;">
+          Cancelar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>

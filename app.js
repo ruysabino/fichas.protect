@@ -158,12 +158,15 @@ function openForm(proc) {
   window.scrollTo(0, 0);
 }
 
-function goBack() {
+function _doGoBack() {
   document.querySelectorAll('.screen').forEach(s => { s.style.display='none'; s.classList.remove('active'); });
   document.getElementById('screen-form').style.display   = 'none';
   document.getElementById('screen-fichas').style.display = 'none';
   const sel = document.getElementById('screen-select');
   sel.style.display = 'flex'; sel.classList.add('active');
+}
+function goBack() {
+  checkBackupBeforeExit(_doGoBack);
 }
 
 function showFichas() {
@@ -172,10 +175,13 @@ function showFichas() {
   renderFichasList();
 }
 
-function backFromFichas() {
+function _doBackFromFichas() {
   document.getElementById('screen-fichas').style.display = 'none';
   const sel2 = document.getElementById('screen-select');
   sel2.style.display = 'flex'; sel2.classList.add('active');
+}
+function backFromFichas() {
+  checkBackupBeforeExit(_doBackFromFichas);
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
@@ -2577,6 +2583,159 @@ function buildMicrobladingHTML(d) {
   </div>`;
 
   return p1 + p2;
+}
+
+
+/* ══════════════════════════════════════════════════════════════════════════
+   ALERTA DE BACKUP — avisa o utilizador ao sair sem backup recente
+   ══════════════════════════════════════════════════════════════════════════ */
+
+// Timestamp do último backup exportado (persiste em localStorage)
+const BACKUP_TS_KEY = 'belezaRara_lastBackupTs';
+
+function markBackupDone() {
+  localStorage.setItem(BACKUP_TS_KEY, Date.now().toString());
+}
+
+function getLastBackupTs() {
+  const v = localStorage.getItem(BACKUP_TS_KEY);
+  return v ? parseInt(v, 10) : 0;
+}
+
+function backupIsRecent() {
+  // Considera "recente" se foi feito nas últimas 24 horas
+  return (Date.now() - getLastBackupTs()) < 24 * 60 * 60 * 1000;
+}
+
+// Pending exit callback — executa se utilizador confirmar saída
+let _pendingExitFn = null;
+
+async function checkBackupBeforeExit(continueFn) {
+  // Count total records
+  let total = 0;
+  try {
+    const fichas   = await dbGetAll();
+    const clientes = await dbGetAllClientes();
+    total = (fichas || []).length + (clientes || []).length;
+  } catch { total = 0; }
+
+  // If no data, or backup recent — proceed directly
+  if (total === 0 || backupIsRecent()) {
+    if (continueFn) continueFn();
+    return;
+  }
+
+  // Show alert modal
+  _pendingExitFn = continueFn;
+  const countEl = document.getElementById('backup-alert-count');
+  if (countEl) {
+    const f = await dbGetAll().then(r => r?.length || 0).catch(() => 0);
+    const c = await dbGetAllClientes().then(r => r?.length || 0).catch(() => 0);
+    countEl.textContent = `${f} ficha(s) e ${c} cliente(s)`;
+  }
+  const modal = document.getElementById('modal-backup-alert');
+  if (modal) { modal.style.display = 'flex'; }
+}
+
+function closeBackupAlert() {
+  _pendingExitFn = null;
+  const modal = document.getElementById('modal-backup-alert');
+  if (modal) modal.style.display = 'none';
+}
+
+function backupAlertGoBackup() {
+  closeBackupAlert();
+  showDefinicoes();   // open Definições → user can do backup there
+}
+
+function backupAlertContinue() {
+  const fn = _pendingExitFn;
+  closeBackupAlert();
+  if (fn) fn();
+}
+
+// beforeunload — standard browser warning when closing/refreshing
+window.addEventListener('beforeunload', (e) => {
+  // Only warn if data exists and no recent backup
+  if (!backupIsRecent()) {
+    // Check synchronously via localStorage record count hint
+    const hint = localStorage.getItem('belezaRara_hasData');
+    if (hint === '1') {
+      e.preventDefault();
+      e.returnValue = 'Tem dados sem backup recente. Deseja realmente sair?';
+      return e.returnValue;
+    }
+  }
+});
+
+// Update hasData hint whenever fichas are saved
+const _origDbSave = dbSave;
+dbSave = async function(record) {
+  const result = await _origDbSave(record);
+  localStorage.setItem('belezaRara_hasData', '1');
+  return result;
+};
+
+/* ══════════════════════════════════════════════════════════════════════════
+   RESET DA APLICAÇÃO — simulado (botão visível, sem execução real)
+   ══════════════════════════════════════════════════════════════════════════ */
+
+function showResetModal() {
+  if (!isAdmin()) { showToast('⚠️ Acesso restrito a administradores.'); return; }
+  // Reset modal to step 1
+  document.getElementById('reset-step-1').style.display = 'block';
+  document.getElementById('reset-step-2').style.display = 'none';
+  const inp = document.getElementById('reset-confirm-input');
+  const err = document.getElementById('reset-confirm-err');
+  const btn = document.getElementById('reset-confirm-btn');
+  if (inp) inp.value = '';
+  if (err) err.textContent = '';
+  if (btn) { btn.disabled = true; btn.style.background = '#9ca3af'; btn.style.cursor = 'not-allowed'; }
+  const modal = document.getElementById('modal-reset-confirm');
+  if (modal) modal.style.display = 'flex';
+}
+
+function closeResetModal() {
+  const modal = document.getElementById('modal-reset-confirm');
+  if (modal) modal.style.display = 'none';
+}
+
+function resetStep2() {
+  document.getElementById('reset-step-1').style.display = 'none';
+  document.getElementById('reset-step-2').style.display = 'block';
+  setTimeout(() => {
+    const inp = document.getElementById('reset-confirm-input');
+    if (inp) inp.focus();
+  }, 100);
+}
+
+function resetCheckConfirm() {
+  const inp = document.getElementById('reset-confirm-input');
+  const btn = document.getElementById('reset-confirm-btn');
+  const err = document.getElementById('reset-confirm-err');
+  const val = (inp?.value || '').trim().toUpperCase();
+  const ok  = val === 'APAGAR TUDO';
+  if (btn) {
+    btn.disabled       = !ok;
+    btn.style.background = ok ? '#dc2626' : '#9ca3af';
+    btn.style.cursor     = ok ? 'pointer' : 'not-allowed';
+  }
+  if (err) err.textContent = val && !ok ? 'Escreva exactamente: APAGAR TUDO' : '';
+}
+
+async function executeReset() {
+  // ── SIMULAÇÃO — botão activo mas sem apagar dados reais ──
+  // Para implementação real, substituir este bloco pelo código de limpeza:
+  //
+  //   const d = await openDB();
+  //   const tx = d.transaction([STORE, STORE_CLI], 'readwrite');
+  //   tx.objectStore(STORE).clear();
+  //   tx.objectStore(STORE_CLI).clear();
+  //   localStorage.clear();
+  //   location.reload();
+  //
+  closeResetModal();
+  showToast('⚠️ Reset simulado — nenhum dado foi apagado. Funcionalidade em fase de activação.');
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
